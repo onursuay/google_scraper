@@ -1,4 +1,7 @@
+import os
+import json
 import logging
+import tempfile
 
 import gspread
 from google.oauth2.service_account import Credentials
@@ -24,9 +27,15 @@ class SheetsManager:
     def _connect(self):
         """Google Sheets'e baglan."""
         try:
-            creds = Credentials.from_service_account_file(
-                SERVICE_ACCOUNT_FILE, scopes=SCOPES
-            )
+            # Env variable varsa onu kullan, yoksa dosyadan oku
+            sa_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+            if sa_json:
+                sa_info = json.loads(sa_json)
+                creds = Credentials.from_service_account_info(sa_info, scopes=SCOPES)
+            else:
+                creds = Credentials.from_service_account_file(
+                    SERVICE_ACCOUNT_FILE, scopes=SCOPES
+                )
             client = gspread.authorize(creds)
 
             spreadsheet = client.open_by_url(GOOGLE_SHEET_URL)
