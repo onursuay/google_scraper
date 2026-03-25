@@ -1177,8 +1177,9 @@ if _lead_sheet:
 
 
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", 5050))
     print("\n" + "=" * 50)
     print("  POWER SCANNER")
-    print("  Dashboard: http://localhost:5050")
+    print(f"  Dashboard: http://localhost:{port}")
     print("=" * 50 + "\n")
-    socketio.run(app, debug=False, port=5050, host="0.0.0.0", allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=False, port=port, host="0.0.0.0", allow_unsafe_werkzeug=True)
