@@ -170,13 +170,13 @@ class SheetsLogger:
             return False
         try:
             import gspread
-            from google.oauth2.service_account import Credentials
+            from config import get_google_credentials
 
             scopes = [
                 "https://www.googleapis.com/auth/spreadsheets",
                 "https://www.googleapis.com/auth/drive",
             ]
-            creds = Credentials.from_service_account_file(self.credentials_path, scopes=scopes)
+            creds = get_google_credentials(scopes)
             self._client = gspread.authorize(creds)
             spreadsheet = self._client.open_by_key(self.sheet_id)
             if self.worksheet_name:
@@ -198,9 +198,9 @@ class SheetsLogger:
     def get_worksheets(self, sheet_id, credentials_path="credentials/service_account.json"):
         try:
             import gspread
-            from google.oauth2.service_account import Credentials
+            from config import get_google_credentials
             scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-            creds = Credentials.from_service_account_file(credentials_path, scopes=scopes)
+            creds = get_google_credentials(scopes)
             client = gspread.authorize(creds)
             spreadsheet = client.open_by_key(sheet_id)
             return [ws.title for ws in spreadsheet.worksheets()]

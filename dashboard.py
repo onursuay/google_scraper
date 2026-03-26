@@ -736,12 +736,8 @@ def connection_status():
         lead_data = _fetch_lead_sheet(None, lead_url, lead_sheet)
         # Spreadsheet basligini al
         import gspread
-        from google.oauth2.service_account import Credentials
-        from config import SERVICE_ACCOUNT_FILE
-        creds = Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_FILE,
-            scopes=["https://www.googleapis.com/auth/spreadsheets.readonly", "https://www.googleapis.com/auth/drive.readonly"],
-        )
+        from config import get_google_credentials
+        creds = get_google_credentials(["https://www.googleapis.com/auth/spreadsheets.readonly", "https://www.googleapis.com/auth/drive.readonly"])
         client = gspread.authorize(creds)
         sp = client.open_by_url(lead_url)
 
@@ -963,17 +959,13 @@ def _fetch_lead_sheet(sheets_mgr, lead_url: str, sheet_name: str = None) -> list
     Diger sheet'lere kesinlikle dokunulmaz.
     """
     import gspread
-    from google.oauth2.service_account import Credentials
-    from config import SERVICE_ACCOUNT_FILE
+    from config import get_google_credentials
 
     # Sheet adi belirtilmemisse config'den al
     if not sheet_name:
         sheet_name = app.config.get("LEAD_SHEET_NAME", "")
 
-    creds = Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE,
-        scopes=["https://www.googleapis.com/auth/spreadsheets.readonly", "https://www.googleapis.com/auth/drive.readonly"],
-    )
+    creds = get_google_credentials(["https://www.googleapis.com/auth/spreadsheets.readonly", "https://www.googleapis.com/auth/drive.readonly"])
     client = gspread.authorize(creds)
     spreadsheet = client.open_by_url(lead_url)
 
@@ -1094,13 +1086,9 @@ def list_sheets():
 
     try:
         import gspread
-        from google.oauth2.service_account import Credentials
-        from config import SERVICE_ACCOUNT_FILE
+        from config import get_google_credentials
 
-        creds = Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_FILE,
-            scopes=["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"],
-        )
+        creds = get_google_credentials(["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"])
         client = gspread.authorize(creds)
         spreadsheet = client.open_by_url(url)
 

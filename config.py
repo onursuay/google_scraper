@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,6 +11,16 @@ GOOGLE_SHEET_URL = os.getenv(
 )
 SHEET_NAME = "Scanner"
 SERVICE_ACCOUNT_FILE = os.path.join(os.path.dirname(__file__), "credentials", "service_account.json")
+
+
+def get_google_credentials(scopes):
+    """Google credentials olustur - env variable veya dosyadan."""
+    from google.oauth2.service_account import Credentials
+    sa_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+    if sa_json:
+        sa_info = json.loads(sa_json)
+        return Credentials.from_service_account_info(sa_info, scopes=scopes)
+    return Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scopes)
 
 # Tarama ayarlari
 MIN_RESULTS = 20

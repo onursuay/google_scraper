@@ -27,15 +27,8 @@ class SheetsManager:
     def _connect(self):
         """Google Sheets'e baglan."""
         try:
-            # Env variable varsa onu kullan, yoksa dosyadan oku
-            sa_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON", "")
-            if sa_json:
-                sa_info = json.loads(sa_json)
-                creds = Credentials.from_service_account_info(sa_info, scopes=SCOPES)
-            else:
-                creds = Credentials.from_service_account_file(
-                    SERVICE_ACCOUNT_FILE, scopes=SCOPES
-                )
+            from config import get_google_credentials
+            creds = get_google_credentials(SCOPES)
             client = gspread.authorize(creds)
 
             spreadsheet = client.open_by_url(GOOGLE_SHEET_URL)
