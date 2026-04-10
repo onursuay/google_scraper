@@ -1180,6 +1180,124 @@ def connect_lead_sheet():
         return jsonify({"error": f"Bağlantı hatası: {str(e)}"}), 400
 
 
+@app.route("/api/import/parse-file", methods=["POST"])
+def import_parse_file():
+    """Yuklenen dosyayi parse et, baslik + ilk 200 satiri dondur."""
+    if "file" not in request.files:
+        return jsonify({"error": "Dosya secilmedi."}), 400
+    file = request.files["file"]
+    ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
+    if ext not in ("xlsx", "xls", "csv"):
+        return jsonify({"error": "Desteklenen: .xlsx, .xls, .csv"}), 400
+    try:
+        import io
+        if ext == "csv":
+            import csv
+            content = file.read().decode("utf-8-sig")
+            reader = csv.reader(io.StringIO(content))
+            all_rows = list(reader)
+        else:
+            from openpyxl import load_workbook
+            wb = load_workbook(file, read_only=True, data_only=True)
+            ws = wb.active
+            all_rows = [[str(c or "").strip() for c in row] for row in ws.iter_rows(values_only=True)]
+
+        if not all_rows:
+            return jsonify({"error": "Dosya bos."}), 400
+
+        headers = [str(h or "").strip() for h in all_rows[0]]
+        data_rows = []
+        for row in all_rows[1:201]:
+            row_list = [str(c or "").strip() for c in row]
+            if any(row_list):
+                data_rows.append(row_list)
+
+        return jsonify({
+            "headers": headers,
+            "rows": data_rows,
+            "total": len(all_rows) - 1,
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/import/fetch-sheet", methods=["POST"])
+def import_fetch_sheet():
+    """Google Sheet'teki belirli sheet'in verilerini dondur."""
+    data = request.json
+    url = data.get("url", "").strip()
+    sheet_name = data.get("sheet_name", "").strip()
+    if not url or not sheet_name:
+        return jsonify({"error": "URL ve sheet_name gerekli"}), 400
+    try:
+        import gspread
+        from config import get_google_credentials
+        creds = get_google_credentials([
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ])
+        client = gspread.authorize(creds)
+        spreadsheet = client.open_by_url(url)
+        ws = spreadsheet.worksheet(sheet_name)
+        all_values = ws.get_all_values()
+        if not all_values:
+            return jsonify({"error": "Sheet bos."}), 400
+        headers = all_values[0]
+        rows = all_values[1:201]
+        return jsonify({"headers": headers, "rows": rows, "total": len(all_values) - 1})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/import/execute", methods=["POST"])
+def import_execute():
+    """Eslenmis satirlari Google Sheets Scanner tablosuna yaz."""
+    data = request.json
+    rows = data.get("rows", [])
+    if not rows:
+        return jsonify({"error": "Veri yok"}), 400
+    try:
+        from datetime import datetime as _dt
+        today = _dt.now().strftime("%Y-%m-%d")
+        sheets = SheetsManager()
+        businesses = []
+        for r in rows:
+            name = r.get("Firma Adı", "").strip()
+            email = r.get("E-posta", "").strip()
+            domain = r.get("Domain", "").strip()
+            if not name and not email:
+                continue
+            if not domain and email and "@" in email:
+                domain = email.split("@")[1]
+            elif not domain and r.get("Web Sitesi", ""):
+                import tldextract
+                ext = tldextract.extract(r.get("Web Sitesi", ""))
+                if ext.domain:
+                    domain = f"{ext.domain}.{ext.suffix}"
+            businesses.append({
+                "date": r.get("Tarih", today) or today,
+                "sector": r.get("Sektör", "Import") or "Import",
+                "name": name,
+                "phone": r.get("Telefon", ""),
+                "email": email,
+                "domain": domain,
+                "website": r.get("Web Sitesi", ""),
+                "instagram": r.get("Instagram", ""),
+                "facebook": r.get("Facebook", ""),
+                "linkedin": r.get("LinkedIn", ""),
+            })
+        total_valid = len(businesses)
+        added = sheets.append_businesses(businesses)
+        return jsonify({
+            "created": added,
+            "skipped": total_valid - added,
+            "total": len(rows),
+        })
+    except Exception as e:
+        logger.error(f"Import execute hatasi: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 # Baslangicta lead ayarlarini .env'den yukle
 import os
 _lead_url = os.getenv("LEAD_SHEET_URL", "")
