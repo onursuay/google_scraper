@@ -111,7 +111,6 @@
 <div class="ps-header">
     <a href="/" class="ps-logo">
         <img src="/static/logo.png" alt="Yo Scraper" style="width:44px; height:44px; border-radius:10px;">
-        <span style="font-size:16px; font-weight:800; color:#f1f5f9; letter-spacing:-0.3px;">Yo Scraper</span>
     </a>
 
     <!-- Bouncing network nodes -->
@@ -122,7 +121,7 @@
             <svg viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
             Click Bot
         </a>
-        <a href="/" id="nav-scanner">
+        <a href="/app" id="nav-scanner">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             Scanner
         </a>
@@ -202,7 +201,7 @@
         <div class="mini-progress-fill" id="scanBarProgress" style="width:0%"></div>
     </div>
     <span id="scanBarCount">0/0</span>
-    <a href="/">Scanner'a Git →</a>
+    <a href="/app">Scanner'a Git →</a>
 </div>
 
 <script>
@@ -210,7 +209,7 @@
 (function() {
     const path = location.pathname;
     const navMap = {
-        '/': 'nav-scanner',
+        '/app': 'nav-scanner',
         '/external': 'nav-external',
         '/database': 'nav-database',
         '/domains': 'nav-database',
@@ -269,7 +268,7 @@
                 if (data.running) {
                     badge.classList.add('active');
                     // Scanner sayfasinda degilsek alt cubugu goster
-                    if (location.pathname !== '/') {
+                    if (location.pathname !== '/app') {
                         bar.classList.add('active');
                         document.getElementById('scanBarText').textContent = data.status.substring(0, 60);
                         const pct = data.total > 0 ? (data.progress / data.total * 100) : 0;
