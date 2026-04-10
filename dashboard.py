@@ -366,6 +366,16 @@ def index():
     return render_template("index.html", sectors=SECTORS, cities=CITIES, sector_icons=SECTOR_ICONS)
 
 
+@app.route("/en/privacy-policy")
+def privacy_policy():
+    return render_template("privacy_policy.html")
+
+
+@app.route("/en/terms-of-service")
+def terms_of_service():
+    return render_template("terms_of_service.html")
+
+
 @app.route("/api/reset", methods=["POST"])
 def reset_state():
     """Tarama durumunu sifirla."""
