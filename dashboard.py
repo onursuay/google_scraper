@@ -366,6 +366,35 @@ def landing():
     return render_template("landing.html")
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+        password = data.get("password", "")
+        app_password = os.getenv("APP_PASSWORD", "")
+        if app_password and password == app_password:
+            resp = make_response(jsonify({"success": True}))
+            resp.set_cookie("auth", "1", max_age=86400 * 30, httponly=True, samesite="Lax")
+            return resp
+        elif not app_password:
+            # No password set — allow all
+            resp = make_response(jsonify({"success": True}))
+            resp.set_cookie("auth", "1", max_age=86400 * 30, httponly=True, samesite="Lax")
+            return resp
+        return jsonify({"error": "E-posta veya şifre hatalı."}), 401
+    return render_template("login.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        # Single-user tool: registration just redirects to app
+        resp = make_response(jsonify({"success": True}))
+        resp.set_cookie("auth", "1", max_age=86400 * 30, httponly=True, samesite="Lax")
+        return resp
+    return render_template("register.html")
+
+
 @app.route("/app")
 def index():
     return render_template("index.html", sectors=SECTORS, cities=CITIES, sector_icons=SECTOR_ICONS)
