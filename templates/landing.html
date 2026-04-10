@@ -8,9 +8,21 @@
     <meta name="description" content="Yo Scraper — Google Maps'ten işletme verisi toplayın, e-posta ve telefon bilgilerini çekin, Google Sheets'e aktarın.">
     <meta name="application-name" content="Yo Scraper">
     <meta property="og:title" content="Yo Scraper">
+    <meta property="og:site_name" content="Yo Scraper">
     <meta property="og:description" content="Google Maps işletme tarayıcı ve lead yönetim aracı.">
     <meta property="og:url" content="https://scraper.yodijital.com">
     <link rel="canonical" href="https://scraper.yodijital.com">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Yo Scraper",
+      "url": "https://scraper.yodijital.com",
+      "description": "Google Maps işletme tarayıcı ve lead yönetim aracı.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web"
+    }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -287,10 +299,12 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             <span data-i18n="hero-badge">Yo Scraper — Google Maps İşletme Tarayıcı</span>
         </div>
-        <h1 class="hero-title">
+        <h1 class="hero-title" id="heroTitle">
             <span data-i18n="hero-h1-line1">Yo Scraper ile İşletmeleri Tarayın,</span><br>
             <span data-i18n="hero-h1-line2" class="gradient-text">Satışa Dönüştürün</span>
         </h1>
+        <!-- Google bot için görünmez ama indekslenebilir marka etiketi -->
+        <p style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">Yo Scraper</p>
         <p class="hero-sub" data-i18n="hero-sub">Google Maps'ten sektör bazlı işletme bilgisi çekin. Web sitelerinden e-posta, telefon ve sosyal medya verilerini otomatik toplayın. Google Sheets'e aktarın, toplu e-posta gönderin.</p>
         <div class="hero-ctas">
             <a href="/app" class="cta-primary btn-shimmer">
