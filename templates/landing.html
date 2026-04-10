@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,335 +16,152 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #060609; color: #fff; min-height: 100vh; overflow-x: hidden; font-size: 16px; }
 
-        /* ── Shimmer ── */
         .btn-shimmer { position: relative; overflow: hidden; }
-        .btn-shimmer::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -60%; width: 60%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(16,185,129,0.18), transparent);
-            animation: shimmer-slide 6s ease-in-out infinite;
-            opacity: 0;
-        }
+        .btn-shimmer::after { content: ''; position: absolute; top: 0; left: -60%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(16,185,129,0.18), transparent); animation: shimmer-slide 6s ease-in-out infinite; opacity: 0; }
         .btn-shimmer:nth-child(1)::after { animation-delay: 0s; }
         .btn-shimmer:nth-child(2)::after { animation-delay: 2s; }
         .btn-shimmer:nth-child(3)::after { animation-delay: 4s; }
-        @keyframes shimmer-slide {
-            0% { left: -60%; opacity: 0; }
-            5% { opacity: 1; }
-            25% { left: 100%; opacity: 1; }
-            30% { opacity: 0; }
-            100% { opacity: 0; left: 100%; }
-        }
+        @keyframes shimmer-slide { 0% { left:-60%;opacity:0; } 5% { opacity:1; } 25% { left:100%;opacity:1; } 30% { opacity:0; } 100% { opacity:0;left:100%; } }
 
-        /* ── Header ── */
-        .lp-header {
-            position: sticky; top: 0; z-index: 50;
-            background: rgba(6,6,9,0.8);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-        }
-        .lp-header-inner {
-            max-width: 1280px; margin: 0 auto;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 24px;
-        }
-        .lp-logo { text-decoration: none; flex-shrink: 0; }
+        /* Header */
+        .lp-header { position: sticky; top: 0; z-index: 50; background: rgba(6,6,9,0.8); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .lp-header-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; }
+        .lp-logo { text-decoration: none; flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
         .lp-logo img { width: 44px; height: 44px; border-radius: 10px; object-fit: contain; }
+        .lp-logo span { font-size: 18px; font-weight: 800; color: #f1f5f9; letter-spacing: -0.3px; }
         .lp-nav { display: flex; align-items: center; gap: 8px; }
-        .pill-base {
-            font-size: 14px; font-weight: 500;
-            border: 1px solid rgba(52,211,153,0.3);
-            color: #34d399;
-            padding: 8px 20px; border-radius: 9999px;
-            text-decoration: none; cursor: pointer; background: transparent;
-            transition: background 0.2s;
-            display: flex; align-items: center; gap: 6px;
-        }
+        .pill-base { font-size: 14px; font-weight: 500; border: 1px solid rgba(52,211,153,0.3); color: #34d399; padding: 8px 20px; border-radius: 9999px; text-decoration: none; cursor: pointer; background: transparent; transition: background 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
         .pill-base:hover { background: rgba(52,211,153,0.1); }
         .pill-filled { background: rgba(52,211,153,0.1); }
 
         /* Dropdown */
         .dd-wrap { position: relative; }
-        .dd-menu {
-            display: none;
-            position: absolute; top: calc(100% + 8px); left: 0;
-            background: #1a1d21; border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px; padding: 16px;
-            box-shadow: 0 24px 64px rgba(0,0,0,0.5);
-            z-index: 100;
-        }
+        .dd-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: #1a1d21; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.5); z-index: 200; }
         .dd-wrap:hover .dd-menu, .dd-menu:hover { display: block; }
         .dd-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; min-width: 560px; }
         .dd-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; min-width: 420px; }
-        .dd-item {
-            display: flex; flex-direction: column; gap: 4px;
-            padding: 12px; border-radius: 12px;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
+        .dd-item { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 12px; text-decoration: none; transition: background 0.2s; }
         .dd-item:hover { background: rgba(255,255,255,0.04); }
         .dd-item-head { display: flex; align-items: center; gap: 8px; color: #e2e8f0; font-size: 13px; font-weight: 600; }
         .dd-item:hover .dd-item-head { color: #34d399; }
         .dd-item p { font-size: 12.5px; color: #8a8f98; line-height: 1.5; }
         .dd-chevron { width: 10px; height: 10px; }
-
         .lp-header-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(16,185,129,0.2), transparent); }
         .lp-right { display: flex; align-items: center; gap: 10px; }
-        .lp-login { font-size: 14px; font-weight: 500; color: #94a3b8; text-decoration: none; padding: 8px 12px; transition: color 0.2s; }
+        .lp-login { font-size: 14px; font-weight: 500; color: #94a3b8; text-decoration: none; padding: 8px 12px; transition: color 0.2s; white-space: nowrap; }
         .lp-login:hover { color: #fff; }
 
-        /* ── Hero ── */
-        .hero-section {
-            position: relative; width: 100%;
-            padding: 64px 24px 48px;
-            overflow: hidden;
-        }
-        .hero-glow {
-            position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
-            width: 1000px; height: 700px; border-radius: 50%;
-            background: radial-gradient(ellipse, rgba(16,185,129,0.07) 0%, rgba(20,184,166,0.03) 50%, transparent 80%);
-            filter: blur(160px);
-            pointer-events: none;
-        }
+        /* Lang dropdown */
+        .lang-wrap { position: relative; }
+        .lang-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #6b7280; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 6px 14px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .lang-btn:hover { background: rgba(255,255,255,0.08); color: #d1d5db; }
+        .lang-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .lang-drop { display: none; position: absolute; bottom: calc(100% + 8px); right: 0; background: #1a1d21; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); z-index: 200; min-width: 140px; }
+        .lang-wrap.open .lang-drop { display: block; }
+        .lang-option { display: flex; align-items: center; gap: 8px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: #94a3b8; cursor: pointer; transition: all 0.15s; }
+        .lang-option:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .lang-option.active { color: #34d399; }
+        .lang-option .flag { font-size: 16px; }
+
+        /* Hero */
+        .hero-section { position: relative; width: 100%; padding: 64px 24px 48px; overflow: hidden; }
+        .hero-glow { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 1000px; height: 700px; border-radius: 50%; background: radial-gradient(ellipse, rgba(16,185,129,0.07) 0%, rgba(20,184,166,0.03) 50%, transparent 80%); filter: blur(160px); pointer-events: none; }
         .hero-inner { position: relative; max-width: 1280px; margin: 0 auto; text-align: center; }
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: 10px;
-            font-size: 14px; font-weight: 500;
-            color: rgba(52,211,153,0.9);
-            border: 1px solid rgba(52,211,153,0.2);
-            background: rgba(52,211,153,0.06);
-            padding: 10px 20px; border-radius: 9999px; margin-bottom: 24px;
-        }
+        .hero-badge { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: rgba(52,211,153,0.9); border: 1px solid rgba(52,211,153,0.2); background: rgba(52,211,153,0.06); padding: 10px 20px; border-radius: 9999px; margin-bottom: 24px; }
         .hero-badge svg { width: 18px; height: 18px; }
-        h1.hero-title {
-            font-size: clamp(2.4rem, 6vw, 4.5rem);
-            font-weight: 900; line-height: 1.1;
-            letter-spacing: -0.04em; color: #fff; margin-bottom: 20px;
-        }
-        h1.hero-title span {
-            background: linear-gradient(90deg, #34d399, #2dd4bf, #22d3ee);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-sub {
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            color: #cbd5e1; line-height: 1.7; margin-bottom: 32px;
-            max-width: 760px; margin-left: auto; margin-right: auto;
-        }
+        h1.hero-title { font-size: clamp(2.4rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.04em; color: #fff; margin-bottom: 20px; }
+        h1.hero-title span { background: linear-gradient(90deg, #34d399, #2dd4bf, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); color: #cbd5e1; line-height: 1.7; margin-bottom: 32px; max-width: 760px; margin-left: auto; margin-right: auto; }
         .hero-ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 32px; }
-        .cta-primary {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            font-size: 16px; font-weight: 700;
-            padding: 16px 40px; border-radius: 9999px;
-            background: linear-gradient(90deg, #10b981, #14b8a6);
-            color: #000; text-decoration: none;
-            box-shadow: 0 0 30px rgba(16,185,129,0.2);
-            transition: all 0.2s; min-width: 220px;
-        }
-        .cta-primary:hover { background: linear-gradient(90deg, #059669, #0f766e); box-shadow: 0 0 40px rgba(16,185,129,0.3); }
-        .cta-secondary {
-            display: inline-flex; align-items: center; gap: 8px;
-            font-size: 14px; font-weight: 500;
-            border: 1px solid rgba(52,211,153,0.3); color: #34d399;
-            padding: 14px 28px; border-radius: 9999px;
-            text-decoration: none; transition: background 0.2s;
-        }
+        .cta-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 700; padding: 16px 40px; border-radius: 9999px; background: linear-gradient(90deg, #10b981, #14b8a6); color: #000; text-decoration: none; box-shadow: 0 0 30px rgba(16,185,129,0.2); transition: all 0.2s; min-width: 220px; }
+        .cta-primary:hover { background: linear-gradient(90deg, #059669, #0f766e); }
+        .cta-secondary { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; border: 1px solid rgba(52,211,153,0.3); color: #34d399; padding: 14px 28px; border-radius: 9999px; text-decoration: none; transition: background 0.2s; }
         .cta-secondary:hover { background: rgba(52,211,153,0.1); }
 
-        /* ── Mock Panel ── */
+        /* Panel */
         .panel-section { width: 100%; padding: 0 24px 48px; }
         .panel-wrap { max-width: 800px; margin: 0 auto; position: relative; }
-        .panel-glow {
-            position: absolute; inset: -24px; border-radius: 24px;
-            background: radial-gradient(ellipse at center, rgba(16,185,129,0.06), transparent 70%);
-            filter: blur(32px);
-        }
-        .panel-card {
-            position: relative;
-            background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px; backdrop-filter: blur(8px); overflow: hidden;
-        }
-        .panel-topbar {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
+        .panel-glow { position: absolute; inset: -24px; border-radius: 24px; background: radial-gradient(ellipse at center, rgba(16,185,129,0.06), transparent 70%); filter: blur(32px); }
+        .panel-card { position: relative; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; backdrop-filter: blur(8px); overflow: hidden; }
+        .panel-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); }
         .panel-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.6); }
-        .panel-title { font-size: 14px; font-weight: 600; color: #e2e8f0; margin-left: 8px; }
-        .panel-ai { font-size: 12px; color: #10b981; font-weight: 500; }
-        .panel-period { font-size: 12px; color: #4b5563; }
         .panel-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
         .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-        .kpi-card {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px; padding: 12px;
-        }
+        .kpi-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; }
         .kpi-label { font-size: 13px; color: #6b7280; margin-bottom: 2px; }
         .kpi-value { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.2; }
         .kpi-delta { font-size: 12px; color: #10b981; font-weight: 500; }
-        .chart-card {
-            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 12px; padding: 12px;
-        }
+        .chart-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; padding: 12px; }
         .chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        .chart-label { font-size: 12px; color: #6b7280; font-weight: 500; }
-        .chart-legend { display: flex; align-items: center; gap: 6px; }
-        .chart-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(16,185,129,0.6); }
         .chart-bars { height: 112px; display: flex; align-items: flex-end; gap: 3px; }
         .chart-bar { flex: 1; border-radius: 3px 3px 0 0; }
         .panel-footer { display: flex; align-items: center; justify-content: space-between; }
-        .panel-footer-left { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #4b5563; }
-        .panel-status { font-size: 12px; color: rgba(16,185,129,0.7); font-weight: 500; }
 
-        /* ── Trust strip ── */
-        .trust-section {
-            width: 100%; border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04);
-            padding: 24px 24px; background: rgba(255,255,255,0.01);
-        }
+        /* Trust */
+        .trust-section { width: 100%; border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); padding: 24px; background: rgba(255,255,255,0.01); }
         .trust-label { font-size: 11px; color: #374151; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 16px; font-weight: 500; }
         .trust-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-        .trust-pill {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 14px; font-weight: 500; color: #6b7280;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-            padding: 6px 16px; border-radius: 9999px;
-        }
+        .trust-pill { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #6b7280; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 6px 16px; border-radius: 9999px; }
         .trust-pill svg { width: 14px; height: 14px; }
 
-        /* ── Features ── */
+        /* Features */
         .features-section { position: relative; width: 100%; padding: 80px 24px; }
-        .features-glow {
-            position: absolute; top: 50%; left: 25%;
-            width: 500px; height: 500px;
-            background: rgba(16,185,129,0.03); border-radius: 50%; filter: blur(120px);
-            pointer-events: none;
-        }
+        .features-glow { position: absolute; top: 50%; left: 25%; width: 500px; height: 500px; background: rgba(16,185,129,0.03); border-radius: 50%; filter: blur(120px); pointer-events: none; }
         .section-inner { position: relative; max-width: 1280px; margin: 0 auto; }
         .section-head { text-align: center; margin-bottom: 40px; }
         .section-head h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 12px; }
         .section-head p { font-size: 16px; color: #6b7280; max-width: 480px; margin: 0 auto; line-height: 1.6; }
         .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-        @media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } .kpi-grid { grid-template-columns: repeat(2,1fr); } .lp-nav { display: none; } }
         @media (max-width: 1024px) { .features-grid { grid-template-columns: repeat(2,1fr); } }
-        .feat-card {
-            background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px; padding: 24px;
-            transition: all 0.3s;
-        }
-        .feat-card:hover {
-            border-color: rgba(52,211,153,0.2); background: rgba(255,255,255,0.04);
-            box-shadow: 0 0 30px rgba(16,185,129,0.06);
-        }
-        .feat-icon {
-            width: 40px; height: 40px; border-radius: 12px;
-            background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.15);
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 16px; color: #34d399;
-        }
-        .feat-card:hover .feat-icon { box-shadow: 0 0 20px rgba(16,185,129,0.1); }
+        @media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } .kpi-grid { grid-template-columns: repeat(2,1fr); } .lp-nav { display: none; } }
+        .feat-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; transition: all 0.3s; }
+        .feat-card:hover { border-color: rgba(52,211,153,0.2); background: rgba(255,255,255,0.04); box-shadow: 0 0 30px rgba(16,185,129,0.06); }
+        .feat-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #34d399; }
         .feat-card h3 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
         .feat-card p { font-size: 14px; color: #9ca3af; line-height: 1.6; }
 
-        /* ── Performance ── */
+        /* Performance */
         .perf-section { position: relative; width: 100%; padding: 64px 24px; background: rgba(255,255,255,0.015); }
-        .perf-glow {
-            position: absolute; bottom: 0; right: 25%;
-            width: 400px; height: 400px;
-            background: rgba(20,184,166,0.04); border-radius: 50%; filter: blur(120px);
-            pointer-events: none;
-        }
+        .perf-glow { position: absolute; bottom: 0; right: 25%; width: 400px; height: 400px; background: rgba(20,184,166,0.04); border-radius: 50%; filter: blur(120px); pointer-events: none; }
         .perf-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
         @media (max-width: 768px) { .perf-grid { grid-template-columns: 1fr; } }
-        .perf-card {
-            position: relative;
-            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px; padding: 28px; text-align: center; overflow: hidden;
-        }
-        .perf-card::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(180deg, rgba(16,185,129,0.03), transparent);
-            opacity: 0; transition: opacity 0.5s;
-        }
+        .perf-card { position: relative; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 28px; text-align: center; overflow: hidden; }
+        .perf-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,185,129,0.03), transparent); opacity: 0; transition: opacity 0.5s; }
         .perf-card:hover::before { opacity: 1; }
-        .perf-metric {
-            font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 900;
-            background: linear-gradient(90deg, #34d399, #2dd4bf);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            margin-bottom: 6px; line-height: 1;
-        }
+        .perf-metric { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 900; background: linear-gradient(90deg, #34d399, #2dd4bf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; line-height: 1; }
         .perf-label { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 8px; }
         .perf-desc { font-size: 14px; color: #9ca3af; line-height: 1.6; }
 
-        /* ── Command Center ── */
+        /* Command */
         .cmd-section { width: 100%; padding: 64px 24px; }
         .cmd-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
         @media (max-width: 1024px) { .cmd-grid { grid-template-columns: repeat(2,1fr); } }
         @media (max-width: 640px) { .cmd-grid { grid-template-columns: 1fr; } }
-        .cmd-card {
-            background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px; padding: 20px;
-            transition: border-color 0.3s;
-        }
+        .cmd-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; transition: border-color 0.3s; }
         .cmd-card:hover { border-color: rgba(52,211,153,0.1); }
-        .cmd-dot-wrap {
-            width: 32px; height: 32px; border-radius: 10px;
-            background: linear-gradient(135deg, rgba(52,211,153,0.1), rgba(45,212,191,0.06));
-            border: 1px solid rgba(255,255,255,0.06);
-            display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
-        }
+        .cmd-dot-wrap { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, rgba(52,211,153,0.1), rgba(45,212,191,0.06)); border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
         .cmd-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
         .cmd-card h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
         .cmd-card p { font-size: 14px; color: #9ca3af; line-height: 1.6; }
 
-        /* ── Bottom CTA ── */
+        /* Bottom CTA */
         .bottom-cta { position: relative; width: 100%; padding: 80px 24px; }
-        .bottom-cta-glow {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-            width: 600px; height: 400px; border-radius: 50%;
-            background: radial-gradient(ellipse, rgba(16,185,129,0.08), transparent 70%);
-            filter: blur(150px); pointer-events: none;
-        }
+        .bottom-cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 400px; border-radius: 50%; background: radial-gradient(ellipse, rgba(16,185,129,0.08), transparent 70%); filter: blur(150px); pointer-events: none; }
         .bottom-cta-inner { position: relative; max-width: 640px; margin: 0 auto; text-align: center; }
         .bottom-cta-inner h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 12px; }
         .bottom-cta-inner p { font-size: 16px; color: #6b7280; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.6; }
-        .bottom-ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-        .cta-bottom-primary {
-            display: inline-flex; align-items: center; gap: 8px;
-            font-size: 14px; font-weight: 600;
-            background: linear-gradient(90deg, #10b981, #14b8a6);
-            color: #000; padding: 12px 28px; border-radius: 9999px;
-            text-decoration: none; box-shadow: 0 0 30px rgba(16,185,129,0.2);
-            transition: all 0.2s;
-        }
+        .cta-bottom-primary { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; background: linear-gradient(90deg, #10b981, #14b8a6); color: #000; padding: 12px 28px; border-radius: 9999px; text-decoration: none; box-shadow: 0 0 30px rgba(16,185,129,0.2); transition: all 0.2s; }
         .cta-bottom-primary:hover { background: linear-gradient(90deg, #059669, #0f766e); }
 
-        /* ── Footer ── */
-        footer {
-            width: 100%; border-top: 1px solid rgba(255,255,255,0.05);
-            padding: 24px; background: #060609;
-        }
-        .footer-inner {
-            max-width: 1280px; margin: 0 auto;
-            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
-        }
+        /* Footer */
+        footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 24px; background: #060609; }
+        .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
         .footer-brand { display: flex; align-items: center; gap: 12px; color: #6b7280; font-size: 14px; }
         .footer-brand img { width: 40px; height: 40px; border-radius: 8px; opacity: 0.4; }
+        .footer-right { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .footer-links { display: flex; flex-wrap: wrap; gap: 20px; }
         .footer-links a { font-size: 14px; color: #6b7280; text-decoration: none; transition: color 0.2s; }
         .footer-links a:hover { color: #d1d5db; }
-        .footer-sep { color: #374151; }
-
-        /* Lang switcher */
-        .lang-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 13px; font-weight: 500; color: #6b7280;
-            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-            padding: 6px 14px; border-radius: 9999px; cursor: pointer;
-            transition: all 0.2s; text-decoration: none; white-space: nowrap;
-        }
-        .lang-btn:hover { background: rgba(255,255,255,0.08); color: #d1d5db; }
-        .lang-btn svg { width: 14px; height: 14px; }
     </style>
 </head>
 <body>
@@ -352,16 +169,15 @@
 <!-- ═══════════ HEADER ═══════════ -->
 <header class="lp-header">
     <div class="lp-header-inner">
-        <a href="/" class="lp-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+        <a href="/" class="lp-logo">
             <img src="/static/logo.png" alt="Yo Scraper">
-            <span style="font-size:18px;font-weight:800;color:#f1f5f9;letter-spacing:-0.3px;">Yo Scraper</span>
+            <span>Yo Scraper</span>
         </a>
 
         <nav class="lp-nav">
-            <!-- Ürün dropdown -->
             <div class="dd-wrap">
                 <button class="pill-base btn-shimmer">
-                    Ürün
+                    <span data-i18n="nav-product">Ürün</span>
                     <svg class="dd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
                 <div class="dd-menu">
@@ -369,53 +185,52 @@
                         <a href="#ozellikler" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                                Google Maps Tarama
+                                <span data-i18n="dd-maps-title">Google Maps Tarama</span>
                             </div>
-                            <p>Sektör ve şehir bazlı arama ile işletmeleri otomatik listeleyin.</p>
+                            <p data-i18n="dd-maps-desc">Sektör ve şehir bazlı arama ile işletmeleri otomatik listeleyin.</p>
                         </a>
                         <a href="#ozellikler" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                                İletişim Bilgisi Çekme
+                                <span data-i18n="dd-contact-title">İletişim Bilgisi Çekme</span>
                             </div>
-                            <p>Web sitelerinden e-posta, telefon ve sosyal medya hesaplarını bulun.</p>
+                            <p data-i18n="dd-contact-desc">Web sitelerinden e-posta, telefon ve sosyal medya hesaplarını bulun.</p>
                         </a>
                         <a href="#ozellikler" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-                                Google Sheets Entegrasyonu
+                                <span data-i18n="dd-sheets-title">Google Sheets Entegrasyonu</span>
                             </div>
-                            <p>Toplanan verileri otomatik olarak Google Sheets'e aktarın.</p>
+                            <p data-i18n="dd-sheets-desc">Toplanan verileri otomatik olarak Google Sheets'e aktarın.</p>
                         </a>
                         <a href="#ozellikler" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                Excel / CSV Import
+                                <span data-i18n="dd-excel-title">Excel / CSV Import</span>
                             </div>
-                            <p>Harici listelerinizi adım adım sihirbaz ile içe aktarın.</p>
+                            <p data-i18n="dd-excel-desc">Harici listelerinizi adım adım sihirbaz ile içe aktarın.</p>
                         </a>
                         <a href="#ozellikler" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                                Toplu E-posta Gönderme
+                                <span data-i18n="dd-email-title">Toplu E-posta Gönderme</span>
                             </div>
-                            <p>Toplanan listelere SMTP üzerinden toplu e-posta gönderin.</p>
+                            <p data-i18n="dd-email-desc">Toplanan listelere SMTP üzerinden toplu e-posta gönderin.</p>
                         </a>
                         <a href="#ozellikler" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
-                                Click Bot
+                                <span data-i18n="dd-clickbot-title">Click Bot</span>
                             </div>
-                            <p>Google Ads tıklama bot'u ile rekabet analizlerinizi otomatikleştirin.</p>
+                            <p data-i18n="dd-clickbot-desc">Google Ads tıklama bot'u ile rekabet analizlerinizi otomatikleştirin.</p>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Entegrasyonlar dropdown -->
             <div class="dd-wrap">
                 <button class="pill-base btn-shimmer">
-                    Entegrasyonlar
+                    <span data-i18n="nav-integrations">Entegrasyonlar</span>
                     <svg class="dd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
                 <div class="dd-menu">
@@ -423,43 +238,42 @@
                         <a href="#entegrasyonlar" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                                Google Maps
+                                <span data-i18n="di-maps-title">Google Maps</span>
                             </div>
-                            <p>İşletme verileri, adres, telefon ve web sitesi bilgisi.</p>
+                            <p data-i18n="di-maps-desc">İşletme verileri, adres, telefon ve web sitesi bilgisi.</p>
                         </a>
                         <a href="#entegrasyonlar" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-                                Google Sheets
+                                <span data-i18n="di-sheets-title">Google Sheets</span>
                             </div>
-                            <p>Verileri doğrudan kendi Google Sheets'inize aktarın.</p>
+                            <p data-i18n="di-sheets-desc">Verileri doğrudan kendi Google Sheets'inize aktarın.</p>
                         </a>
                         <a href="#entegrasyonlar" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                Excel / CSV
+                                <span data-i18n="di-excel-title">Excel / CSV</span>
                             </div>
-                            <p>Tüm verileri Excel veya CSV formatında dışa aktarın.</p>
+                            <p data-i18n="di-excel-desc">Tüm verileri Excel veya CSV formatında dışa aktarın.</p>
                         </a>
                         <a href="#entegrasyonlar" class="dd-item">
                             <div class="dd-item-head">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                                SMTP / E-posta
+                                <span data-i18n="di-smtp-title">SMTP / E-posta</span>
                             </div>
-                            <p>Gmail, Outlook ve özel SMTP sunucuları ile e-posta gönderin.</p>
+                            <p data-i18n="di-smtp-desc">Gmail, Outlook ve özel SMTP sunucuları ile e-posta gönderin.</p>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Fiyatlandırma -->
-            <a href="#fiyatlandirma" class="pill-base btn-shimmer">Fiyatlandırma</a>
+            <a href="#fiyatlandirma" class="pill-base btn-shimmer" data-i18n="nav-pricing">Fiyatlandırma</a>
         </nav>
 
         <div class="lp-right">
-            <a href="/login" class="lp-login">Giriş Yap</a>
-            <a href="#iletisim" class="pill-base btn-shimmer">Görüşme Planla</a>
-            <a href="/app" class="pill-base pill-filled btn-shimmer">Uygulamayı Başlat</a>
+            <a href="/login" class="lp-login" data-i18n="nav-login">Giriş Yap</a>
+            <a href="#iletisim" class="pill-base btn-shimmer" data-i18n="nav-demo">Görüşme Planla</a>
+            <a href="/app" class="pill-base pill-filled btn-shimmer" data-i18n="nav-launch">Uygulamayı Başlat</a>
         </div>
     </div>
     <div class="lp-header-line"></div>
@@ -471,21 +285,19 @@
     <div class="hero-inner">
         <div class="hero-badge btn-shimmer">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            Yo Scraper — Google Maps İşletme Tarayıcı
+            <span data-i18n="hero-badge">Yo Scraper — Google Maps İşletme Tarayıcı</span>
         </div>
         <h1 class="hero-title">
-            Yo Scraper ile İşletmeleri Tarayın,<br>
-            <span>Satışa Dönüştürün</span>
+            <span data-i18n="hero-h1-line1">Yo Scraper ile İşletmeleri Tarayın,</span><br>
+            <span data-i18n="hero-h1-line2" class="gradient-text">Satışa Dönüştürün</span>
         </h1>
-        <p class="hero-sub">
-            Google Maps'ten sektör bazlı işletme bilgisi çekin. Web sitelerinden e-posta, telefon ve sosyal medya verilerini otomatik toplayın. Google Sheets'e aktarın, toplu e-posta gönderin.
-        </p>
+        <p class="hero-sub" data-i18n="hero-sub">Google Maps'ten sektör bazlı işletme bilgisi çekin. Web sitelerinden e-posta, telefon ve sosyal medya verilerini otomatik toplayın. Google Sheets'e aktarın, toplu e-posta gönderin.</p>
         <div class="hero-ctas">
             <a href="/app" class="cta-primary btn-shimmer">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                Uygulamayı Başlat
+                <span data-i18n="hero-cta1">Uygulamayı Başlat</span>
             </a>
-            <a href="#ozellikler" class="cta-secondary btn-shimmer">Özelliklere Bak</a>
+            <a href="#ozellikler" class="cta-secondary btn-shimmer" data-i18n="hero-cta2">Özelliklere Bak</a>
         </div>
     </div>
 </section>
@@ -498,52 +310,36 @@
             <div class="panel-topbar">
                 <div style="display:flex;align-items:center;gap:8px;">
                     <div class="panel-dot"></div>
-                    <span class="panel-title">Tarama Paneli</span>
+                    <span style="font-size:14px;font-weight:600;color:#e2e8f0;" data-i18n="panel-title">Tarama Paneli</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:12px;">
-                    <span class="panel-ai">AI Çekme: Aktif</span>
-                    <span class="panel-period">Son 30 gün</span>
+                    <span style="font-size:12px;color:#10b981;font-weight:500;" data-i18n="panel-ai">AI Çekme: Aktif</span>
+                    <span style="font-size:12px;color:#4b5563;" data-i18n="panel-period">Son 30 gün</span>
                 </div>
             </div>
             <div class="panel-body">
                 <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Taranan İşletme</div>
-                        <div class="kpi-value">8,432</div>
-                        <div class="kpi-delta">+%22</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Bulunan E-posta</div>
-                        <div class="kpi-value">3,187</div>
-                        <div class="kpi-delta">+%15</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Aktif Sektör</div>
-                        <div class="kpi-value">24</div>
-                        <div class="kpi-delta">+%8</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Veri Kalitesi</div>
-                        <div class="kpi-value">%87</div>
-                        <div class="kpi-delta">+%4</div>
-                    </div>
+                    <div class="kpi-card"><div class="kpi-label" data-i18n="kpi1-label">Taranan İşletme</div><div class="kpi-value">8,432</div><div class="kpi-delta">+%22</div></div>
+                    <div class="kpi-card"><div class="kpi-label" data-i18n="kpi2-label">Bulunan E-posta</div><div class="kpi-value">3,187</div><div class="kpi-delta">+%15</div></div>
+                    <div class="kpi-card"><div class="kpi-label" data-i18n="kpi3-label">Aktif Sektör</div><div class="kpi-value">24</div><div class="kpi-delta">+%8</div></div>
+                    <div class="kpi-card"><div class="kpi-label" data-i18n="kpi4-label">Veri Kalitesi</div><div class="kpi-value">%87</div><div class="kpi-delta">+%4</div></div>
                 </div>
                 <div class="chart-card">
                     <div class="chart-head">
-                        <span class="chart-label">Günlük Tarama Trendi</span>
-                        <div class="chart-legend">
-                            <div class="chart-dot"></div>
-                            <span style="font-size:12px;color:#4b5563;">İşletme</span>
+                        <span style="font-size:12px;color:#6b7280;font-weight:500;" data-i18n="chart-label">Günlük Tarama Trendi</span>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div style="width:8px;height:8px;border-radius:50%;background:rgba(16,185,129,0.6);"></div>
+                            <span style="font-size:12px;color:#4b5563;" data-i18n="chart-legend">İşletme</span>
                         </div>
                     </div>
                     <div class="chart-bars" id="heroChartBars"></div>
                 </div>
                 <div class="panel-footer">
-                    <div class="panel-footer-left">
+                    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#4b5563;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                        4 kaynak senkron
+                        <span data-i18n="panel-sources">4 kaynak senkron</span>
                     </div>
-                    <span class="panel-status">Tüm sistemler aktif</span>
+                    <span style="font-size:12px;color:rgba(16,185,129,0.7);font-weight:500;" data-i18n="panel-status">Tüm sistemler aktif</span>
                 </div>
             </div>
         </div>
@@ -552,16 +348,10 @@
 
 <!-- ═══════════ TRUST STRIP ═══════════ -->
 <section id="entegrasyonlar" class="trust-section">
-    <p class="trust-label">Desteklenen platformlar ve formatlar</p>
+    <p class="trust-label" data-i18n="trust-label">Desteklenen platformlar ve formatlar</p>
     <div class="trust-pills">
-        <span class="trust-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            Google Maps
-        </span>
-        <span class="trust-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-            Google Sheets
-        </span>
+        <span class="trust-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Google Maps</span>
+        <span class="trust-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Google Sheets</span>
         <span class="trust-pill">Google Drive</span>
         <span class="trust-pill">Excel (.xlsx)</span>
         <span class="trust-pill">CSV</span>
@@ -575,51 +365,39 @@
     <div class="features-glow"></div>
     <div class="section-inner">
         <div class="section-head">
-            <h2>Veri Toplama İçin Tasarlandı</h2>
-            <p>İşletme verisi toplamanın tüm adımlarını kapsayan altı temel modül.</p>
+            <h2 data-i18n="feat-h2">Veri Toplama İçin Tasarlandı</h2>
+            <p data-i18n="feat-sub">İşletme verisi toplamanın tüm adımlarını kapsayan altı temel modül.</p>
         </div>
         <div class="features-grid">
             <div class="feat-card">
-                <div class="feat-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                </div>
-                <h3>Google Maps Tarama</h3>
-                <p>Sektör ve şehir bazlı arama yaparak binlerce işletmeyi saniyeler içinde listeleyin. Adres, telefon, web sitesi ve puanları otomatik çekin.</p>
+                <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+                <h3 data-i18n="feat1-title">Google Maps Tarama</h3>
+                <p data-i18n="feat1-desc">Sektör ve şehir bazlı arama yaparak binlerce işletmeyi saniyeler içinde listeleyin. Adres, telefon, web sitesi ve puanları otomatik çekin.</p>
             </div>
             <div class="feat-card">
-                <div class="feat-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                </div>
-                <h3>İletişim Bilgisi Çekme</h3>
-                <p>Web sitelerini tarayarak e-posta adresleri, telefon numaraları ve sosyal medya hesaplarını otomatik bulun ve kaydedin.</p>
+                <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                <h3 data-i18n="feat2-title">İletişim Bilgisi Çekme</h3>
+                <p data-i18n="feat2-desc">Web sitelerini tarayarak e-posta adresleri, telefon numaraları ve sosyal medya hesaplarını otomatik bulun ve kaydedin.</p>
             </div>
             <div class="feat-card">
-                <div class="feat-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-                </div>
-                <h3>Google Sheets Entegrasyonu</h3>
-                <p>Toplanan verileri kendi Google hesabınıza bağlayarak doğrudan Google Sheets'e aktarın. Gerçek zamanlı senkronizasyon.</p>
+                <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg></div>
+                <h3 data-i18n="feat3-title">Google Sheets Entegrasyonu</h3>
+                <p data-i18n="feat3-desc">Toplanan verileri kendi Google hesabınıza bağlayarak doğrudan Google Sheets'e aktarın. Gerçek zamanlı senkronizasyon.</p>
             </div>
             <div class="feat-card">
-                <div class="feat-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                </div>
-                <h3>Excel / CSV Import</h3>
-                <p>Harici listelerinizi 4 adımlı sihirbaz ile içe aktarın. Sütun eşleme otomatik yapılır, veritabanınıza tek tıkla ekleyin.</p>
+                <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                <h3 data-i18n="feat4-title">Excel / CSV Import</h3>
+                <p data-i18n="feat4-desc">Harici listelerinizi 4 adımlı sihirbaz ile içe aktarın. Sütun eşleme otomatik yapılır, veritabanınıza tek tıkla ekleyin.</p>
             </div>
             <div class="feat-card">
-                <div class="feat-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                </div>
-                <h3>Toplu E-posta Gönderme</h3>
-                <p>Toplanan e-posta listelerine SMTP veya Gmail üzerinden kişiselleştirilmiş toplu kampanyalar gönderin.</p>
+                <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                <h3 data-i18n="feat5-title">Toplu E-posta Gönderme</h3>
+                <p data-i18n="feat5-desc">Toplanan e-posta listelerine SMTP veya Gmail üzerinden kişiselleştirilmiş toplu kampanyalar gönderin.</p>
             </div>
             <div class="feat-card">
-                <div class="feat-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
-                </div>
-                <h3>Click Bot</h3>
-                <p>Google Ads kampanyalarınızı izleyin. Otomatik tıklama botu ile rakip analizlerinizi ve reklam testlerinizi kolaylaştırın.</p>
+                <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg></div>
+                <h3 data-i18n="feat6-title">Click Bot</h3>
+                <p data-i18n="feat6-desc">Google Ads kampanyalarınızı izleyin. Otomatik tıklama botu ile rakip analizlerinizi ve reklam testlerinizi kolaylaştırın.</p>
             </div>
         </div>
     </div>
@@ -630,24 +408,24 @@
     <div class="perf-glow"></div>
     <div class="section-inner">
         <div class="section-head">
-            <h2>Ölçülebilir Sonuçlar</h2>
-            <p>Gerçek metrikler. Gerçek büyüme. Tamamen otomatik veri toplama ile.</p>
+            <h2 data-i18n="perf-h2">Ölçülebilir Sonuçlar</h2>
+            <p data-i18n="perf-sub">Gerçek metrikler. Gerçek büyüme. Tamamen otomatik veri toplama ile.</p>
         </div>
         <div class="perf-grid">
             <div class="perf-card">
-                <div class="perf-metric">10x</div>
-                <div class="perf-label">Daha Hızlı Veri Toplama</div>
-                <div class="perf-desc">Manuel Google Maps araması yerine otomatik tarama ile dakikalar içinde binlerce kayıt.</div>
+                <div class="perf-metric" data-i18n="perf1-metric">10x</div>
+                <div class="perf-label" data-i18n="perf1-label">Daha Hızlı Veri Toplama</div>
+                <div class="perf-desc" data-i18n="perf1-desc">Manuel Google Maps araması yerine otomatik tarama ile dakikalar içinde binlerce kayıt.</div>
             </div>
             <div class="perf-card">
-                <div class="perf-metric">%87</div>
-                <div class="perf-label">E-posta Bulma Oranı</div>
-                <div class="perf-desc">Web sitesi tarama algoritması sayesinde kayıtların büyük çoğunluğundan e-posta adresi bulunur.</div>
+                <div class="perf-metric" data-i18n="perf2-metric">%87</div>
+                <div class="perf-label" data-i18n="perf2-label">E-posta Bulma Oranı</div>
+                <div class="perf-desc" data-i18n="perf2-desc">Web sitesi tarama algoritması sayesinde kayıtların büyük çoğunluğundan e-posta adresi bulunur.</div>
             </div>
             <div class="perf-card">
-                <div class="perf-metric">%90</div>
-                <div class="perf-label">Zaman Tasarrufu</div>
-                <div class="perf-desc">Veri toplama, temizleme ve dışa aktarma süreçleri tamamen otomatize edilmiştir.</div>
+                <div class="perf-metric" data-i18n="perf3-metric">%90</div>
+                <div class="perf-label" data-i18n="perf3-label">Zaman Tasarrufu</div>
+                <div class="perf-desc" data-i18n="perf3-desc">Veri toplama, temizleme ve dışa aktarma süreçleri tamamen otomatize edilmiştir.</div>
             </div>
         </div>
     </div>
@@ -657,30 +435,14 @@
 <section class="cmd-section">
     <div class="section-inner">
         <div class="section-head">
-            <h2>Tek Panelde Her Şey</h2>
-            <p>Tek ekran. Tüm veriler. Tam kontrol.</p>
+            <h2 data-i18n="cmd-h2">Tek Panelde Her Şey</h2>
+            <p data-i18n="cmd-sub">Tek ekran. Tüm veriler. Tam kontrol.</p>
         </div>
         <div class="cmd-grid">
-            <div class="cmd-card">
-                <div class="cmd-dot-wrap"><div class="cmd-dot"></div></div>
-                <h4>Tek Tıkla Tarama</h4>
-                <p>Sektör ve şehir seçin, tara butonuna basın. Geri kalan her şey otomatik.</p>
-            </div>
-            <div class="cmd-card">
-                <div class="cmd-dot-wrap"><div class="cmd-dot"></div></div>
-                <h4>Akıllı Filtreler</h4>
-                <p>E-postası olan, web sitesi olan, puan aralığı gibi filtreler ile listelerinizi temizleyin.</p>
-            </div>
-            <div class="cmd-card">
-                <div class="cmd-dot-wrap"><div class="cmd-dot"></div></div>
-                <h4>Birleşik Veritabanı</h4>
-                <p>Tüm kaynaklardan gelen veriler tek veritabanında toplanır, tekrarlar otomatik elenir.</p>
-            </div>
-            <div class="cmd-card">
-                <div class="cmd-dot-wrap"><div class="cmd-dot"></div></div>
-                <h4>Anlık Dışa Aktarım</h4>
-                <p>Excel, CSV veya Google Sheets'e tek tıkla dışa aktarın, dilediğiniz CRM'e yükleyin.</p>
-            </div>
+            <div class="cmd-card"><div class="cmd-dot-wrap"><div class="cmd-dot"></div></div><h4 data-i18n="cmd1-title">Tek Tıkla Tarama</h4><p data-i18n="cmd1-desc">Sektör ve şehir seçin, tara butonuna basın. Geri kalan her şey otomatik.</p></div>
+            <div class="cmd-card"><div class="cmd-dot-wrap"><div class="cmd-dot"></div></div><h4 data-i18n="cmd2-title">Akıllı Filtreler</h4><p data-i18n="cmd2-desc">E-postası olan, web sitesi olan, puan aralığı gibi filtreler ile listelerinizi temizleyin.</p></div>
+            <div class="cmd-card"><div class="cmd-dot-wrap"><div class="cmd-dot"></div></div><h4 data-i18n="cmd3-title">Birleşik Veritabanı</h4><p data-i18n="cmd3-desc">Tüm kaynaklardan gelen veriler tek veritabanında toplanır, tekrarlar otomatik elenir.</p></div>
+            <div class="cmd-card"><div class="cmd-dot-wrap"><div class="cmd-dot"></div></div><h4 data-i18n="cmd4-title">Anlık Dışa Aktarım</h4><p data-i18n="cmd4-desc">Excel, CSV veya Google Sheets'e tek tıkla dışa aktarın, dilediğiniz CRM'e yükleyin.</p></div>
         </div>
     </div>
 </section>
@@ -689,11 +451,11 @@
 <section class="bottom-cta">
     <div class="bottom-cta-glow"></div>
     <div class="bottom-cta-inner">
-        <h2>Veri toplamaya hazır mısınız?</h2>
-        <p style="margin-bottom:24px;">Hemen başlayın. Kurulum gerekmez, hesap oluşturmadan kullanın.</p>
-        <div class="bottom-ctas">
+        <h2 data-i18n="cta-h2">Veri toplamaya hazır mısınız?</h2>
+        <p data-i18n="cta-sub">Hemen başlayın. Kurulum gerekmez, hesap oluşturmadan kullanın.</p>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
             <a href="/app" class="cta-bottom-primary btn-shimmer">
-                Uygulamayı Başlat
+                <span data-i18n="cta-btn">Uygulamayı Başlat</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
             </a>
         </div>
@@ -705,79 +467,245 @@
     <div class="footer-inner">
         <div class="footer-brand">
             <img src="/static/logo.png" alt="Yo Scraper">
-            <span id="footerCopyright">© 2025 YO Dijital. Tüm hakları saklıdır.</span>
+            <span data-i18n="footer-copy">© 2025 YO Dijital. Tüm hakları saklıdır.</span>
         </div>
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-            <nav class="footer-links" id="footerLinks">
-                <!-- JS ile doldurulur -->
+        <div class="footer-right">
+            <nav class="footer-links">
+                <a href="/en/privacy-policy" data-i18n="footer-privacy">Gizlilik Politikası</a>
+                <a href="/en/terms-of-service" data-i18n="footer-terms">Kullanım Koşulları</a>
+                <a href="/en/terms-of-service" data-i18n="footer-cookie">Çerez Politikası</a>
+                <a href="/en/terms-of-service" data-i18n="footer-data">Veri Silme</a>
             </nav>
-            <button class="lang-btn" id="langToggle" onclick="toggleLang()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-                <span id="langLabel">Türkçe</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px;"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
+            <!-- Language dropdown -->
+            <div class="lang-wrap" id="langWrap">
+                <button class="lang-btn" onclick="toggleLangDrop(event)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+                    <span id="activeLangLabel">Türkçe</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px;"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="lang-drop" id="langDrop">
+                    <div class="lang-option active" id="opt-tr" onclick="setLang('tr')">
+                        <span class="flag">🇹🇷</span> Türkçe
+                    </div>
+                    <div class="lang-option" id="opt-en" onclick="setLang('en')">
+                        <span class="flag">🇬🇧</span> English
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </footer>
 
-<script>
-// Language switcher
-const LANGS = {
-    tr: {
-        label: 'Türkçe',
-        copyright: '© 2025 YO Dijital. Tüm hakları saklıdır.',
-        links: [
-            { href: '/en/privacy-policy', text: 'Gizlilik Politikası' },
-            { href: '/en/terms-of-service', text: 'Kullanım Koşulları' },
-            { href: '/en/terms-of-service', text: 'Çerez Politikası' },
-            { href: '/en/terms-of-service', text: 'Veri Silme' },
-        ]
-    },
-    en: {
-        label: 'English',
-        copyright: '© 2025 YO Dijital. All rights reserved.',
-        links: [
-            { href: '/en/privacy-policy', text: 'Privacy Policy' },
-            { href: '/en/terms-of-service', text: 'Terms of Service' },
-            { href: '/en/terms-of-service', text: 'Cookie Policy' },
-            { href: '/en/terms-of-service', text: 'Data Deletion' },
-        ]
+<style>
+    h1.hero-title .gradient-text {
+        background: linear-gradient(90deg, #34d399, #2dd4bf, #22d3ee);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
+</style>
+
+<script>
+// ─── Translations ───
+const T = {
+  tr: {
+    'nav-product': 'Ürün',
+    'dd-maps-title': 'Google Maps Tarama',
+    'dd-maps-desc': 'Sektör ve şehir bazlı arama ile işletmeleri otomatik listeleyin.',
+    'dd-contact-title': 'İletişim Bilgisi Çekme',
+    'dd-contact-desc': 'Web sitelerinden e-posta, telefon ve sosyal medya hesaplarını bulun.',
+    'dd-sheets-title': 'Google Sheets Entegrasyonu',
+    'dd-sheets-desc': "Toplanan verileri otomatik olarak Google Sheets'e aktarın.",
+    'dd-excel-title': 'Excel / CSV Import',
+    'dd-excel-desc': 'Harici listelerinizi adım adım sihirbaz ile içe aktarın.',
+    'dd-email-title': 'Toplu E-posta Gönderme',
+    'dd-email-desc': 'Toplanan listelere SMTP üzerinden toplu e-posta gönderin.',
+    'dd-clickbot-title': 'Click Bot',
+    'dd-clickbot-desc': "Google Ads tıklama bot'u ile rekabet analizlerinizi otomatikleştirin.",
+    'nav-integrations': 'Entegrasyonlar',
+    'di-maps-title': 'Google Maps',
+    'di-maps-desc': 'İşletme verileri, adres, telefon ve web sitesi bilgisi.',
+    'di-sheets-title': 'Google Sheets',
+    'di-sheets-desc': "Verileri doğrudan kendi Google Sheets'inize aktarın.",
+    'di-excel-title': 'Excel / CSV',
+    'di-excel-desc': 'Tüm verileri Excel veya CSV formatında dışa aktarın.',
+    'di-smtp-title': 'SMTP / E-posta',
+    'di-smtp-desc': 'Gmail, Outlook ve özel SMTP sunucuları ile e-posta gönderin.',
+    'nav-pricing': 'Fiyatlandırma',
+    'nav-login': 'Giriş Yap',
+    'nav-demo': 'Görüşme Planla',
+    'nav-launch': 'Uygulamayı Başlat',
+    'hero-badge': 'Yo Scraper — Google Maps İşletme Tarayıcı',
+    'hero-h1-line1': 'Yo Scraper ile İşletmeleri Tarayın,',
+    'hero-h1-line2': 'Satışa Dönüştürün',
+    'hero-sub': "Google Maps'ten sektör bazlı işletme bilgisi çekin. Web sitelerinden e-posta, telefon ve sosyal medya verilerini otomatik toplayın. Google Sheets'e aktarın, toplu e-posta gönderin.",
+    'hero-cta1': 'Uygulamayı Başlat',
+    'hero-cta2': 'Özelliklere Bak',
+    'panel-title': 'Tarama Paneli',
+    'panel-ai': 'AI Çekme: Aktif',
+    'panel-period': 'Son 30 gün',
+    'kpi1-label': 'Taranan İşletme',
+    'kpi2-label': 'Bulunan E-posta',
+    'kpi3-label': 'Aktif Sektör',
+    'kpi4-label': 'Veri Kalitesi',
+    'chart-label': 'Günlük Tarama Trendi',
+    'chart-legend': 'İşletme',
+    'panel-sources': '4 kaynak senkron',
+    'panel-status': 'Tüm sistemler aktif',
+    'trust-label': 'Desteklenen platformlar ve formatlar',
+    'feat-h2': 'Veri Toplama İçin Tasarlandı',
+    'feat-sub': 'İşletme verisi toplamanın tüm adımlarını kapsayan altı temel modül.',
+    'feat1-title': 'Google Maps Tarama',
+    'feat1-desc': 'Sektör ve şehir bazlı arama yaparak binlerce işletmeyi saniyeler içinde listeleyin. Adres, telefon, web sitesi ve puanları otomatik çekin.',
+    'feat2-title': 'İletişim Bilgisi Çekme',
+    'feat2-desc': 'Web sitelerini tarayarak e-posta adresleri, telefon numaraları ve sosyal medya hesaplarını otomatik bulun ve kaydedin.',
+    'feat3-title': 'Google Sheets Entegrasyonu',
+    'feat3-desc': "Toplanan verileri kendi Google hesabınıza bağlayarak doğrudan Google Sheets'e aktarın. Gerçek zamanlı senkronizasyon.",
+    'feat4-title': 'Excel / CSV Import',
+    'feat4-desc': 'Harici listelerinizi 4 adımlı sihirbaz ile içe aktarın. Sütun eşleme otomatik yapılır, veritabanınıza tek tıkla ekleyin.',
+    'feat5-title': 'Toplu E-posta Gönderme',
+    'feat5-desc': 'Toplanan e-posta listelerine SMTP veya Gmail üzerinden kişiselleştirilmiş toplu kampanyalar gönderin.',
+    'feat6-title': 'Click Bot',
+    'feat6-desc': 'Google Ads kampanyalarınızı izleyin. Otomatik tıklama botu ile rakip analizlerinizi ve reklam testlerinizi kolaylaştırın.',
+    'perf-h2': 'Ölçülebilir Sonuçlar',
+    'perf-sub': 'Gerçek metrikler. Gerçek büyüme. Tamamen otomatik veri toplama ile.',
+    'perf1-metric': '10x', 'perf1-label': 'Daha Hızlı Veri Toplama', 'perf1-desc': 'Manuel Google Maps araması yerine otomatik tarama ile dakikalar içinde binlerce kayıt.',
+    'perf2-metric': '%87', 'perf2-label': 'E-posta Bulma Oranı', 'perf2-desc': 'Web sitesi tarama algoritması sayesinde kayıtların büyük çoğunluğundan e-posta adresi bulunur.',
+    'perf3-metric': '%90', 'perf3-label': 'Zaman Tasarrufu', 'perf3-desc': 'Veri toplama, temizleme ve dışa aktarma süreçleri tamamen otomatize edilmiştir.',
+    'cmd-h2': 'Tek Panelde Her Şey',
+    'cmd-sub': 'Tek ekran. Tüm veriler. Tam kontrol.',
+    'cmd1-title': 'Tek Tıkla Tarama', 'cmd1-desc': 'Sektör ve şehir seçin, tara butonuna basın. Geri kalan her şey otomatik.',
+    'cmd2-title': 'Akıllı Filtreler', 'cmd2-desc': 'E-postası olan, web sitesi olan, puan aralığı gibi filtreler ile listelerinizi temizleyin.',
+    'cmd3-title': 'Birleşik Veritabanı', 'cmd3-desc': 'Tüm kaynaklardan gelen veriler tek veritabanında toplanır, tekrarlar otomatik elenir.',
+    'cmd4-title': 'Anlık Dışa Aktarım', 'cmd4-desc': "Excel, CSV veya Google Sheets'e tek tıkla dışa aktarın, dilediğiniz CRM'e yükleyin.",
+    'cta-h2': 'Veri toplamaya hazır mısınız?',
+    'cta-sub': 'Hemen başlayın. Kurulum gerekmez, hesap oluşturmadan kullanın.',
+    'cta-btn': 'Uygulamayı Başlat',
+    'footer-copy': '© 2025 YO Dijital. Tüm hakları saklıdır.',
+    'footer-privacy': 'Gizlilik Politikası', 'footer-terms': 'Kullanım Koşulları', 'footer-cookie': 'Çerez Politikası', 'footer-data': 'Veri Silme',
+  },
+  en: {
+    'nav-product': 'Product',
+    'dd-maps-title': 'Google Maps Scraping',
+    'dd-maps-desc': 'Automatically list businesses by sector and city.',
+    'dd-contact-title': 'Contact Info Extraction',
+    'dd-contact-desc': 'Find emails, phone numbers, and social media from websites.',
+    'dd-sheets-title': 'Google Sheets Integration',
+    'dd-sheets-desc': 'Export collected data directly to Google Sheets.',
+    'dd-excel-title': 'Excel / CSV Import',
+    'dd-excel-desc': 'Import external lists with a step-by-step wizard.',
+    'dd-email-title': 'Bulk Email Sending',
+    'dd-email-desc': 'Send bulk emails via SMTP from your collected lists.',
+    'dd-clickbot-title': 'Click Bot',
+    'dd-clickbot-desc': 'Automate Google Ads click tracking and competitor analysis.',
+    'nav-integrations': 'Integrations',
+    'di-maps-title': 'Google Maps',
+    'di-maps-desc': 'Business data, address, phone and website info.',
+    'di-sheets-title': 'Google Sheets',
+    'di-sheets-desc': 'Export data directly to your own Google Sheets.',
+    'di-excel-title': 'Excel / CSV',
+    'di-excel-desc': 'Export all data in Excel or CSV format.',
+    'di-smtp-title': 'SMTP / Email',
+    'di-smtp-desc': 'Send emails via Gmail, Outlook, or custom SMTP servers.',
+    'nav-pricing': 'Pricing',
+    'nav-login': 'Sign In',
+    'nav-demo': 'Book a Demo',
+    'nav-launch': 'Launch App',
+    'hero-badge': 'Yo Scraper — Google Maps Business Scraper',
+    'hero-h1-line1': 'Scrape Businesses with Yo Scraper,',
+    'hero-h1-line2': 'Convert Them to Sales',
+    'hero-sub': 'Scrape sector-based business data from Google Maps. Automatically collect emails, phone numbers, and social media from websites. Export to Google Sheets, send bulk emails.',
+    'hero-cta1': 'Launch App',
+    'hero-cta2': 'View Features',
+    'panel-title': 'Scraping Dashboard',
+    'panel-ai': 'AI Extraction: Active',
+    'panel-period': 'Last 30 days',
+    'kpi1-label': 'Businesses Scraped',
+    'kpi2-label': 'Emails Found',
+    'kpi3-label': 'Active Sectors',
+    'kpi4-label': 'Data Quality',
+    'chart-label': 'Daily Scraping Trend',
+    'chart-legend': 'Businesses',
+    'panel-sources': '4 sources synced',
+    'panel-status': 'All systems active',
+    'trust-label': 'Supported platforms and formats',
+    'feat-h2': 'Built for Data Collection',
+    'feat-sub': 'Six core modules covering every step of business data collection.',
+    'feat1-title': 'Google Maps Scraping',
+    'feat1-desc': 'List thousands of businesses in seconds by sector and city. Automatically collect address, phone, website, and ratings.',
+    'feat2-title': 'Contact Info Extraction',
+    'feat2-desc': 'Crawl websites to automatically find and save email addresses, phone numbers, and social media accounts.',
+    'feat3-title': 'Google Sheets Integration',
+    'feat3-desc': 'Connect your own Google account and export data directly to Google Sheets. Real-time synchronization.',
+    'feat4-title': 'Excel / CSV Import',
+    'feat4-desc': 'Import external lists with a 4-step wizard. Column mapping is automatic, add to database in one click.',
+    'feat5-title': 'Bulk Email Sending',
+    'feat5-desc': 'Send personalized bulk campaigns to collected email lists via SMTP or Gmail.',
+    'feat6-title': 'Click Bot',
+    'feat6-desc': 'Monitor your Google Ads campaigns. Simplify competitor analysis and ad testing with automated click bot.',
+    'perf-h2': 'Measurable Results',
+    'perf-sub': 'Real metrics. Real growth. Fully automated data collection.',
+    'perf1-metric': '10x', 'perf1-label': 'Faster Data Collection', 'perf1-desc': 'Thousands of records in minutes with automated scraping instead of manual Google Maps search.',
+    'perf2-metric': '87%', 'perf2-label': 'Email Find Rate', 'perf2-desc': 'Our website crawling algorithm finds email addresses from the vast majority of records.',
+    'perf3-metric': '90%', 'perf3-label': 'Time Saved', 'perf3-desc': 'Data collection, cleaning, and export processes are fully automated.',
+    'cmd-h2': 'Everything in One Dashboard',
+    'cmd-sub': 'One screen. All data. Full control.',
+    'cmd1-title': 'One-Click Scraping', 'cmd1-desc': 'Select sector and city, press scan. Everything else is automatic.',
+    'cmd2-title': 'Smart Filters', 'cmd2-desc': 'Clean your lists with filters like has email, has website, or rating range.',
+    'cmd3-title': 'Unified Database', 'cmd3-desc': 'Data from all sources is collected in one database, duplicates are automatically removed.',
+    'cmd4-title': 'Instant Export', 'cmd4-desc': 'Export to Excel, CSV, or Google Sheets in one click, upload to any CRM.',
+    'cta-h2': 'Ready to start collecting data?',
+    'cta-sub': 'Get started now. No setup required, use without an account.',
+    'cta-btn': 'Launch App',
+    'footer-copy': '© 2025 YO Dijital. All rights reserved.',
+    'footer-privacy': 'Privacy Policy', 'footer-terms': 'Terms of Service', 'footer-cookie': 'Cookie Policy', 'footer-data': 'Data Deletion',
+  }
 };
+
 let currentLang = localStorage.getItem('lp_lang') || 'tr';
 
-function renderFooterLinks() {
-    const nav = document.getElementById('footerLinks');
-    const copy = document.getElementById('footerCopyright');
-    const label = document.getElementById('langLabel');
-    const lang = LANGS[currentLang];
-    copy.textContent = lang.copyright;
-    label.textContent = lang.label;
-    nav.innerHTML = lang.links.map(l => `<a href="${l.href}">${l.text}</a>`).join('');
+function applyLang(lang) {
+  const dict = T[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.getElementById('htmlRoot').lang = lang;
+  document.getElementById('activeLangLabel').textContent = lang === 'tr' ? 'Türkçe' : 'English';
+  document.getElementById('opt-tr').classList.toggle('active', lang === 'tr');
+  document.getElementById('opt-en').classList.toggle('active', lang === 'en');
 }
 
-function toggleLang() {
-    currentLang = currentLang === 'tr' ? 'en' : 'tr';
-    localStorage.setItem('lp_lang', currentLang);
-    renderFooterLinks();
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lp_lang', lang);
+  applyLang(lang);
+  document.getElementById('langWrap').classList.remove('open');
 }
 
-renderFooterLinks();
+function toggleLangDrop(e) {
+  e.stopPropagation();
+  document.getElementById('langWrap').classList.toggle('open');
+}
 
-// Build chart bars
+document.addEventListener('click', function() {
+  document.getElementById('langWrap').classList.remove('open');
+});
+
+// Init
+applyLang(currentLang);
+
+// Chart bars
 (function() {
-    const bars = [35,52,40,68,48,78,55,85,45,92,62,75,50,88,58,82];
-    const container = document.getElementById('heroChartBars');
-    if (!container) return;
-    bars.forEach(h => {
-        const bar = document.createElement('div');
-        bar.className = 'chart-bar';
-        bar.style.height = h + '%';
-        bar.style.background = `linear-gradient(to top, rgba(16,185,129,0.15), rgba(16,185,129,${0.3 + h * 0.006}))`;
-        container.appendChild(bar);
-    });
+  const bars = [35,52,40,68,48,78,55,85,45,92,62,75,50,88,58,82];
+  const container = document.getElementById('heroChartBars');
+  if (!container) return;
+  bars.forEach(h => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = h + '%';
+    bar.style.background = `linear-gradient(to top, rgba(16,185,129,0.15), rgba(16,185,129,${0.3 + h * 0.006}))`;
+    container.appendChild(bar);
+  });
 })();
 </script>
-
 </body>
 </html>
