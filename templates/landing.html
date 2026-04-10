@@ -334,6 +334,17 @@
         .footer-links a { font-size: 14px; color: #6b7280; text-decoration: none; transition: color 0.2s; }
         .footer-links a:hover { color: #d1d5db; }
         .footer-sep { color: #374151; }
+
+        /* Lang switcher */
+        .lang-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 500; color: #6b7280;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            padding: 6px 14px; border-radius: 9999px; cursor: pointer;
+            transition: all 0.2s; text-decoration: none; white-space: nowrap;
+        }
+        .lang-btn:hover { background: rgba(255,255,255,0.08); color: #d1d5db; }
+        .lang-btn svg { width: 14px; height: 14px; }
     </style>
 </head>
 <body>
@@ -694,19 +705,65 @@
     <div class="footer-inner">
         <div class="footer-brand">
             <img src="/static/logo.png" alt="Yo Scraper">
-            <span>© 2025 YO Dijital. Tüm hakları saklıdır.</span>
+            <span id="footerCopyright">© 2025 YO Dijital. Tüm hakları saklıdır.</span>
         </div>
-        <nav class="footer-links">
-            <a href="/en/privacy-policy">Gizlilik Politikası</a>
-            <a href="/en/terms-of-service">Kullanım Koşulları</a>
-            <span class="footer-sep">|</span>
-            <a href="/en/privacy-policy">Privacy Policy</a>
-            <a href="/en/terms-of-service">Terms of Service</a>
-        </nav>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <nav class="footer-links" id="footerLinks">
+                <!-- JS ile doldurulur -->
+            </nav>
+            <button class="lang-btn" id="langToggle" onclick="toggleLang()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+                <span id="langLabel">Türkçe</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px;"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+        </div>
     </div>
 </footer>
 
 <script>
+// Language switcher
+const LANGS = {
+    tr: {
+        label: 'Türkçe',
+        copyright: '© 2025 YO Dijital. Tüm hakları saklıdır.',
+        links: [
+            { href: '/en/privacy-policy', text: 'Gizlilik Politikası' },
+            { href: '/en/terms-of-service', text: 'Kullanım Koşulları' },
+            { href: '/en/terms-of-service', text: 'Çerez Politikası' },
+            { href: '/en/terms-of-service', text: 'Veri Silme' },
+        ]
+    },
+    en: {
+        label: 'English',
+        copyright: '© 2025 YO Dijital. All rights reserved.',
+        links: [
+            { href: '/en/privacy-policy', text: 'Privacy Policy' },
+            { href: '/en/terms-of-service', text: 'Terms of Service' },
+            { href: '/en/terms-of-service', text: 'Cookie Policy' },
+            { href: '/en/terms-of-service', text: 'Data Deletion' },
+        ]
+    }
+};
+let currentLang = localStorage.getItem('lp_lang') || 'tr';
+
+function renderFooterLinks() {
+    const nav = document.getElementById('footerLinks');
+    const copy = document.getElementById('footerCopyright');
+    const label = document.getElementById('langLabel');
+    const lang = LANGS[currentLang];
+    copy.textContent = lang.copyright;
+    label.textContent = lang.label;
+    nav.innerHTML = lang.links.map(l => `<a href="${l.href}">${l.text}</a>`).join('');
+}
+
+function toggleLang() {
+    currentLang = currentLang === 'tr' ? 'en' : 'tr';
+    localStorage.setItem('lp_lang', currentLang);
+    renderFooterLinks();
+}
+
+renderFooterLinks();
+
 // Build chart bars
 (function() {
     const bars = [35,52,40,68,48,78,55,85,45,92,62,75,50,88,58,82];
