@@ -291,6 +291,15 @@
     checkScan();
 })();
 
+// Footer linkleri ekle (Google botlari icin kesfedilebilir olsun)
+(function injectFooter() {
+    const footer = document.createElement('div');
+    footer.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:997;background:#0f172a;border-top:1px solid #1e293b;padding:8px 32px;display:flex;align-items:center;gap:20px;justify-content:flex-end;';
+    footer.innerHTML = '<a href="/en/privacy-policy" style="font-size:11px;color:#475569;text-decoration:none;" onmouseover="this.style.color=\'#94a3b8\'" onmouseout="this.style.color=\'#475569\'">Privacy Policy</a><a href="/en/terms-of-service" style="font-size:11px;color:#475569;text-decoration:none;" onmouseover="this.style.color=\'#94a3b8\'" onmouseout="this.style.color=\'#475569\'">Terms of Service</a><span style="font-size:11px;color:#1e293b;">© 2025 YO Dijital</span>';
+    // Scan status bar varsa onun üstüne ekleme, yoksa body'e ekle
+    document.body.appendChild(footer);
+})();
+
 // Click Bot tarama durumu takibi
 (function globalClickBotWatch() {
     const cbBadge = document.querySelector('#nav-clickbot .scan-badge') ||

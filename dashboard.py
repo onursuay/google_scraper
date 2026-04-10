@@ -376,6 +376,41 @@ def terms_of_service():
     return render_template("terms_of_service.html")
 
 
+@app.route("/robots.txt")
+def robots_txt():
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Allow: /en/privacy-policy\n"
+        "Allow: /en/terms-of-service\n\n"
+        "Sitemap: https://scraper.yodijital.com/sitemap.xml\n"
+    )
+    return content, 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    content = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://scraper.yodijital.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://scraper.yodijital.com/en/privacy-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scraper.yodijital.com/en/terms-of-service</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>'''
+    return content, 200, {"Content-Type": "application/xml; charset=utf-8"}
+
+
 @app.route("/api/reset", methods=["POST"])
 def reset_state():
     """Tarama durumunu sifirla."""
