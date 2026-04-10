@@ -524,7 +524,7 @@ def get_domains():
 
 @app.route("/api/domains/delete", methods=["POST"])
 def delete_domains():
-    """Secilen satirlari Google Sheets'ten sil."""
+    """Secilen satirlari Google Sheets'ten tek batch istegiyle sil."""
     try:
         data = request.json
         rows_to_delete = sorted(data.get("rows", []), reverse=True)  # Sondan basa sil
@@ -532,8 +532,34 @@ def delete_domains():
             return jsonify({"error": "Silinecek satir secilmedi"}), 400
 
         sheets = SheetsManager()
+        spreadsheet_id = sheets.worksheet.spreadsheet.id
+        sheet_id = sheets.worksheet.id
+
+        # Tek bir batchUpdate istegiyle tum satirlari sil (API quota asmaz)
+        requests_body = []
         for row_num in rows_to_delete:
-            sheets.worksheet.delete_rows(row_num)
+            requests_body.append({
+                "deleteDimension": {
+                    "range": {
+                        "sheetId": sheet_id,
+                        "dimension": "ROWS",
+                        "startIndex": row_num - 1,  # 0-indexed
+                        "endIndex": row_num          # exclusive
+                    }
+                }
+            })
+
+        from googleapiclient.discovery import build
+        from config import get_google_credentials
+        creds = get_google_credentials([
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ])
+        service = build("sheets", "v4", credentials=creds)
+        service.spreadsheets().batchUpdate(
+            spreadsheetId=spreadsheet_id,
+            body={"requests": requests_body}
+        ).execute()
 
         return jsonify({"message": f"{len(rows_to_delete)} kayıt silindi"})
     except Exception as e:
