@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/static/logo.png">
-    <title>Kayıt Ol — Yo Scraper</title>
+    <script src="/static/app_i18n.js"></script>
+    <title>Register — Yo Scraper</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -116,8 +117,8 @@
         </div>
 
         <div class="card">
-            <h1>Kayıt Ol</h1>
-            <p class="subtitle">Yo Scraper'a ücretsiz kaydolun</p>
+            <h1 data-i18n="reg-title">Kayıt Ol</h1>
+            <p class="subtitle" data-i18n="reg-subtitle">Yo Scraper'a ücretsiz kaydolun</p>
 
             <div class="error-box" id="errorBox" style="display:none;">
                 <p id="errorMsg"></p>
@@ -126,51 +127,51 @@
             <form id="registerForm">
                 <div class="form-grid">
                     <div class="field">
-                        <label>Ad Soyad <span class="req">*</span></label>
-                        <input type="text" id="name" placeholder="Ahmet Yılmaz" autocomplete="name">
+                        <label><span data-i18n="fullname-label">Ad Soyad</span> <span class="req">*</span></label>
+                        <input type="text" id="name" placeholder="Ahmet Yılmaz" data-i18n-ph="fullname-ph" autocomplete="name">
                     </div>
                     <div class="field">
-                        <label>E-posta <span class="req">*</span></label>
-                        <input type="email" id="email" placeholder="ornek@sirket.com" autocomplete="email">
+                        <label><span data-i18n="email-label">E-posta</span> <span class="req">*</span></label>
+                        <input type="email" id="email" placeholder="ornek@sirket.com" data-i18n-ph="email-ph" autocomplete="email">
                     </div>
                     <div class="field">
-                        <label>Şirket</label>
-                        <input type="text" id="company" placeholder="Şirket adı (opsiyonel)" autocomplete="organization">
+                        <label data-i18n="company-label">Şirket</label>
+                        <input type="text" id="company" placeholder="Şirket adı (opsiyonel)" data-i18n-ph="company-ph" autocomplete="organization">
                     </div>
                     <div class="field">
-                        <label>Telefon</label>
+                        <label data-i18n="phone-label">Telefon</label>
                         <input type="tel" id="phone" placeholder="+90 555 000 00 00" autocomplete="tel">
                     </div>
                     <div class="field">
-                        <label>Şifre <span class="req">*</span></label>
-                        <input type="password" id="password" placeholder="En az 8 karakter" autocomplete="new-password">
+                        <label><span data-i18n="pw-new-label">Şifre</span> <span class="req">*</span></label>
+                        <input type="password" id="password" placeholder="En az 8 karakter" data-i18n-ph="pw-new-ph" autocomplete="new-password">
                     </div>
                     <div class="field">
-                        <label>Şifre Tekrar <span class="req">*</span></label>
-                        <input type="password" id="passwordConfirm" placeholder="Şifrenizi tekrar girin" autocomplete="new-password">
+                        <label><span data-i18n="pw-confirm-label">Şifre Tekrar</span> <span class="req">*</span></label>
+                        <input type="password" id="passwordConfirm" placeholder="Şifrenizi tekrar girin" data-i18n-ph="pw-confirm-ph" autocomplete="new-password">
                     </div>
 
                     <label class="terms-row">
                         <input type="checkbox" id="acceptTerms">
-                        <span>
-                            <a href="/en/privacy-policy" target="_blank">Gizlilik Politikası</a> ve
-                            <a href="/en/terms-of-service" target="_blank">Kullanım Koşulları</a>'nı okudum, kabul ediyorum.
+                        <span id="termsSpan">
+                            <a href="/en/privacy-policy" target="_blank" data-i18n="terms-pp">Gizlilik Politikası</a> ve
+                            <a href="/en/terms-of-service" target="_blank" data-i18n="terms-tos">Kullanım Koşulları</a>'nı okudum, kabul ediyorum.
                         </span>
                     </label>
 
-                    <button type="submit" class="submit-btn" id="submitBtn">Kayıt Ol</button>
+                    <button type="submit" class="submit-btn" id="submitBtn" data-i18n="reg-btn">Kayıt Ol</button>
                 </div>
             </form>
 
-            <p class="no-card">Kredi kartı gerekmez.</p>
+            <p class="no-card" data-i18n="no-cc">Kredi kartı gerekmez.</p>
 
             <div class="login-link">
-                <p>Zaten hesabınız var mı? <a href="/login">Giriş Yap</a></p>
+                <p><span data-i18n="have-account">Zaten hesabınız var mı?</span> <a href="/login" data-i18n="login-link">Giriş Yap</a></p>
             </div>
         </div>
 
         <div class="back-link">
-            <a href="/">← Ana Sayfaya Dön</a>
+            <a href="/" data-i18n="back-home">← Ana Sayfaya Dön</a>
         </div>
 
         <div class="footer-legal">
@@ -290,14 +291,14 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
     errorBox.style.display = 'none';
 
-    if (!name) { errorMsg.textContent = 'Ad soyad gereklidir.'; errorBox.style.display = 'block'; return; }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errorMsg.textContent = 'Geçerli bir e-posta adresi girin.'; errorBox.style.display = 'block'; return; }
-    if (!password || password.length < 8) { errorMsg.textContent = 'Şifre en az 8 karakter olmalıdır.'; errorBox.style.display = 'block'; return; }
-    if (password !== passwordConfirm) { errorMsg.textContent = 'Şifreler eşleşmiyor.'; errorBox.style.display = 'block'; return; }
-    if (!acceptTerms) { errorMsg.textContent = 'Kullanım koşullarını kabul etmelisiniz.'; errorBox.style.display = 'block'; return; }
+    if (!name) { errorMsg.textContent = t('reg-name-req', 'Ad soyad gereklidir.'); errorBox.style.display = 'block'; return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errorMsg.textContent = t('reg-email-inv', 'Geçerli bir e-posta adresi girin.'); errorBox.style.display = 'block'; return; }
+    if (!password || password.length < 8) { errorMsg.textContent = t('reg-pw-short', 'Şifre en az 8 karakter olmalıdır.'); errorBox.style.display = 'block'; return; }
+    if (password !== passwordConfirm) { errorMsg.textContent = t('reg-pw-mism', 'Şifreler eşleşmiyor.'); errorBox.style.display = 'block'; return; }
+    if (!acceptTerms) { errorMsg.textContent = t('reg-terms-req', 'Kullanım koşullarını kabul etmelisiniz.'); errorBox.style.display = 'block'; return; }
 
     btn.disabled = true;
-    btn.textContent = 'Kaydediliyor...';
+    btn.textContent = t('reg-saving', 'Kaydediliyor...');
 
     try {
         const res = await fetch('/register', {
@@ -309,16 +310,16 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         if (res.ok && data.success) {
             window.location.href = '/app';
         } else {
-            errorMsg.textContent = data.error || 'Kayıt sırasında bir hata oluştu.';
+            errorMsg.textContent = data.error || t('reg-err', 'Kayıt sırasında bir hata oluştu.');
             errorBox.style.display = 'block';
             btn.disabled = false;
-            btn.textContent = 'Kayıt Ol';
+            btn.textContent = t('reg-btn', 'Kayıt Ol');
         }
     } catch (err) {
-        errorMsg.textContent = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+        errorMsg.textContent = t('login-retry', 'Bir hata oluştu. Lütfen tekrar deneyin.');
         errorBox.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Kayıt Ol';
+        btn.textContent = t('reg-btn', 'Kayıt Ol');
     }
 });
 </script>

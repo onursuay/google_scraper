@@ -426,7 +426,7 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h2>Sektör Seçin</h2>
+            <h2 data-i18n="sector-label">Sektör Seçin</h2>
             <button class="sidebar-toggle active" id="sidebarToggle" onclick="toggleSidebar()" title="Sidebar aç/kapat">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2"/>
@@ -456,9 +456,9 @@
             <div class="selected-info" id="selectedInfo"></div>
 
             <div class="form-group">
-                <label>Şehir</label>
+                <label data-i18n="city-label">Şehir</label>
                 <select id="citySelect">
-                    <option value="">Şehir seçin...</option>
+                    <option value="" data-i18n="city-ph">Şehir seçin...</option>
                     {% for city in cities %}
                     <option value="{{ city }}">{{ city }}</option>
                     {% endfor %}
@@ -466,14 +466,14 @@
             </div>
 
             <div class="form-group">
-                <label>Min. Sonuç</label>
+                <label data-i18n="min-res-label">Min. Sonuç</label>
                 <input type="number" id="minResults" value="20" min="5" max="100">
             </div>
 
             <div class="scan-actions">
-                <button class="ctrl-btn" id="scanBtn" onclick="startScan()">Başlat</button>
-                <button class="ctrl-btn" id="pauseBtn" onclick="pauseScan()" disabled>Duraklat</button>
-                <button class="ctrl-btn" id="stopBtn" onclick="stopScan()" disabled>Durdur</button>
+                <button class="ctrl-btn" id="scanBtn" onclick="startScan()" data-i18n="start-btn">Başlat</button>
+                <button class="ctrl-btn" id="pauseBtn" onclick="pauseScan()" disabled data-i18n="pause-btn">Duraklat</button>
+                <button class="ctrl-btn" id="stopBtn" onclick="stopScan()" disabled data-i18n="stop-btn">Durdur</button>
             </div>
         </div>
     </div>
@@ -483,7 +483,7 @@
         <!-- Status -->
         <div class="status-card">
             <div class="status-header">
-                <span class="status-text" id="statusText">Hazır - Sektör ve şehir seçerek başlayın</span>
+                <span class="status-text" id="statusText" data-i18n="ready-status">Hazır - Sektör ve şehir seçerek başlayın</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
@@ -494,26 +494,26 @@
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-value" id="statTotal">0</div>
-                <div class="stat-label">Taranan</div>
+                <div class="stat-label" data-i18n="stat-scanned">Taranan</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="statFound" style="color:#34d399">0</div>
-                <div class="stat-label">Bulunan</div>
+                <div class="stat-label" data-i18n="stat-found">Bulunan</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="statSheets" style="color:#3b82f6">0</div>
-                <div class="stat-label">Sheets'e Eklenen</div>
+                <div class="stat-label" data-i18n="stat-sheets">Sheets'e Eklenen</div>
             </div>
         </div>
 
         <!-- Results Table -->
         <div class="results-card">
             <div class="results-header">
-                <h3>Bulunan İşletmeler</h3>
+                <h3 data-i18n="found-biz">Bulunan İşletmeler</h3>
                 <div style="display:flex; align-items:center; gap:10px;">
                     <span id="resultCount" style="color:#64748b; font-size:13px;">0 sonuç</span>
-                    <button onclick="deleteSelectedResults()" id="deleteResultsBtn" style="display:none; padding:5px 12px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">Seçilenleri Sil</button>
-                    <button onclick="clearResults()" id="clearResultsBtn" style="display:none; padding:5px 12px; background:#334155; color:#94a3b8; border:none; border-radius:6px; font-size:12px; cursor:pointer;">Temizle</button>
+                    <button onclick="deleteSelectedResults()" id="deleteResultsBtn" style="display:none; padding:5px 12px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;" data-i18n="del-sel">Seçilenleri Sil</button>
+                    <button onclick="clearResults()" id="clearResultsBtn" style="display:none; padding:5px 12px; background:#334155; color:#94a3b8; border:none; border-radius:6px; font-size:12px; cursor:pointer;" data-i18n="clear-btn">Temizle</button>
                 </div>
             </div>
             <div class="results-table-wrap">
@@ -522,19 +522,19 @@
                         <tr>
                             <th style="width:36px"><input type="checkbox" id="checkAllResults" onchange="toggleAllResults(this)"></th>
                             <th>#</th>
-                            <th>Tarih</th>
-                            <th>Sektör</th>
-                            <th>Firma Adı</th>
-                            <th>Telefon</th>
-                            <th>E-posta</th>
-                            <th>Domain</th>
+                            <th data-i18n="th-date">Tarih</th>
+                            <th data-i18n="th-sector">Sektör</th>
+                            <th data-i18n="th-company">Firma Adı</th>
+                            <th data-i18n="th-phone">Telefon</th>
+                            <th data-i18n="th-email">E-posta</th>
+                            <th data-i18n="th-domain">Domain</th>
                             <th>Instagram</th>
                             <th>Facebook</th>
                             <th>LinkedIn</th>
                         </tr>
                     </thead>
                     <tbody id="resultsBody">
-                        <tr><td colspan="11" style="text-align:center; padding:40px; color:#475569;">Henüz tarama yapılmadı</td></tr>
+                        <tr><td colspan="11" style="text-align:center; padding:40px; color:#475569;" data-i18n="no-scans">Henüz tarama yapılmadı</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -542,7 +542,7 @@
 
         <!-- Logs -->
         <div class="log-panel" id="logPanel">
-            <div class="log-line">Sistem hazır. Tarama başlatmak için sol panelden sektör ve şehir seçin.</div>
+            <div class="log-line" data-i18n="sys-log">Sistem hazır. Tarama başlatmak için sol panelden sektör ve şehir seçin.</div>
         </div>
     </div>
 </div>
@@ -590,7 +590,7 @@ function selectSector(el, sector) {
     selectedSector = sector;
 
     const info = document.getElementById('selectedInfo');
-    info.textContent = 'Seçilen: ' + sector;
+    info.textContent = t('selected-pfx', 'Seçilen: ') + sector;
     info.classList.add('show');
 }
 

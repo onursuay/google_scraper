@@ -1396,8 +1396,8 @@ def _get_google_token():
 
 
 def _redirect_uri():
-    host = request.host_url.rstrip("/")
-    return f"{host}/api/google/callback"
+    base = os.getenv("APP_BASE_URL", "").rstrip("/") or request.host_url.rstrip("/")
+    return f"{base}/api/google/callback"
 
 
 @app.route("/api/google/status")

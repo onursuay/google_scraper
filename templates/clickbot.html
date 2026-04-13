@@ -600,9 +600,9 @@
       </div>
 
       <div class="tag-container" id="selectedCitiesContainer">
-        <span class="empty-state" style="padding:6px;font-size:13px;">Henüz şehir seçilmedi</span>
+        <span class="empty-state" style="padding:6px;font-size:13px;" data-i18n="cb-no-city">Henüz şehir seçilmedi</span>
       </div>
-      <div class="selected-count" id="cityCount">0 lokasyon seçili</div>
+      <div class="selected-count" id="cityCount">0 <span data-i18n="cb-loc-sfx">lokasyon seçili</span></div>
 
       </div>
     </div>
@@ -610,21 +610,21 @@
     <!-- Keywords -->
     <div class="card">
       <div class="card-header" style="cursor:pointer;" onclick="toggleCollapse('keywordsBody', this)">
-        <span class="card-title">ANAHTAR KELİMELER</span>
+        <span class="card-title" data-i18n="cb-kw-hdr">ANAHTAR KELİMELER</span>
         <div style="display:flex;align-items:center;gap:6px;">
           <span id="keywordBadge" class="badge badge-failed">SEÇİLMEDİ</span>
           <span class="collapse-arrow" style="font-size:10px;color:var(--text-dim);transition:transform 0.2s;transform:rotate(180deg);">&#9660;</span>
         </div>
       </div>
       <div id="keywordsBody">
-      <textarea id="inputKeywords" placeholder="Her satıra bir anahtar kelime girin"></textarea>
+      <textarea id="inputKeywords" placeholder="Her satıra bir anahtar kelime girin" data-i18n-ph="cb-kw-ph"></textarea>
       </div>
     </div>
 
     <!-- Tarama Modu -->
     <div class="card">
       <div class="card-header" style="cursor:pointer;" onclick="toggleCollapse('scanModeBody', this)">
-        <span class="card-title">TARAMA MODU</span>
+        <span class="card-title" data-i18n="cb-mode-hdr">TARAMA MODU</span>
         <div style="display:flex;align-items:center;gap:6px;">
           <span id="scanModeBadge" class="badge badge-success">REKLAM</span>
           <span class="collapse-arrow" style="font-size:10px;color:var(--text-dim);transition:transform 0.2s;">&#9660;</span>
@@ -632,8 +632,8 @@
       </div>
       <div id="scanModeBody" style="display:none;padding:10px 12px;">
         <div style="display:flex;gap:6px;">
-          <button class="scan-mode-btn active" data-mode="ads" onclick="selectScanMode('ads')" style="flex:1;padding:8px 0;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;">Reklam</button>
-          <button class="scan-mode-btn" data-mode="organic" onclick="selectScanMode('organic')" style="flex:1;padding:8px 0;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;">Organik</button>
+          <button class="scan-mode-btn active" data-mode="ads" onclick="selectScanMode('ads')" style="flex:1;padding:8px 0;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;" data-i18n="cb-ads">Reklam</button>
+          <button class="scan-mode-btn" data-mode="organic" onclick="selectScanMode('organic')" style="flex:1;padding:8px 0;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;" data-i18n="cb-organic">Organik</button>
           <button class="scan-mode-btn" data-mode="power" onclick="selectScanMode('power')" style="flex:1;padding:8px 0;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;">Power</button>
         </div>
         <input type="hidden" name="scanMode" id="scanModeValue" value="ads">
@@ -646,7 +646,7 @@
     <!-- Scheduler -->
     <div class="card">
       <div class="card-header" style="cursor:pointer;" onclick="toggleCollapse('schedulerBody', this)">
-        <span class="card-title">PLANLAMA</span>
+        <span class="card-title" data-i18n="cb-sched-hdr">PLANLAMA</span>
         <div style="display:flex;align-items:center;gap:6px;">
           <span id="schedulerBadge" class="badge badge-success">SAATLİK</span>
           <span class="collapse-arrow" style="font-size:10px;color:var(--text-dim);transition:transform 0.2s;">&#9660;</span>
@@ -658,15 +658,15 @@
       <div id="schedulerPanel" class="scheduler-panel">
         <div class="form-group">
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <label style="margin:0;">Tekrar Sıklığı</label>
+            <label style="margin:0;" data-i18n="cb-freq-lbl">Tekrar Sıklığı</label>
             <span class="lock-toggle" onclick="toggleSchedulerLock()" id="lockScheduler" style="cursor:pointer;font-size:16px;">&#128275;</span>
           </div>
           <select id="scheduleRepeat" onchange="updateScheduleUI();updateSchedulerBadge()">
-            <option value="once">Tek Seferlik</option>
-            <option value="hourly" selected>Saatlik</option>
-            <option value="daily">Günlük</option>
-            <option value="weekly">Haftalık</option>
-            <option value="monthly">Aylık</option>
+            <option value="once" data-i18n="cb-once">Tek Seferlik</option>
+            <option value="hourly" selected data-i18n="cb-hourly">Saatlik</option>
+            <option value="daily" data-i18n="cb-daily">Günlük</option>
+            <option value="weekly" data-i18n="cb-weekly">Haftalık</option>
+            <option value="monthly" data-i18n="cb-monthly">Aylık</option>
           </select>
         </div>
 
@@ -753,7 +753,7 @@
           </div>
         </div>
 
-        <div id="scheduleStatus" style="padding:8px 12px;border-radius:8px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1);font-size:13px;color:var(--text-dim);text-align:center;">
+        <div id="scheduleStatus" style="padding:8px 12px;border-radius:8px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1);font-size:13px;color:var(--text-dim);text-align:center;" data-i18n="cb-lock-msg">
           Kilidi açarak planlamayı aktifleştirin.
         </div>
       </div>
@@ -763,9 +763,9 @@
     <!-- Action Buttons -->
     <div style="position:sticky;bottom:0;z-index:10;padding:16px 0 0 0;">
       <div style="display:flex;gap:8px;">
-        <button class="cb-action-btn" id="btnStart" onclick="startBot()">Başlat</button>
-        <button class="cb-action-btn" id="btnPause" onclick="cbTogglePause()" disabled>Duraklat</button>
-        <button class="cb-action-btn" id="btnStop" onclick="stopBot()" disabled>Durdur</button>
+        <button class="cb-action-btn" id="btnStart" onclick="startBot()" data-i18n="cb-start-btn">Başlat</button>
+        <button class="cb-action-btn" id="btnPause" onclick="cbTogglePause()" disabled data-i18n="cb-pause-btn">Duraklat</button>
+        <button class="cb-action-btn" id="btnStop" onclick="stopBot()" disabled data-i18n="cb-stop-btn">Durdur</button>
       </div>
     </div>
   </aside>
@@ -775,37 +775,37 @@
     <!-- Log -->
     <div class="card" style="flex:0 0 auto;">
       <div class="card-header">
-        <span class="card-title">CANLI LOG <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></span>
-        <button class="btn btn-ghost btn-sm" onclick="clearLogs()" title="Logu temizle">&#128465; Temizle</button>
+        <span class="card-title" data-i18n="cb-live-log">CANLI LOG</span> <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+        <button class="btn btn-ghost btn-sm" onclick="clearLogs()" data-i18n="cb-clear" data-i18n-title="cb-clear-title">&#128465; Temizle</button>
       </div>
       <div class="log-console" id="logConsole">
         <div class="bot-bg-layer" id="botBgLayer"></div>
-        <div class="log-entry info">Bot hazır. Şehir ve anahtar kelime girip "Başlat" tuşuna basın.</div>
+        <div class="log-entry info" data-i18n="cb-bot-ready">Bot hazır. Şehir ve anahtar kelime girip "Başlat" tuşuna basın.</div>
       </div>
     </div>
 
     <!-- History -->
     <div class="card" style="flex:1;">
       <div class="card-header">
-        <span class="card-title">TIKLAMA GEÇMİŞİ <span class="click-cursor"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg></span></span>
-        <button class="btn btn-ghost btn-sm" onclick="clearHistory()" title="Geçmişi temizle">&#128465; Temizle</button>
+        <span class="card-title" data-i18n="cb-click-hist">TIKLAMA GEÇMİŞİ</span> <span class="click-cursor"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg></span>
+        <button class="btn btn-ghost btn-sm" onclick="clearHistory()" data-i18n="cb-clear">&#128465; Temizle</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>SAAT</th>
-              <th>İL</th>
-              <th>İLÇE</th>
-              <th>KELİME</th>
-              <th>FİRMA</th>
-              <th>REKLAM ALANI</th>
+              <th data-i18n="cb-th-time">SAAT</th>
+              <th data-i18n="cb-th-city">İL</th>
+              <th data-i18n="cb-th-dist">İLÇE</th>
+              <th data-i18n="cb-th-kw">KELİME</th>
+              <th data-i18n="cb-th-co">FİRMA</th>
+              <th data-i18n="cb-th-ad">REKLAM ALANI</th>
               <th>URL</th>
-              <th>DURUM</th>
+              <th data-i18n="cb-th-status">DURUM</th>
             </tr>
           </thead>
           <tbody id="historyBody">
-            <tr><td colspan="8" class="empty-state">Henüz tıklama yok.</td></tr>
+            <tr><td colspan="8" class="empty-state" data-i18n="cb-no-clicks">Henüz tıklama yok.</td></tr>
           </tbody>
         </table>
       </div>

@@ -1,3 +1,4 @@
+<script src="/static/app_i18n.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
     * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
@@ -138,7 +139,25 @@
             Send Mail
         </a>
     </nav>
+
+    <!-- Language Switcher -->
+    <div style="display:flex;align-items:center;gap:2px;padding:4px 10px;margin-left:12px;border-left:1px solid #334155;">
+        <button onclick="setAppLang('tr')" id="btnLangTr"
+            style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:700;transition:color 0.15s;">TR</button>
+        <span style="color:#334155;font-size:11px;">|</span>
+        <button onclick="setAppLang('en')" id="btnLangEn"
+            style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:700;transition:color 0.15s;">EN</button>
+    </div>
 </div>
+<script>
+(function(){
+    var l = localStorage.getItem('lp_lang') || 'tr';
+    var tr = document.getElementById('btnLangTr');
+    var en = document.getElementById('btnLangEn');
+    if (tr) tr.style.color = l === 'tr' ? '#34d399' : '#64748b';
+    if (en) en.style.color = l === 'en' ? '#34d399' : '#64748b';
+})();
+</script>
 
 <style>
     .scan-badge {
@@ -196,12 +215,12 @@
 <!-- Tarama durum cubugu - tum sayfalarda gorunur -->
 <div class="scan-status-bar" id="scanStatusBar">
     <span class="scan-badge active" style="display:inline-block"></span>
-    <span id="scanBarText">Taranıyor...</span>
+    <span id="scanBarText" data-i18n="h-scanning">Taranıyor...</span>
     <div class="mini-progress">
         <div class="mini-progress-fill" id="scanBarProgress" style="width:0%"></div>
     </div>
     <span id="scanBarCount">0/0</span>
-    <a href="/app">Scanner'a Git →</a>
+    <a href="/app" data-i18n="h-go-scanner">Scanner'a Git →</a>
 </div>
 
 <script>
@@ -273,7 +292,7 @@
                         document.getElementById('scanBarText').textContent = data.status.substring(0, 60);
                         const pct = data.total > 0 ? (data.progress / data.total * 100) : 0;
                         document.getElementById('scanBarProgress').style.width = pct + '%';
-                        document.getElementById('scanBarCount').textContent = data.results.length + ' bulundu';
+                        document.getElementById('scanBarCount').textContent = data.results.length + ' ' + t('h-found', 'bulundu');
                     } else {
                         bar.classList.remove('active');
                     }

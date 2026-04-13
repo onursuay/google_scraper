@@ -99,19 +99,19 @@
     <!-- Stats -->
     <div class="stats-bar">
         <div class="stat-card">
-            <div class="label">Database Firma</div>
+            <div class="label" data-i18n="sm-db-co">Database Firma</div>
             <div class="value" id="statTotal">-</div>
         </div>
         <div class="stat-card">
-            <div class="label">E-posta Mevcut</div>
+            <div class="label" data-i18n="sm-w-email">E-posta Mevcut</div>
             <div class="value pending" id="statWithEmail">-</div>
         </div>
         <div class="stat-card">
-            <div class="label">Gonderilen</div>
+            <div class="label" data-i18n="sm-sent">Gönderilen</div>
             <div class="value sent" id="statSent">0</div>
         </div>
         <div class="stat-card">
-            <div class="label">Basarisiz</div>
+            <div class="label" data-i18n="sm-failed">Başarısız</div>
             <div class="value failed" id="statFailed">0</div>
         </div>
     </div>
@@ -121,26 +121,26 @@
         <div>
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Mail Olustur</span>
+                    <span class="card-title" data-i18n="sm-compose">Mail Oluştur</span>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label>Gonderen</label>
+                        <label data-i18n="sm-from">Gönderen</label>
                         <div class="from-info">YO Dijital &lt;info@yodijital.com&gt;</div>
                     </div>
                     <div class="form-group">
-                        <label>Konu</label>
-                        <input type="text" id="inputSubject" value="Is Birligi Teklifi" placeholder="E-posta konusu...">
+                        <label data-i18n="sm-subject">Konu</label>
+                        <input type="text" id="inputSubject" value="İş Birliği Teklifi" placeholder="E-posta konusu..." data-i18n-ph="sm-subj-ph">
                     </div>
                     <div class="form-group">
-                        <label>Icerik (HTML)</label>
-                        <textarea id="inputBody" placeholder="HTML mail icerigi..."></textarea>
+                        <label data-i18n="sm-content">İçerik (HTML)</label>
+                        <textarea id="inputBody" placeholder="HTML mail içeriği..." data-i18n-ph="sm-cont-ph"></textarea>
                     </div>
                     <div style="font-size:11px;color:#64748b;margin-bottom:12px;">
-                        Degiskenler: <code style="color:#3b82f6;">{firma_adi}</code> <code style="color:#3b82f6;">{sektor}</code> <code style="color:#3b82f6;">{sehir}</code> <code style="color:#3b82f6;">{from_name}</code> <code style="color:#3b82f6;">{email}</code>
+                        <span data-i18n="sm-vars">Değişkenler:</span> <code style="color:#3b82f6;">{firma_adi}</code> <code style="color:#3b82f6;">{sektor}</code> <code style="color:#3b82f6;">{sehir}</code> <code style="color:#3b82f6;">{from_name}</code> <code style="color:#3b82f6;">{email}</code>
                     </div>
                     <button class="btn btn-send" id="btnSend" onclick="sendMails()">
-                        Gonder (0 alici)
+                        <span data-i18n="sm-send-init">Gönder (0 alıcı)</span>
                     </button>
                     <div class="progress-bar" id="progressBar">
                         <div class="progress-fill" id="progressFill"></div>
@@ -153,20 +153,20 @@
         <div>
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Alicilar</span>
-                    <span style="font-size:12px;color:#64748b;" id="selectedCount">0 secili</span>
+                    <span class="card-title" data-i18n="sm-recipients">Alıcılar</span>
+                    <span style="font-size:12px;color:#64748b;" id="selectedCount">0 seçili</span>
                 </div>
                 <div class="select-bar">
-                    <a onclick="selectAll()">Tumunu Sec</a>
-                    <a onclick="selectNone()">Temizle</a>
-                    <a onclick="selectUnsent()">Gonderilmemisleri Sec</a>
+                    <a onclick="selectAll()" data-i18n="sm-sel-all">Tümünü Seç</a>
+                    <a onclick="selectNone()" data-i18n="sm-desel">Temizle</a>
+                    <a onclick="selectUnsent()" data-i18n="sm-sel-unsent">Gönderilmemişleri Seç</a>
                     <span style="margin-left:auto;" id="filterInfo"></span>
                 </div>
                 <div style="padding:8px 12px;border-bottom:1px solid #334155;">
-                    <input type="text" class="search-input" id="searchRecipients" placeholder="Firma, e-posta veya sektor ara..." oninput="filterRecipients()" style="width:100%;">
+                    <input type="text" class="search-input" id="searchRecipients" placeholder="Firma, e-posta veya sektör ara..." data-i18n-ph="sm-srch-ph" oninput="filterRecipients()" style="width:100%;">
                 </div>
                 <div class="recipient-list" id="recipientList">
-                    <div class="empty-msg">Yukleniyor...</div>
+                    <div class="empty-msg" data-i18n="sm-loading">Yükleniyor...</div>
                 </div>
             </div>
         </div>
@@ -175,22 +175,22 @@
     <!-- History -->
     <div class="card" style="margin-top:20px;">
         <div class="card-header">
-            <span class="card-title">Gonderim Gecmisi</span>
-            <span style="font-size:12px;color:#64748b;" id="historyCount">0 kayit</span>
+            <span class="card-title" data-i18n="sm-history">Gönderim Geçmişi</span>
+            <span style="font-size:12px;color:#64748b;" id="historyCount">0 kayıt</span>
         </div>
         <div style="overflow-x:auto;">
             <table class="history-table">
                 <thead>
                     <tr>
-                        <th>Saat</th>
-                        <th>Firma</th>
-                        <th>E-posta</th>
-                        <th>Konu</th>
-                        <th>Durum</th>
+                        <th data-i18n="sm-th-time">Saat</th>
+                        <th data-i18n="sm-th-co">Firma</th>
+                        <th data-i18n="sm-th-email">E-posta</th>
+                        <th data-i18n="sm-th-subj">Konu</th>
+                        <th data-i18n="sm-th-status">Durum</th>
                     </tr>
                 </thead>
                 <tbody id="historyBody">
-                    <tr><td colspan="5" class="empty-msg">Henuz gonderim yok.</td></tr>
+                    <tr><td colspan="5" class="empty-msg" data-i18n="sm-no-hist">Henüz gönderim yok.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -228,7 +228,7 @@ async function loadRecipients() {
 
         renderRecipients(allRecipients);
     } catch(e) {
-        document.getElementById('recipientList').innerHTML = '<div class="empty-msg">Database yuklenemedi.</div>';
+        document.getElementById('recipientList').innerHTML = '<div class="empty-msg">' + t('sm-db-load-err', 'Database yüklenemedi.') + '</div>';
     }
 }
 
@@ -246,7 +246,7 @@ async function loadEmailTemplate() {
 function renderRecipients(list) {
     const container = document.getElementById('recipientList');
     if (!list.length) {
-        container.innerHTML = '<div class="empty-msg">E-postasi olan firma bulunamadi.</div>';
+        container.innerHTML = '<div class="empty-msg">' + t('sm-no-email-co', 'E-postası olan firma bulunamadı.') + '</div>';
         return;
     }
     container.innerHTML = list.map((r, i) => {
@@ -256,7 +256,7 @@ function renderRecipients(list) {
             <span class="recipient-name" title="${r.name || ''}">${r.name || '-'}</span>
             <span class="recipient-email" title="${r.email}">${r.email}</span>
             <span class="recipient-sector">${r.sector || ''}</span>
-            ${isSent ? '<span class="status-badge status-sent" style="font-size:10px;">Gonderildi</span>' : ''}
+            ${isSent ? '<span class="status-badge status-sent" style="font-size:10px;">' + t('sm-status-sent', 'Gönderildi') + '</span>' : ''}
         </div>`;
     }).join('');
     document.getElementById('filterInfo').textContent = list.length + ' firma';
@@ -280,8 +280,8 @@ function getSelectedRecipients() {
 
 function updateSelectedCount() {
     const selected = getSelectedRecipients();
-    document.getElementById('selectedCount').textContent = selected.length + ' secili';
-    document.getElementById('btnSend').textContent = `Gonder (${selected.length} alici)`;
+    document.getElementById('selectedCount').textContent = selected.length + ' ' + t('sm-selected', 'seçili');
+    document.getElementById('btnSend').textContent = t('sm-send-prefix', 'Gönder') + ` (${selected.length} ` + t('sm-recipient', 'alıcı') + ')';
 }
 
 function selectAll() {
@@ -305,15 +305,15 @@ async function sendMails() {
     const subject = document.getElementById('inputSubject').value.trim();
     const html_body = document.getElementById('inputBody').value.trim();
 
-    if (!recipients.length) return alert('Alici seciniz.');
-    if (!subject) return alert('Konu giriniz.');
-    if (!html_body) return alert('Mail icerigi giriniz.');
+    if (!recipients.length) return alert(t('sm-alert-no-rcpt', 'Alıcı seçiniz.'));
+    if (!subject) return alert(t('sm-alert-no-subj', 'Konu giriniz.'));
+    if (!html_body) return alert(t('sm-alert-no-body', 'Mail içeriği giriniz.'));
 
-    if (!confirm(`${recipients.length} firmaya mail gonderilecek. Devam?`)) return;
+    if (!confirm(`${recipients.length} ` + t('sm-confirm', 'firmaya mail gönderilecek. Devam?'))) return;
 
     const btn = document.getElementById('btnSend');
     btn.disabled = true;
-    btn.textContent = 'Gonderiliyor...';
+    btn.textContent = t('sm-sending', 'Gönderiliyor...');
     document.getElementById('progressBar').style.display = 'block';
 
     try {
@@ -326,10 +326,10 @@ async function sendMails() {
         if (data.error) {
             alert(data.error);
             btn.disabled = false;
-            btn.textContent = `Gonder (${recipients.length} alici)`;
+            btn.textContent = t('sm-send-prefix', 'Gönder') + ` (${recipients.length} ` + t('sm-recipient', 'alıcı') + ')';
         }
     } catch(e) {
-        alert('Gonderim hatasi: ' + e.message);
+        alert(t('sm-send-err', 'Gönderim hatası: ') + e.message);
         btn.disabled = false;
     }
 }
@@ -362,7 +362,7 @@ function addHistoryRow(entry) {
     if (tbody.querySelector('.empty-msg')) tbody.innerHTML = '';
 
     const statusClass = entry.status === 'sent' ? 'status-sent' : entry.status === 'failed' ? 'status-failed' : 'status-sending';
-    const statusText = entry.status === 'sent' ? 'Gonderildi' : entry.status === 'failed' ? 'Basarisiz' : 'Gonderiliyor';
+    const statusText = entry.status === 'sent' ? t('sm-status-sent', 'Gönderildi') : entry.status === 'failed' ? t('sm-status-fail', 'Başarısız') : t('sm-status-snd', 'Gönderiliyor');
 
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -373,7 +373,7 @@ function addHistoryRow(entry) {
         <td><span class="status-badge ${statusClass}">${statusText}</span>${entry.error ? ' <span style="font-size:10px;color:#ef4444;">'+entry.error+'</span>' : ''}</td>
     `;
     tbody.prepend(row);
-    document.getElementById('historyCount').textContent = tbody.children.length + ' kayit';
+    document.getElementById('historyCount').textContent = tbody.children.length + ' ' + t('sm-records', 'kayıt');
 }
 
 function updateStats() {

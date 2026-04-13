@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/static/logo.png">
-    <title>Yo Scraper - Domainler</title>
+    <script src="/static/app_i18n.js"></script>
+    <title>Yo Scraper - Domains</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
@@ -42,20 +43,20 @@
 <body>
 
 <div class="header">
-    <h1>Taranan Domainler</h1>
-    <a href="/app">← Dashboard'a Dön</a>
+    <h1 data-i18n="dom-title">Taranan Domainler</h1>
+    <a href="/app" data-i18n="dom-back">← Dashboard'a Dön</a>
 </div>
 
 <div class="container">
     <div class="toolbar">
         <div>
-            <button class="btn btn-select" onclick="selectAll()">Tümünü Seç</button>
-            <button class="btn btn-danger" id="deleteBtn" onclick="deleteSelected()" disabled>Seçilenleri Sil</button>
-            <button class="btn btn-refresh" onclick="loadDomains()">Yenile</button>
+            <button class="btn btn-select" onclick="selectAll()" data-i18n="dom-sel-all">Tümünü Seç</button>
+            <button class="btn btn-danger" id="deleteBtn" onclick="deleteSelected()" disabled data-i18n="dom-del">Seçilenleri Sil</button>
+            <button class="btn btn-refresh" onclick="loadDomains()" data-i18n="dom-refresh">Yenile</button>
         </div>
         <div style="display:flex; align-items:center; gap:16px;">
-            <input type="text" class="search-box" id="searchBox" placeholder="Ara..." oninput="filterTable()">
-            <span class="info" id="totalInfo">Yükleniyor...</span>
+            <input type="text" class="search-box" id="searchBox" placeholder="Ara..." data-i18n-ph="dom-srch-ph" oninput="filterTable()">
+            <span class="info" id="totalInfo" data-i18n="dom-loading">Yükleniyor...</span>
         </div>
     </div>
 
@@ -65,14 +66,14 @@
                 <tr>
                     <th style="width:40px"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
                     <th>#</th>
-                    <th>Firma Adı</th>
-                    <th>E-posta</th>
-                    <th>Telefon</th>
-                    <th>Domain</th>
+                    <th data-i18n="dom-th-co">Firma Adı</th>
+                    <th data-i18n="dom-th-email">E-posta</th>
+                    <th data-i18n="dom-th-phone">Telefon</th>
+                    <th data-i18n="dom-th-domain">Domain</th>
                 </tr>
             </thead>
             <tbody id="tbody">
-                <tr><td colspan="6" class="loading">Yükleniyor...</td></tr>
+                <tr><td colspan="6" class="loading" data-i18n="dom-loading">Yükleniyor...</td></tr>
             </tbody>
         </table>
     </div>
@@ -87,7 +88,7 @@ function loadDomains() {
         .then(data => {
             if (data.error) { alert(data.error); return; }
             allDomains = data.domains;
-            document.getElementById('totalInfo').textContent = `Toplam: ${data.total} kayıt`;
+            document.getElementById('totalInfo').textContent = t('dom-total', 'Toplam:') + ` ${data.total} ` + t('dom-records', 'kayıt');
             renderTable(allDomains);
         });
 }
@@ -95,7 +96,7 @@ function loadDomains() {
 function renderTable(domains) {
     const tbody = document.getElementById('tbody');
     if (!domains.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="loading">Kayıt bulunamadı</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">' + t('dom-no-records', 'Kayıt bulunamadı') + '</td></tr>';
         return;
     }
     tbody.innerHTML = domains.map((d, i) =>
@@ -135,13 +136,13 @@ function updateDeleteBtn() {
     const checked = document.querySelectorAll('.row-check:checked').length;
     const btn = document.getElementById('deleteBtn');
     btn.disabled = checked === 0;
-    btn.textContent = checked > 0 ? `Seçilenleri Sil (${checked})` : 'Seçilenleri Sil';
+    btn.textContent = checked > 0 ? t('dom-del', 'Seçilenleri Sil') + ` (${checked})` : t('dom-del', 'Seçilenleri Sil');
 }
 
 function deleteSelected() {
     const rows = Array.from(document.querySelectorAll('.row-check:checked')).map(cb => parseInt(cb.value));
     if (!rows.length) return;
-    if (!confirm(`${rows.length} kayıt silinecek. Emin misiniz?`)) return;
+    if (!confirm(`${rows.length} ` + t('dom-delete-confirm', 'kayıt silinecek. Emin misiniz?'))) return;
 
     fetch('/api/domains/delete', {
         method: 'POST',

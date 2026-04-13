@@ -167,20 +167,20 @@
 <div class="sticky-zone">
     <div class="toolbar">
         <div class="toolbar-left">
-            <input type="text" class="search-box" id="searchBox" placeholder="Firma, e-posta, domain ara..." oninput="applyFilters()">
+            <input type="text" class="search-box" id="searchBox" placeholder="Firma, e-posta, domain ara..." data-i18n-ph="db-search-ph" oninput="applyFilters()">
             <select class="filter-select" id="sourceFilter" onchange="applyFilters()">
-                <option value="">Tüm Kaynaklar</option>
+                <option value="" data-i18n="all-sources">Tüm Kaynaklar</option>
                 <option value="Scanner">Scanner</option>
                 <option value="Lead">Lead</option>
             </select>
             <select class="filter-select" id="sectorFilter" onchange="applyFilters()">
-                <option value="">Tüm Sektörler</option>
+                <option value="" data-i18n="all-sectors">Tüm Sektörler</option>
             </select>
             <div class="stat-pills" id="statPills"></div>
         </div>
         <div class="toolbar-right">
-            <button class="btn btn-outline" id="dbDeleteBtn" style="display:none; background:#ef4444; color:white; border-color:#ef4444;" onclick="deleteSelectedDb()">Seçilenleri Sil</button>
-            <button class="btn btn-outline" onclick="loadData()">Yenile</button>
+            <button class="btn btn-outline" id="dbDeleteBtn" style="display:none; background:#ef4444; color:white; border-color:#ef4444;" onclick="deleteSelectedDb()" data-i18n="del-sel-btn">Seçilenleri Sil</button>
+            <button class="btn btn-outline" onclick="loadData()" data-i18n="refresh-btn">Yenile</button>
         </div>
     </div>
 
@@ -191,42 +191,42 @@
                         <th style="width:36px"><input type="checkbox" id="dbCheckAll" onchange="toggleAllDb(this)"></th>
                         <th style="width:80px; position:relative;">
                             <div class="th-content">
-                                <span class="th-label" onclick="sortBy('source')">Kaynak</span>
+                                <span class="th-label" onclick="sortBy('source')" data-i18n="db-source">Kaynak</span>
                                 <button class="th-filter-btn" data-col="source" onclick="toggleFilter(event, this)"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
                             </div>
-                            <div class="filter-popover" data-col="source"><input type="text" class="col-filter" data-col="source" placeholder="Kaynak filtrele..." oninput="applyFilters()"><div class="fp-actions"><button class="fp-btn fp-btn-clear" onclick="clearFilter('source')">Temizle</button></div></div>
+                            <div class="filter-popover" data-col="source"><input type="text" class="col-filter" data-col="source" placeholder="Kaynak filtrele..." data-i18n-ph="src-filter-ph" oninput="applyFilters()"><div class="fp-actions"><button class="fp-btn fp-btn-clear" onclick="clearFilter('source')" data-i18n="clear-filter">Temizle</button></div></div>
                         </th>
                         <th style="position:relative;">
                             <div class="th-content">
-                                <span class="th-label" onclick="sortBy('date')">Tarih</span>
+                                <span class="th-label" onclick="sortBy('date')" data-i18n="th-date">Tarih</span>
                                 <button class="th-filter-btn" data-col="date" onclick="toggleFilter(event, this)"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
                             </div>
                             <div class="filter-popover" data-col="date"><input type="text" class="col-filter" data-col="date" placeholder="Tarih filtrele..." oninput="applyFilters()"><div class="fp-actions"><button class="fp-btn fp-btn-clear" onclick="clearFilter('date')">Temizle</button></div></div>
                         </th>
                         <th style="position:relative;">
                             <div class="th-content">
-                                <span class="th-label" onclick="sortBy('sector')">Sektör</span>
+                                <span class="th-label" onclick="sortBy('sector')" data-i18n="th-sector">Sektör</span>
                                 <button class="th-filter-btn" data-col="sector" onclick="toggleFilter(event, this)"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
                             </div>
                             <div class="filter-popover" data-col="sector"><input type="text" class="col-filter" data-col="sector" placeholder="Sektör filtrele..." oninput="applyFilters()"><div class="fp-actions"><button class="fp-btn fp-btn-clear" onclick="clearFilter('sector')">Temizle</button></div></div>
                         </th>
                         <th style="position:relative;">
                             <div class="th-content">
-                                <span class="th-label" onclick="sortBy('name')">Firma Adı</span>
+                                <span class="th-label" onclick="sortBy('name')" data-i18n="th-company">Firma Adı</span>
                                 <button class="th-filter-btn" data-col="name" onclick="toggleFilter(event, this)"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
                             </div>
                             <div class="filter-popover" data-col="name"><input type="text" class="col-filter" data-col="name" placeholder="Firma filtrele..." oninput="applyFilters()"><div class="fp-actions"><button class="fp-btn fp-btn-clear" onclick="clearFilter('name')">Temizle</button></div></div>
                         </th>
                         <th style="position:relative;">
                             <div class="th-content">
-                                <span class="th-label" onclick="sortBy('phone')">Telefon</span>
+                                <span class="th-label" onclick="sortBy('phone')" data-i18n="th-phone">Telefon</span>
                                 <button class="th-filter-btn" data-col="phone" onclick="toggleFilter(event, this)"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
                             </div>
                             <div class="filter-popover" data-col="phone"><input type="text" class="col-filter" data-col="phone" placeholder="Telefon filtrele..." oninput="applyFilters()"><div class="fp-actions"><button class="fp-btn fp-btn-clear" onclick="clearFilter('phone')">Temizle</button></div></div>
                         </th>
                         <th style="position:relative;">
                             <div class="th-content">
-                                <span class="th-label" onclick="sortBy('email')">E-posta</span>
+                                <span class="th-label" onclick="sortBy('email')" data-i18n="th-email">E-posta</span>
                                 <button class="th-filter-btn" data-col="email" onclick="toggleFilter(event, this)"><svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
                             </div>
                             <div class="filter-popover" data-col="email"><input type="text" class="col-filter" data-col="email" placeholder="E-posta filtrele..." oninput="applyFilters()"><div class="fp-actions"><button class="fp-btn fp-btn-clear" onclick="clearFilter('email')">Temizle</button></div></div>
