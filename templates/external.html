@@ -270,8 +270,8 @@
                 <table class="map-table">
                     <thead>
                         <tr style="background:#172133;">
-                            <th style="width:40%;" data-i18n="db-field-col">Database Alanı</th>
-                            <th data-i18n="src-col">Kaynak Sütun</th>
+                            <th style="width:45%;" data-i18n="src-col">Kaynak Sütun</th>
+                            <th data-i18n="db-field-col">Database Alanı</th>
                         </tr>
                     </thead>
                     <tbody id="mapRows"></tbody>
@@ -609,44 +609,87 @@ async function goStep2() {
 
 function goStep1() { setStep(1); }
 
-function buildMapTable() {
-    const mapping = autoMap();
-    let autoCount = 0;
-    const tbody = document.getElementById('mapRows');
-    tbody.innerHTML = CRM_FIELDS.map(field => {
-        const autoVal = mapping[field.key] || '';
-        if (autoVal) autoCount++;
-        const sampleIdx = sourceHeaders.indexOf(autoVal);
-        const samples = sampleIdx >= 0
-            ? sourceRows.slice(0,3).map(r => r[sampleIdx] || '').filter(Boolean).join(' · ')
-            : '';
-        const options = [`<option value="">— ${t('ext-skip','Atla')} —</option>`,
-            ...sourceHeaders.map(h => `<option value="${h}"${h===autoVal?' selected':''}>${h}</option>`)
-        ].join('');
-        return `<tr>
-            <td>
-                <div class="crm-field">${field.label}${field.required?'<span style="color:#ef4444;margin-left:2px;">*</span>':''}</div>
-                ${samples?`<div class="crm-sample">${samples}</div>`:''}
-            </td>
-            <td><select class="map-select${autoVal?' mapped':''}" data-field="${field.key}" onchange="this.classList.toggle('mapped',!!this.value)">${options}</select></td>
-        </tr>`;
-    }).join('');
-    const badge = document.getElementById('autoMapBadge');
-    badge.textContent = `✓ ${autoCount}/${CRM_FIELDS.length} ${t('ext-auto-match','otomatik eşleşti')}`;
+// CRM field label — EN veya TR döndürür
+const CRM_FIELD_EN = {
+    'Tarih': 'Date', 'Sektör': 'Sector', 'Firma Adı': 'Company Name',
+    'Telefon': 'Phone', 'E-posta': 'Email', 'Domain': 'Domain',
+    'Web Sitesi': 'Website', 'Instagram': 'Instagram',
+    'Facebook': 'Facebook', 'LinkedIn': 'LinkedIn'
+};
+function crmLabel(field) {
+    return window.APP_LANG === 'en'
+        ? (CRM_FIELD_EN[field.key] || field.label)
+        : field.label;
 }
 
+function buildMapTable() {
+    // autoMap() → { crmFieldKey: sourceColName }
+    // Tersine çevir → { sourceColName: crmFieldKey }
+    const crmToSource = autoMap();
+    const sourceToCrm = {};
+    Object.entries(crmToSource).forEach(([crmKey, srcCol]) => {
+        sourceToCrm[srcCol] = crmKey;
+    });
+
+    let autoCount = 0;
+    const tbody = document.getElementById('mapRows');
+
+    // Her kaynak sütun için bir satır (dinamik, sheet başlıklarına göre)
+    tbody.innerHTML = sourceHeaders.map(header => {
+        const autoField = sourceToCrm[header] || '';
+        if (autoField) autoCount++;
+
+        // Bu sütundan örnek değerler
+        const colIdx = sourceHeaders.indexOf(header);
+        const samples = sourceRows.slice(0, 3)
+            .map(r => r[colIdx] || '')
+            .filter(Boolean)
+            .join(' · ');
+
+        // Sağ taraf: database alanı seçimi
+        const options = [
+            `<option value="">— ${t('ext-skip','Atla')} —</option>`,
+            ...CRM_FIELDS.map(f =>
+                `<option value="${f.key}"${f.key === autoField ? ' selected' : ''}>${crmLabel(f)}${f.required ? ' *' : ''}</option>`
+            )
+        ].join('');
+
+        return `<tr>
+            <td>
+                <div class="crm-field">${header}</div>
+                ${samples ? `<div class="crm-sample">${samples}</div>` : ''}
+            </td>
+            <td>
+                <select class="map-select${autoField ? ' mapped' : ''}"
+                        data-source="${header}"
+                        onchange="this.classList.toggle('mapped',!!this.value)">
+                    ${options}
+                </select>
+            </td>
+        </tr>`;
+    }).join('');
+
+    const badge = document.getElementById('autoMapBadge');
+    badge.textContent = `✓ ${autoCount}/${sourceHeaders.length} ${t('ext-auto-match','otomatik eşleşti')}`;
+}
+
+// Döndürür: { crmFieldKey: sourceColName } — import kodu bu formatı beklediği için aynı kaldı
 function getMapping() {
     const m = {};
     document.querySelectorAll('#mapRows select').forEach(sel => {
-        if (sel.value) m[sel.dataset.field] = sel.value;
+        const crmField = sel.value;
+        const sourceCol = sel.dataset.source;
+        if (crmField && sourceCol) {
+            m[crmField] = sourceCol;  // crmField → sourceCol
+        }
     });
     return m;
 }
 
 function goStep3() {
     const mapping = getMapping();
-    const mapped = Object.keys(mapping);
-    if (!mapped.includes('Firma Adı') && !mapped.includes('E-posta')) {
+    const mappedCrmFields = Object.keys(mapping);
+    if (!mappedCrmFields.includes('Firma Adı') && !mappedCrmFields.includes('E-posta')) {
         alert(t('ext-map-required','En az Firma Adı veya E-posta eşleştirilmeli.'));
         return;
     }
@@ -655,13 +698,21 @@ function goStep3() {
 }
 
 function buildPreview(mapping) {
-    const fields = Object.keys(mapping);
-    document.getElementById('previewMeta').textContent = `${t('ext-preview-meta','İlk 10 satır gösteriliyor')} · ${t('ext-total','Toplam')} ${sourceTotal.toLocaleString()} ${t('ext-rows','satır')}`;
-    document.getElementById('previewHead').innerHTML = `<tr>${fields.map(f=>`<th>${f}</th>`).join('')}</tr>`;
-    const rows = sourceRows.slice(0,10);
+    // mapping = { crmFieldKey: sourceColName }
+    // Önizlemede kaynak sütun adını göster (sheet'ten tanıdık isimler)
+    const pairs = Object.entries(mapping); // [[crmKey, srcCol], ...]
+    document.getElementById('previewMeta').textContent =
+        `${t('ext-preview-meta','İlk 10 satır gösteriliyor')} · ${t('ext-total','Toplam')} ${sourceTotal.toLocaleString()} ${t('ext-rows','satır')}`;
+
+    // Başlık: "Kaynak Sütun → DB Alanı" formatında göster
+    document.getElementById('previewHead').innerHTML = `<tr>${
+        pairs.map(([crmKey, srcCol]) => `<th title="${crmKey}">${srcCol}</th>`).join('')
+    }</tr>`;
+
+    const rows = sourceRows.slice(0, 10);
     document.getElementById('previewBody').innerHTML = rows.map(row => {
-        return '<tr>' + fields.map(f => {
-            const colIdx = sourceHeaders.indexOf(mapping[f]);
+        return '<tr>' + pairs.map(([crmKey, srcCol]) => {
+            const colIdx = sourceHeaders.indexOf(srcCol);
             const val = colIdx >= 0 ? (row[colIdx] || '') : '';
             return `<td title="${val}">${val}</td>`;
         }).join('') + '</tr>';
