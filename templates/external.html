@@ -372,16 +372,16 @@ function dbColLabel(col) {
 }
 
 const AUTO_MAP = {
-    'Tarih':      ['tarih','date','kayit tarihi','tarih/saat','created_at','created at'],
-    'Sektör':     ['sektor','sektör','sector','kategori','category','industry','alan'],
-    'Firma Adı':  ['firma','firma adi','firma adı','company','name','isim','sirket','şirket','işletme','business','ad','unvan'],
-    'Telefon':    ['telefon','tel','phone','gsm','cep','mobil','mobile','phone number'],
-    'E-posta':    ['e-posta','eposta','email','mail','e-mail','e_posta','email address'],
-    'Domain':     ['domain','alan adi','alan adı','domain adi','domain adı'],
-    'Web Sitesi': ['website','web sitesi','site','url','web','web adresi','web address'],
-    'Instagram':  ['instagram','ig','insta'],
-    'Facebook':   ['facebook','fb'],
-    'LinkedIn':   ['linkedin','li','linked in','linked-in'],
+    'Tarih':      ['tarih','date','tarih saat','kayit tarihi','olusturma tarihi','oluşturma tarihi','created','created at','created_at','tarih/saat','basvuru tarihi','başvuru tarihi'],
+    'Sektör':     ['sektor','sektör','sector','kategori','category','industry','alan','faaliyet','bolum','bölüm'],
+    'Firma Adı':  ['firma','firma adi','firma adı','sirket adi','şirket adı','sirket','şirket','company','company name','isim','ad','unvan','isletme','işletme','business','business name','kurum'],
+    'Telefon':    ['telefon','tel','phone','gsm','cep','mobil','mobile','phone number','telefon numarasi','telefon numarası','cep telefonu','iletisim','iletişim'],
+    'E-posta':    ['e-posta','eposta','email','mail','e-mail','e_posta','email address','elektronik posta','mail adresi'],
+    'Domain':     ['domain','alan adi','alan adı','domain adi','domain adı','web domain'],
+    'Web Sitesi': ['website','web sitesi','site','url','web','web adresi','web address','internet sitesi','website url'],
+    'Instagram':  ['instagram','ig','insta','instagram adresi'],
+    'Facebook':   ['facebook','fb','facebook adresi'],
+    'LinkedIn':   ['linkedin','li','linked in','linked-in','linkedin adresi'],
 };
 
 function normalize(s) {
@@ -408,14 +408,18 @@ function autoMap() {
     return mapping;
 }
 
-// Load DB columns from backend on startup
+// Load DB columns — returns a Promise so goStep2 can await it
+const FALLBACK_COLS = ['Tarih','Sektör','Firma Adı','Telefon','E-posta','Domain','Web Sitesi','Instagram','Facebook','LinkedIn'];
+let _dbColsPromise = null;
+
 function loadDbColumns() {
-    fetch('/api/database/columns')
+    _dbColsPromise = fetch('/api/database/columns')
         .then(r => r.json())
-        .then(data => { if (data.columns && data.columns.length) dbColumns = data.columns; })
-        .catch(() => {
-            dbColumns = ['Tarih','Sektör','Firma Adı','Telefon','E-posta','Domain','Web Sitesi','Instagram','Facebook','LinkedIn'];
-        });
+        .then(data => {
+            dbColumns = (data.columns && data.columns.length) ? data.columns : FALLBACK_COLS;
+        })
+        .catch(() => { dbColumns = FALLBACK_COLS; });
+    return _dbColsPromise;
 }
 
 // ─── TABS ─────────────────────────────────────────────────────────────────
@@ -606,6 +610,9 @@ function setStep(n) {
 }
 
 async function goStep2() {
+    // DB sütunları henüz yüklenmediyse bekle
+    if (_dbColsPromise) await _dbColsPromise;
+
     if (currentTab === 'sheets' && gsSelectedTab) {
         const btn = document.getElementById('step1Btn');
         btn.disabled = true; btn.textContent = t('ext-loading','Yükleniyor...');
