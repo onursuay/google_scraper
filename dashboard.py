@@ -15,6 +15,7 @@ from flask_socketio import SocketIO
 from scraper.maps_scraper import BusinessScraper
 from scraper.email_extractor import EmailExtractor
 from sheets.sheets_manager import SheetsManager
+from sheets.leads_manager import LeadsManager
 from utils.filters import extract_domain_from_url
 from utils.domain_parser import domain_to_business_name
 
@@ -1351,7 +1352,7 @@ def import_fetch_sheet():
 
 @app.route("/api/import/execute", methods=["POST"])
 def import_execute():
-    """Eslenmis satirlari Google Sheets Scanner tablosuna yaz."""
+    """Import edilen satirlari Leads sheet'e yaz."""
     data = request.json
     rows = data.get("rows", [])
     if not rows:
@@ -1359,51 +1360,37 @@ def import_execute():
     try:
         from datetime import datetime as _dt
         today = _dt.now().strftime("%Y-%m-%d")
-        sheets = SheetsManager()
-        businesses = []
-        seen_emails = set()  # batch icinde email bazli mukerrer kontrol
+        leads_mgr = LeadsManager()
+        leads = []
+        seen_emails = set()
 
         for r in rows:
-            # Kisi alanlari (yeni format)
-            first  = r.get("Adı", "").strip()
-            last   = r.get("Soyadı", "").strip()
-            name   = " ".join(filter(None, [first, last]))
-            # Geriye donuk uyumluluk: eski format (Firma Adi)
-            if not name:
-                name = r.get("Firma Adı", "").strip()
+            first = r.get("Adı", "").strip()
+            last  = r.get("Soyadı", "").strip()
+            email = (r.get("Email Adresi", "") or r.get("E-posta", "")).strip()
+            phone = (r.get("Telefon Numarası", "") or r.get("Telefon", "")).strip()
+            city  = r.get("Şehir", "").strip()
 
-            email  = (r.get("Email Adresi", "") or r.get("E-posta", "")).strip()
-            phone  = (r.get("Telefon Numarası", "") or r.get("Telefon", "")).strip()
-            city   = r.get("Şehir", "").strip()
-
-            if not name and not email and not phone:
+            if not first and not last and not email and not phone:
                 continue
 
-            # Email bazli mukerrer atlama (batch icinde)
             if email:
                 key = email.lower()
                 if key in seen_emails:
                     continue
                 seen_emails.add(key)
 
-            # Scanner sheet'in F sutunu (Domain) e-posta adresini kullan
-            domain = email.lower() if email else ""
-
-            businesses.append({
-                "date":      r.get("Tarih", today) or today,
-                "sector":    city or "Import",
-                "name":      name,
-                "phone":     phone,
-                "email":     email,
-                "domain":    domain,
-                "website":   "",
-                "instagram": "",
-                "facebook":  "",
-                "linkedin":  "",
+            leads.append({
+                "date":       r.get("Tarih", today) or today,
+                "first_name": first,
+                "last_name":  last,
+                "phone":      phone,
+                "email":      email,
+                "city":       city,
             })
 
-        total_valid = len(businesses)
-        added = sheets.append_businesses(businesses)
+        total_valid = len(leads)
+        added = leads_mgr.append_leads(leads)
         return jsonify({
             "created": added,
             "skipped": total_valid - added,
@@ -1411,6 +1398,36 @@ def import_execute():
         })
     except Exception as e:
         logger.error(f"Import execute hatasi: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/leads")
+@login_required
+def get_leads():
+    """Leads sheet'indeki tum kayitlari dondur."""
+    try:
+        leads_mgr = LeadsManager()
+        data = leads_mgr.get_all_leads()
+        return jsonify({"data": data, "total": len(data)})
+    except Exception as e:
+        logger.error(f"Leads getirme hatasi: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/leads/delete", methods=["POST"])
+@login_required
+def delete_leads():
+    """Leads sheet'inden satir sil."""
+    data = request.json
+    rows = data.get("rows", [])
+    if not rows:
+        return jsonify({"error": "Silinecek satir secilmedi"}), 400
+    try:
+        leads_mgr = LeadsManager()
+        deleted = leads_mgr.delete_rows([int(r) for r in rows])
+        return jsonify({"deleted": deleted})
+    except Exception as e:
+        logger.error(f"Lead silme hatasi: {e}")
         return jsonify({"error": str(e)}), 500
 
 
