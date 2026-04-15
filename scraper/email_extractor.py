@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 from config import (
     WEBSITE_TIMEOUT, WEBSITE_DELAY_MIN, WEBSITE_DELAY_MAX,
-    CONTACT_PAGES, USER_AGENTS,
+    CONTACT_PAGES, USER_AGENTS, FIRECRAWL_API_KEY,
 )
 from utils.filters import is_valid_corporate_email, extract_domain_from_url
 
@@ -59,7 +59,7 @@ class EmailExtractor:
 
         3 asamali strateji:
         1. Web sitesinden cikar (requests - hizli)
-        2. Web sitesinden cikar (Playwright - JS render)
+        2. Web sitesinden cikar (Firecrawl - JS render, CAPTCHA/Cloudflare bypass)
         3. Domain'den tahmin et (MX kaydi kontrolu ile)
         """
         if not url:
@@ -73,9 +73,50 @@ class EmailExtractor:
         if emails:
             return emails
 
-        # 2. Domain'den standart e-posta tahmin et (MX kontrolu ile)
+        # 2. Firecrawl ile dene (JS render, CAPTCHA/Cloudflare bypass)
+        if FIRECRAWL_API_KEY:
+            emails = self._extract_with_firecrawl(url)
+            if emails:
+                return emails
+
+        # 3. Domain'den standart e-posta tahmin et (MX kontrolu ile)
         emails = self._guess_email_from_domain(url)
         return emails
+
+    def _extract_with_firecrawl(self, url: str) -> list:
+        """Firecrawl API ile e-posta cikar (JS render + CAPTCHA bypass).
+
+        Ana sayfa ve iletisim sayfalarini tarar.
+        """
+        try:
+            from firecrawl import FirecrawlApp
+            app = FirecrawlApp(api_key=FIRECRAWL_API_KEY)
+        except ImportError:
+            logger.warning("firecrawl-py yuklu degil: pip install firecrawl-py")
+            return []
+
+        found_emails = set()
+        pages_to_try = [url] + [
+            url.rstrip("/") + "/" + p.lstrip("/")
+            for p in CONTACT_PAGES[:3]
+        ]
+
+        for page_url in pages_to_try:
+            try:
+                result = app.scrape_url(page_url, formats=["html"])
+                html = getattr(result, "html", None) or (result.get("html") if isinstance(result, dict) else None)
+                if html:
+                    emails = self._extract_emails_from_html(html)
+                    found_emails.update(emails)
+                    corporate = [e for e in found_emails if is_valid_corporate_email(e)]
+                    if corporate:
+                        logger.info(f"  Firecrawl ile {len(corporate)} e-posta bulundu: {page_url}")
+                        return corporate
+            except Exception as e:
+                logger.debug(f"  Firecrawl hata ({page_url}): {e}")
+                continue
+
+        return [e for e in found_emails if is_valid_corporate_email(e)]
 
     def _guess_email_from_domain(self, url: str) -> list:
         """Domain'in MX kaydi varsa standart e-posta adresleri olustur.
