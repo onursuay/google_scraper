@@ -357,31 +357,34 @@ let gsSpreadsheetId = '';
 let gsSelectedTab = null;
 let gsSearchTimer = null;
 
-// DB columns — loaded dynamically from /api/database/columns
-let dbColumns = [];
-
-const DB_COL_EN = {
-    'Tarih': 'Date', 'Sektör': 'Sector', 'Firma Adı': 'Company Name',
-    'Telefon': 'Phone', 'E-posta': 'Email', 'Domain': 'Domain',
-    'Web Sitesi': 'Website', 'Instagram': 'Instagram',
-    'Facebook': 'Facebook', 'LinkedIn': 'LinkedIn'
-};
+// Sabit hedef alanlar — 6 müşteri bilgisi
+const DB_FIELDS = [
+    { key: 'Tarih',            en: 'Date'          },
+    { key: 'Adı',              en: 'First Name'    },
+    { key: 'Soyadı',           en: 'Last Name'     },
+    { key: 'Telefon Numarası', en: 'Phone Number'  },
+    { key: 'Email Adresi',     en: 'Email Address' },
+    { key: 'Şehir',            en: 'City'          },
+];
+const dbColumns = DB_FIELDS.map(f => f.key);
 
 function dbColLabel(col) {
-    return window.APP_LANG === 'en' ? (DB_COL_EN[col] || col) : col;
+    if (window.APP_LANG !== 'en') return col;
+    const f = DB_FIELDS.find(f => f.key === col);
+    return f ? f.en : col;
 }
 
 const AUTO_MAP = {
-    'Tarih':      ['tarih','date','tarih saat','kayit tarihi','olusturma tarihi','oluşturma tarihi','created','created at','created_at','tarih/saat','basvuru tarihi','başvuru tarihi'],
-    'Sektör':     ['sektor','sektör','sector','kategori','category','industry','alan','faaliyet','bolum','bölüm'],
-    'Firma Adı':  ['firma','firma adi','firma adı','sirket adi','şirket adı','sirket','şirket','company','company name','isim','ad','unvan','isletme','işletme','business','business name','kurum'],
-    'Telefon':    ['telefon','tel','phone','gsm','cep','mobil','mobile','phone number','telefon numarasi','telefon numarası','cep telefonu','iletisim','iletişim'],
-    'E-posta':    ['e-posta','eposta','email','mail','e-mail','e_posta','email address','elektronik posta','mail adresi'],
-    'Domain':     ['domain','alan adi','alan adı','domain adi','domain adı','web domain'],
-    'Web Sitesi': ['website','web sitesi','site','url','web','web adresi','web address','internet sitesi','website url'],
-    'Instagram':  ['instagram','ig','insta','instagram adresi'],
-    'Facebook':   ['facebook','fb','facebook adresi'],
-    'LinkedIn':   ['linkedin','li','linked in','linked-in','linkedin adresi'],
+    'Tarih':            ['tarih','date','tarih saat','kayit tarihi','olusturma tarihi','oluşturma tarihi',
+                         'created','created at','created_at','basvuru tarihi','başvuru tarihi','submission date','form tarihi'],
+    'Adı':              ['adi','adı','ad','isim','name','first name','firstname','given name','on ad','ön ad','müşteri adı'],
+    'Soyadı':           ['soyadi','soyadı','soyad','surname','last name','lastname','family name','soy adi','soy adı'],
+    'Telefon Numarası': ['telefon','tel','phone','gsm','cep','mobil','mobile','phone number',
+                         'telefon numarasi','telefon numarası','cep telefonu','iletisim','iletişim','numara','contact'],
+    'Email Adresi':     ['e-posta','eposta','email','mail','e-mail','e_posta','email address',
+                         'email adresi','elektronik posta','mail adresi','posta'],
+    'Şehir':            ['sehir','şehir','city','il','location','konum','yasadigi sehir','yaşadığı şehir',
+                         'ikametgah','adres','sehri','şehri','province','bölge','bolge'],
 };
 
 function normalize(s) {
@@ -408,19 +411,6 @@ function autoMap() {
     return mapping;
 }
 
-// Load DB columns — returns a Promise so goStep2 can await it
-const FALLBACK_COLS = ['Tarih','Sektör','Firma Adı','Telefon','E-posta','Domain','Web Sitesi','Instagram','Facebook','LinkedIn'];
-let _dbColsPromise = null;
-
-function loadDbColumns() {
-    _dbColsPromise = fetch('/api/database/columns')
-        .then(r => r.json())
-        .then(data => {
-            dbColumns = (data.columns && data.columns.length) ? data.columns : FALLBACK_COLS;
-        })
-        .catch(() => { dbColumns = FALLBACK_COLS; });
-    return _dbColsPromise;
-}
 
 // ─── TABS ─────────────────────────────────────────────────────────────────
 function switchTab(tab) {
@@ -610,9 +600,6 @@ function setStep(n) {
 }
 
 async function goStep2() {
-    // DB sütunları henüz yüklenmediyse bekle
-    if (_dbColsPromise) await _dbColsPromise;
-
     if (currentTab === 'sheets' && gsSelectedTab) {
         const btn = document.getElementById('step1Btn');
         btn.disabled = true; btn.textContent = t('ext-loading','Yükleniyor...');
@@ -741,7 +728,7 @@ function startImport() {
             obj[field] = idx >= 0 ? (row[idx] || '') : '';
         }
         return obj;
-    }).filter(r => r['Firma Adı'] || r['E-posta']);
+    }).filter(r => r['Adı'] || r['Soyadı'] || r['Email Adresi'] || r['Telefon Numarası']);
 
     fetch('/api/import/execute', {
         method: 'POST',
@@ -777,7 +764,6 @@ function resetWizard() {
 }
 
 // init
-loadDbColumns();
 gsCheckStatus();
 
 // OAuth callback sonucu kontrolü

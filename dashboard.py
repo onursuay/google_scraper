@@ -1361,37 +1361,53 @@ def import_execute():
         today = _dt.now().strftime("%Y-%m-%d")
         sheets = SheetsManager()
         businesses = []
+        seen_emails = set()  # batch icinde email bazli mukerrer kontrol
+
         for r in rows:
-            name = r.get("Firma Adı", "").strip()
-            email = r.get("E-posta", "").strip()
-            domain = r.get("Domain", "").strip()
-            if not name and not email:
+            # Kisi alanlari (yeni format)
+            first  = r.get("Adı", "").strip()
+            last   = r.get("Soyadı", "").strip()
+            name   = " ".join(filter(None, [first, last]))
+            # Geriye donuk uyumluluk: eski format (Firma Adi)
+            if not name:
+                name = r.get("Firma Adı", "").strip()
+
+            email  = (r.get("Email Adresi", "") or r.get("E-posta", "")).strip()
+            phone  = (r.get("Telefon Numarası", "") or r.get("Telefon", "")).strip()
+            city   = r.get("Şehir", "").strip()
+
+            if not name and not email and not phone:
                 continue
-            if not domain and email and "@" in email:
-                domain = email.split("@")[1]
-            elif not domain and r.get("Web Sitesi", ""):
-                import tldextract
-                ext = tldextract.extract(r.get("Web Sitesi", ""))
-                if ext.domain:
-                    domain = f"{ext.domain}.{ext.suffix}"
+
+            # Email bazli mukerrer atlama (batch icinde)
+            if email:
+                key = email.lower()
+                if key in seen_emails:
+                    continue
+                seen_emails.add(key)
+
+            # Scanner sheet'in F sutunu (Domain) e-posta adresini kullan
+            domain = email.lower() if email else ""
+
             businesses.append({
-                "date": r.get("Tarih", today) or today,
-                "sector": r.get("Sektör", "Import") or "Import",
-                "name": name,
-                "phone": r.get("Telefon", ""),
-                "email": email,
-                "domain": domain,
-                "website": r.get("Web Sitesi", ""),
-                "instagram": r.get("Instagram", ""),
-                "facebook": r.get("Facebook", ""),
-                "linkedin": r.get("LinkedIn", ""),
+                "date":      r.get("Tarih", today) or today,
+                "sector":    city or "Import",
+                "name":      name,
+                "phone":     phone,
+                "email":     email,
+                "domain":    domain,
+                "website":   "",
+                "instagram": "",
+                "facebook":  "",
+                "linkedin":  "",
             })
+
         total_valid = len(businesses)
         added = sheets.append_businesses(businesses)
         return jsonify({
             "created": added,
             "skipped": total_valid - added,
-            "total": len(rows),
+            "total":   len(rows),
         })
     except Exception as e:
         logger.error(f"Import execute hatasi: {e}")
