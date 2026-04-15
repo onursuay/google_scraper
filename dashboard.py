@@ -1402,7 +1402,6 @@ def import_execute():
 
 
 @app.route("/api/leads")
-@login_required
 def get_leads():
     """Leads sheet'indeki tum kayitlari dondur."""
     try:
@@ -1415,7 +1414,6 @@ def get_leads():
 
 
 @app.route("/api/leads/delete", methods=["POST"])
-@login_required
 def delete_leads():
     """Leads sheet'inden satir sil."""
     data = request.json
