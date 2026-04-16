@@ -39,7 +39,7 @@
         .stat-pill { padding: 4px 12px; background: #172133; border-radius: 20px; font-size: 12px; color: #94a3b8; }
         .stat-pill strong { color: #e2e8f0; margin-right: 4px; }
 
-        /* Sticky wrapper: toolbar + thead birlikte sabit */
+        /* Sticky zone: only toolbar + tabs */
         .sticky-zone {
             position: sticky;
             top: 64px;
@@ -47,17 +47,18 @@
             background: #0f172a;
         }
 
-        /* Table */
+        /* Table wrapper: scrollable, thead sticky inside same table */
         .table-container { padding: 0 32px 32px; }
         .table-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        .table-scroll { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 280px); }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 900px; }
 
-        th { background: #172133; padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; border-bottom: 1px solid #334155; cursor: pointer; user-select: none; white-space: nowrap; }
-        th:hover { color: #94a3b8; }
-        th.sorted { color: #8b5cf6; }
+        thead th { position: sticky; top: 0; z-index: 10; background: #172133; padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; border-bottom: 1px solid #334155; cursor: pointer; user-select: none; white-space: nowrap; }
+        thead th:hover { color: #94a3b8; }
+        thead th.sorted { color: #8b5cf6; }
         th .sort-icon { margin-left: 4px; font-size: 10px; }
 
-        td { padding: 8px 14px; font-size: 13px; border-bottom: 1px solid rgba(51,65,85,0.3); color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+        td { padding: 8px 14px; font-size: 13px; border-bottom: 1px solid rgba(51,65,85,0.3); color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         tr:hover td { background: rgba(139,92,246,0.04); }
 
         .source-badge { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
@@ -211,76 +212,48 @@
         </div>
     </div>
 
-    <!-- SCANNER thead -->
-    <div id="thead-scanner" style="padding: 0 32px;">
-        <table style="width:100%; border-collapse:collapse; background:#172133; border-radius:12px 12px 0 0; overflow:hidden;">
-            <thead>
-                <tr>
-                    <th style="width:36px"><input type="checkbox" id="dbCheckAll" onchange="toggleAllDb(this)"></th>
-                    <th style="position:relative;">
-                        <div class="th-content">
-                            <span class="th-label" onclick="sortBy('date')" data-i18n="th-date">Tarih</span>
-                        </div>
-                    </th>
-                    <th style="position:relative;">
-                        <div class="th-content">
-                            <span class="th-label" onclick="sortBy('sector')" data-i18n="th-sector">Sektör</span>
-                        </div>
-                    </th>
-                    <th style="position:relative;">
-                        <div class="th-content">
-                            <span class="th-label" onclick="sortBy('name')" data-i18n="th-company">Firma Adı</span>
-                        </div>
-                    </th>
-                    <th style="position:relative;">
-                        <div class="th-content">
-                            <span class="th-label" onclick="sortBy('phone')" data-i18n="th-phone">Telefon</span>
-                        </div>
-                    </th>
-                    <th style="position:relative;">
-                        <div class="th-content">
-                            <span class="th-label" onclick="sortBy('email')" data-i18n="th-email">E-posta</span>
-                        </div>
-                    </th>
-                    <th><span class="th-label" onclick="sortBy('domain')">Domain</span></th>
-                    <th style="width:35px">INS</th>
-                    <th style="width:35px">FB</th>
-                    <th style="width:35px">LNK</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-
-    <!-- LEADS thead -->
-    <div id="thead-leads" class="hidden" style="padding: 0 32px;">
-        <table style="width:100%; border-collapse:collapse; background:#172133; border-radius:12px 12px 0 0; overflow:hidden;">
-            <thead>
-                <tr>
-                    <th style="width:36px"><input type="checkbox" id="leadsCheckAll" onchange="toggleAllLeads(this)"></th>
-                    <th><span class="th-label" onclick="leadsSort('date')" data-i18n="ext-db-date">Tarih</span></th>
-                    <th><span class="th-label" onclick="leadsSort('first_name')" data-i18n="ext-db-first">Adı</span></th>
-                    <th><span class="th-label" onclick="leadsSort('last_name')" data-i18n="ext-db-last">Soyadı</span></th>
-                    <th><span class="th-label" onclick="leadsSort('phone')" data-i18n="ext-db-phone">Telefon Numarası</span></th>
-                    <th><span class="th-label" onclick="leadsSort('email')" data-i18n="ext-db-email">Email Adresi</span></th>
-                    <th><span class="th-label" onclick="leadsSort('city')" data-i18n="ext-db-city">Şehir</span></th>
-                </tr>
-            </thead>
-        </table>
-    </div>
 </div><!-- /sticky-zone -->
 
 <div class="table-container">
-    <!-- SCANNER table body -->
-    <div id="tbody-scanner-wrap" class="table-card" style="border-radius: 0 0 12px 12px;">
-        <table style="width:100%; border-collapse:collapse;">
-            <tbody id="tbody">
-                <tr><td colspan="10" class="empty-state"><h3 data-i18n="sm-loading">Yükleniyor...</h3></td></tr>
-            </tbody>
-        </table>
+    <!-- SCANNER table: thead + tbody in one table -->
+    <div id="tbody-scanner-wrap" class="table-card">
+        <div class="table-scroll">
+            <table>
+                <colgroup>
+                    <col style="width:40px">
+                    <col style="width:140px">
+                    <col style="width:130px">
+                    <col style="width:200px">
+                    <col style="width:140px">
+                    <col style="width:220px">
+                    <col style="width:150px">
+                    <col style="width:46px">
+                    <col style="width:46px">
+                    <col style="width:46px">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="dbCheckAll" onchange="toggleAllDb(this)"></th>
+                        <th><span class="th-label" onclick="sortBy('date')" data-i18n="th-date">Tarih</span></th>
+                        <th><span class="th-label" onclick="sortBy('sector')" data-i18n="th-sector">Sektör</span></th>
+                        <th><span class="th-label" onclick="sortBy('name')" data-i18n="th-company">Firma Adı</span></th>
+                        <th><span class="th-label" onclick="sortBy('phone')" data-i18n="th-phone">Telefon</span></th>
+                        <th><span class="th-label" onclick="sortBy('email')" data-i18n="th-email">E-posta</span></th>
+                        <th><span class="th-label" onclick="sortBy('domain')">Domain</span></th>
+                        <th>INS</th>
+                        <th>FB</th>
+                        <th>LNK</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    <tr><td colspan="10" class="empty-state"><h3 data-i18n="sm-loading">Yükleniyor...</h3></td></tr>
+                </tbody>
+            </table>
+        </div>
         <div class="pagination">
             <div style="display:flex; align-items:center; gap:12px;">
                 <span class="info" id="pageInfo">-</span>
-                <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize()">
+                <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize()" style="appearance:none;-webkit-appearance:none;">
                     <option value="50">50</option>
                     <option value="100">100</option>
                     <option value="200">200</option>
@@ -292,17 +265,39 @@
         </div>
     </div>
 
-    <!-- LEADS table body -->
-    <div id="tbody-leads-wrap" class="table-card hidden" style="border-radius: 0 0 12px 12px;">
-        <table style="width:100%; border-collapse:collapse;">
-            <tbody id="leadsTbody">
-                <tr><td colspan="7" class="empty-state"><h3 data-i18n="sm-loading">Yükleniyor...</h3></td></tr>
-            </tbody>
-        </table>
+    <!-- LEADS table: thead + tbody in one table -->
+    <div id="tbody-leads-wrap" class="table-card hidden">
+        <div class="table-scroll">
+            <table>
+                <colgroup>
+                    <col style="width:40px">
+                    <col style="width:160px">
+                    <col style="width:140px">
+                    <col style="width:140px">
+                    <col style="width:180px">
+                    <col style="width:260px">
+                    <col style="width:120px">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="leadsCheckAll" onchange="toggleAllLeads(this)"></th>
+                        <th><span class="th-label" onclick="leadsSort('date')" data-i18n="ext-db-date">Tarih</span></th>
+                        <th><span class="th-label" onclick="leadsSort('first_name')" data-i18n="ext-db-first">Adı</span></th>
+                        <th><span class="th-label" onclick="leadsSort('last_name')" data-i18n="ext-db-last">Soyadı</span></th>
+                        <th><span class="th-label" onclick="leadsSort('phone')" data-i18n="ext-db-phone">Telefon Numarası</span></th>
+                        <th><span class="th-label" onclick="leadsSort('email')" data-i18n="ext-db-email">Email Adresi</span></th>
+                        <th><span class="th-label" onclick="leadsSort('city')" data-i18n="ext-db-city">Şehir</span></th>
+                    </tr>
+                </thead>
+                <tbody id="leadsTbody">
+                    <tr><td colspan="7" class="empty-state"><h3 data-i18n="sm-loading">Yükleniyor...</h3></td></tr>
+                </tbody>
+            </table>
+        </div>
         <div class="pagination">
             <div style="display:flex; align-items:center; gap:12px;">
                 <span class="info" id="leadsPageInfo">-</span>
-                <select class="page-size-select" id="leadsPageSizeSelect" onchange="changeLeadsPageSize()">
+                <select class="page-size-select" id="leadsPageSizeSelect" onchange="changeLeadsPageSize()" style="appearance:none;-webkit-appearance:none;">
                     <option value="50">50</option>
                     <option value="100">100</option>
                     <option value="200">200</option>
@@ -341,7 +336,6 @@ function switchTab(tab) {
     ['scanner','leads'].forEach(t => {
         document.getElementById('tab-' + t).classList.toggle('active', t === tab);
         document.getElementById('toolbar-' + t).classList.toggle('hidden', t !== tab);
-        document.getElementById('thead-' + t).classList.toggle('hidden', t !== tab);
         document.getElementById('tbody-' + t + '-wrap').classList.toggle('hidden', t !== tab);
     });
 }
