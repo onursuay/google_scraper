@@ -237,14 +237,8 @@
                         <input type="text" id="gsSearch" placeholder="Dosya ara..." data-i18n-ph="gs-search-ph" oninput="gsSearchFiles(this.value)">
                     </div>
 
-                    <!-- Dosya listesi -->
-                    <div id="gsFileList" style="max-height:220px;overflow-y:auto;"></div>
-
-                    <!-- Sekme listesi -->
-                    <div id="gsTabList" class="hidden" style="margin-top:12px;">
-                        <div style="font-size:12px;color:#64748b;margin-bottom:8px;" data-i18n="gs-sel-tab">Sekme seçin:</div>
-                        <div id="gsTabItems"></div>
-                    </div>
+                    <!-- Dosya listesi (inline sheet dropdown) -->
+                    <div id="gsFileList" style="max-height:300px;overflow-y:auto;"></div>
 
                     <div id="gsStatusMsg"></div>
                 </div>
@@ -503,13 +497,20 @@ function gsLoadFiles(q='') {
         }
         const dateLoc = window.APP_LANG === 'en' ? 'en-US' : 'tr-TR';
         el.innerHTML = files.map(f => `
-            <label class="sheet-option" onclick="gsSelectFile('${f.id}', '${f.name.replace(/'/g,"\\'").replace(/"/g,"&quot;")}', this)">
-                <div>
-                    <div class="si-name">${f.name}</div>
-                    <div class="si-meta">${new Date(f.modifiedTime).toLocaleDateString(dateLoc)}</div>
+            <div class="gs-file-row" id="row-${f.id}" style="border:2px solid #334155; border-radius:8px; margin-bottom:6px; overflow:hidden; transition:border-color 0.15s;">
+                <label style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;" onclick="gsSelectFile('${f.id}', this.closest('.gs-file-row'))">
+                    <div>
+                        <div class="si-name">${f.name}</div>
+                        <div class="si-meta">${new Date(f.modifiedTime).toLocaleDateString(dateLoc)}</div>
+                    </div>
+                    <input type="radio" name="gsfile" class="sheet-radio" value="${f.id}">
+                </label>
+                <div class="gs-sheet-drop hidden" style="padding:0 14px 12px;">
+                    <select class="map-select" style="width:100%;" onchange="gsSelectTab(this.value)">
+                        <option value="">— ${t('gs-sel-tab','Sekme seçin')} —</option>
+                    </select>
                 </div>
-                <input type="radio" name="gsfile" class="sheet-radio">
-            </label>`).join('');
+            </div>`).join('');
     });
 }
 
@@ -518,42 +519,43 @@ function gsSearchFiles(val) {
     gsSearchTimer = setTimeout(() => gsLoadFiles(val), 400);
 }
 
-function gsSelectFile(id, name, el) {
+function gsSelectFile(id, rowEl) {
     gsSpreadsheetId = id;
     gsSelectedTab = null;
-    document.querySelectorAll('#gsFileList .sheet-option').forEach(o=>o.classList.remove('selected'));
-    el.classList.add('selected');
     updateStep1Btn();
 
+    // Tüm satırları sıfırla
+    document.querySelectorAll('.gs-file-row').forEach(r => {
+        r.style.borderColor = '#334155';
+        r.querySelector('.gs-sheet-drop').classList.add('hidden');
+        r.querySelector('input[type=radio]').checked = false;
+    });
+
+    // Bu satırı seç
+    rowEl.style.borderColor = '#10b981';
+    rowEl.querySelector('input[type=radio]').checked = true;
+    const drop = rowEl.querySelector('.gs-sheet-drop');
+
     // Sekmeleri yükle
-    const tabList = document.getElementById('gsTabList');
-    const tabItems = document.getElementById('gsTabItems');
-    tabList.classList.remove('hidden');
-    tabItems.innerHTML = `<div style="font-size:12px;color:#64748b;">${t('ext-loading','Yükleniyor...')}</div>`;
+    const sel = drop.querySelector('select');
+    sel.innerHTML = `<option value="">${t('ext-loading','Yükleniyor...')}</option>`;
+    drop.classList.remove('hidden');
 
     fetch(`/api/google/sheets/${id}`).then(r=>r.json()).then(data => {
         const tabs = data.tabs || [];
         if (tabs.length === 1) {
             gsSelectedTab = tabs[0].title;
-            tabItems.innerHTML = `<div class="sheet-option selected" style="cursor:default;">
-                <div class="si-name">${tabs[0].title}</div>
-                <div class="si-meta">${t('gs-auto-sel','Otomatik seçildi')}</div>
-            </div>`;
+            sel.innerHTML = `<option value="${tabs[0].title}" selected>${tabs[0].title} (${t('gs-auto-sel','otomatik')})</option>`;
             updateStep1Btn();
             return;
         }
-        tabItems.innerHTML = tabs.map(t => `
-            <label class="sheet-option" onclick="gsSelectTab('${t.title.replace(/'/g,"\\'")}', this)">
-                <div class="si-name">${t.title}</div>
-                <input type="radio" name="gstab" class="sheet-radio">
-            </label>`).join('');
+        sel.innerHTML = `<option value="">— ${t('gs-sel-tab','Sekme seçin')} —</option>` +
+            tabs.map(t => `<option value="${t.title}">${t.title}</option>`).join('');
     });
 }
 
-function gsSelectTab(title, el) {
+function gsSelectTab(title) {
     gsSelectedTab = title;
-    document.querySelectorAll('#gsTabItems .sheet-option').forEach(o=>o.classList.remove('selected'));
-    el.classList.add('selected');
     updateStep1Btn();
 }
 
@@ -563,7 +565,6 @@ function gsDisconnect() {
         document.getElementById('gsNotConnected').classList.remove('hidden');
         document.getElementById('gsConnected').classList.add('hidden');
         document.getElementById('gsFileList').innerHTML='';
-        document.getElementById('gsTabList').classList.add('hidden');
         updateStep1Btn();
     });
 }
