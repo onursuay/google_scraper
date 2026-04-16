@@ -513,7 +513,7 @@
             <div class="results-header">
                 <h3 data-i18n="found-biz">Bulunan İşletmeler</h3>
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <span id="resultCount" style="color:#64748b; font-size:13px;">0 sonuç</span>
+                    <span id="resultCount" style="color:#64748b; font-size:13px;">0 <span data-i18n="results-sfx">sonuç</span></span>
                     <button onclick="deleteSelectedResults()" id="deleteResultsBtn" style="display:none; padding:5px 12px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;" data-i18n="del-sel">Seçilenleri Sil</button>
                     <button onclick="clearResults()" id="clearResultsBtn" style="display:none; padding:5px 12px; background:#334155; color:#94a3b8; border:none; border-radius:6px; font-size:12px; cursor:pointer;" data-i18n="clear-btn">Temizle</button>
                 </div>
@@ -639,7 +639,7 @@ function pauseScan() {
 }
 
 function stopScan() {
-    if (!confirm('Tarama durdurulacak. Emin misiniz?')) return;
+    if (!confirm(t('scan-stop-confirm','Tarama durdurulacak. Emin misiniz?'))) return;
     fetch('/api/scan/stop', {method: 'POST'}).then(() => {
         showScanControls(false, false);
         document.getElementById('stopBtn').classList.add('active-glow');
@@ -679,8 +679,8 @@ function startScan() {
     document.getElementById('statTotal').textContent = '0';
     document.getElementById('statFound').textContent = '0';
     document.getElementById('statSheets').textContent = '0';
-    document.getElementById('resultsBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#475569;">Taranıyor...</td></tr>';
-    document.getElementById('resultCount').textContent = '0 sonuç';
+    document.getElementById('resultsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:#475569;">${t('scanning-msg','Taranıyor...')}</td></tr>`;
+    document.getElementById('resultCount').textContent = `0 ${t('results-sfx','sonuç')}`;
     document.getElementById('logPanel').innerHTML = '';
 
     fetch('/api/scan', {
@@ -729,7 +729,7 @@ function fetchStatus() {
 
             // Results - sadece yeni satirlar eklendiginde guncelle
             const tbody = document.getElementById('resultsBody');
-            document.getElementById('resultCount').textContent = data.results.length + ' sonuç';
+            document.getElementById('resultCount').textContent = data.results.length + ' ' + t('results-sfx','sonuç');
             const currentRowCount = tbody.querySelectorAll('tr[data-idx]').length;
 
             if (data.results.length > 0 && data.results.length !== currentRowCount) {
@@ -791,7 +791,7 @@ function updateResultActions() {
     const btn = document.getElementById('deleteResultsBtn');
     if (checked > 0) {
         btn.style.display = 'inline-block';
-        btn.textContent = `Seçilenleri Sil (${checked})`;
+        btn.textContent = `${t('del-sel-btn','Seçilenleri Sil')} (${checked})`;
     } else {
         btn.style.display = 'none';
     }
@@ -801,7 +801,7 @@ function deleteSelectedResults() {
     const indices = Array.from(document.querySelectorAll('.result-check:checked'))
         .map(cb => parseInt(cb.value));
     if (!indices.length) return;
-    if (!confirm(`${indices.length} kayıt Scanner sonuçlarından ve Google Sheets'ten silinecek. Emin misiniz?`)) return;
+    if (!confirm(`${indices.length} ${t('scan-delete-confirm','kayıt Scanner sonuçlarından ve Google Sheets\'ten silinecek. Emin misiniz?')}`)) return;
 
     fetch('/api/scan/delete', {
         method: 'POST',
@@ -820,14 +820,14 @@ function deleteSelectedResults() {
 }
 
 function clearResults() {
-    if (!confirm('Tüm tarama sonuçları ekrandan temizlenecek. Google Sheets\'teki veriler kalacak. Emin misiniz?')) return;
+    if (!confirm(t('scan-clear-confirm','Tüm tarama sonuçları ekrandan temizlenecek. Google Sheets\'teki veriler kalacak. Emin misiniz?'))) return;
     fetch('/api/reset', {method: 'POST'}).then(() => {
-        document.getElementById('resultsBody').innerHTML = '<tr><td colspan="12" style="text-align:center;padding:40px;color:#475569;">Henüz tarama yapılmadı</td></tr>';
+        document.getElementById('resultsBody').innerHTML = `<tr><td colspan="12" style="text-align:center;padding:40px;color:#475569;">${t('no-scans','Henüz tarama yapılmadı')}</td></tr>`;
         document.getElementById('statTotal').textContent = '0';
         document.getElementById('statFound').textContent = '0';
         document.getElementById('statSheets').textContent = '0';
-        document.getElementById('resultCount').textContent = '0 sonuç';
-        document.getElementById('statusText').textContent = 'Hazır';
+        document.getElementById('resultCount').textContent = `0 ${t('results-sfx','sonuç')}`;
+        document.getElementById('statusText').textContent = t('ready-status','Hazır — tarama başlatmak için sol panelden sektör ve şehir seçin');
         document.getElementById('progressFill').style.width = '0%';
         document.getElementById('logPanel').innerHTML = '';
         document.getElementById('clearResultsBtn').style.display = 'none';

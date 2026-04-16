@@ -1512,7 +1512,7 @@ function cbTogglePause() {
 }
 
 async function stopBot() {
-  if (!confirm('Tarama durdurulacak. Emin misiniz?')) return;
+  if (!confirm(t('scan-stop-confirm','Tarama durdurulacak. Emin misiniz?'))) return;
   await apiCall('stop');
   cbUpdateButtons('idle');
 }

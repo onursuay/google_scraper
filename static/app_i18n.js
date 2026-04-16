@@ -127,13 +127,16 @@
             'ext-gs-fail':      'Google connection failed',
 
             // ── DATABASE ──
-            'db-search-ph':  'Search company, email, domain...',
-            'all-sources':   'All Sources',
-            'all-sectors':   'All Sectors',
-            'del-sel-btn':   'Delete Selected',
-            'refresh-btn':   'Refresh',
-            'src-filter-ph': 'Filter source...',
-            'clear-filter':  'Clear',
+            'db-search-ph':    'Search company, email, domain...',
+            'leads-search-ph': 'Search name, surname, email, city...',
+            'all-sources':     'All Sources',
+            'all-sectors':     'All Sectors',
+            'del-sel-btn':     'Delete Selected',
+            'refresh-btn':     'Refresh',
+            'src-filter-ph':   'Filter source...',
+            'clear-filter':    'Clear',
+            'db-per-page':     'records/page',
+            'db-scanner-only': 'Only Scanner records can be deleted.',
 
             // ── SENDMAIL ──
             'sm-db-co':     'DB Companies',
@@ -253,6 +256,13 @@
             'sm-sending':      'Sending...',
             'sm-send-err':     'Send error: ',
             'sm-records':      'records',
+
+            // ── SCANNER JS ──
+            'scan-stop-confirm':   'Scan will be stopped. Are you sure?',
+            'scan-delete-confirm': 'records will be deleted from Scanner results and Google Sheets. Are you sure?',
+            'scan-clear-confirm':  'All scan results will be cleared from screen. Data in Google Sheets will remain. Are you sure?',
+            'scanning-msg':        'Scanning...',
+            'results-sfx':         'results',
 
             // ── DOMAINS JS ──
             'dom-total':          'Total:',

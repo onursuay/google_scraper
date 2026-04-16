@@ -202,12 +202,12 @@
     <!-- LEADS toolbar -->
     <div id="toolbar-leads" class="toolbar hidden">
         <div class="toolbar-left">
-            <input type="text" class="search-box" id="leadsSearchBox" placeholder="Ad, soyad, e-posta, şehir ara..." oninput="applyLeadsFilters()">
+            <input type="text" class="search-box" id="leadsSearchBox" placeholder="Ad, soyad, e-posta, şehir ara..." data-i18n-ph="leads-search-ph" oninput="applyLeadsFilters()">
             <div class="stat-pills" id="leadsStatPills"></div>
         </div>
         <div class="toolbar-right">
-            <button class="btn btn-outline" id="leadsDeleteBtn" style="display:none; background:#ef4444; color:white; border-color:#ef4444;" onclick="deleteSelectedLeads()">Seçilenleri Sil</button>
-            <button class="btn btn-outline" onclick="loadLeads()">Yenile</button>
+            <button class="btn btn-outline" id="leadsDeleteBtn" style="display:none; background:#ef4444; color:white; border-color:#ef4444;" onclick="deleteSelectedLeads()" data-i18n="del-sel-btn">Seçilenleri Sil</button>
+            <button class="btn btn-outline" onclick="loadLeads()" data-i18n="refresh-btn">Yenile</button>
         </div>
     </div>
 
@@ -257,12 +257,12 @@
             <thead>
                 <tr>
                     <th style="width:36px"><input type="checkbox" id="leadsCheckAll" onchange="toggleAllLeads(this)"></th>
-                    <th><span class="th-label" onclick="leadsSort('date')">Tarih</span></th>
-                    <th><span class="th-label" onclick="leadsSort('first_name')">Adı</span></th>
-                    <th><span class="th-label" onclick="leadsSort('last_name')">Soyadı</span></th>
-                    <th><span class="th-label" onclick="leadsSort('phone')">Telefon Numarası</span></th>
-                    <th><span class="th-label" onclick="leadsSort('email')">Email Adresi</span></th>
-                    <th><span class="th-label" onclick="leadsSort('city')">Şehir</span></th>
+                    <th><span class="th-label" onclick="leadsSort('date')" data-i18n="ext-db-date">Tarih</span></th>
+                    <th><span class="th-label" onclick="leadsSort('first_name')" data-i18n="ext-db-first">Adı</span></th>
+                    <th><span class="th-label" onclick="leadsSort('last_name')" data-i18n="ext-db-last">Soyadı</span></th>
+                    <th><span class="th-label" onclick="leadsSort('phone')" data-i18n="ext-db-phone">Telefon Numarası</span></th>
+                    <th><span class="th-label" onclick="leadsSort('email')" data-i18n="ext-db-email">Email Adresi</span></th>
+                    <th><span class="th-label" onclick="leadsSort('city')" data-i18n="ext-db-city">Şehir</span></th>
                 </tr>
             </thead>
         </table>
@@ -274,7 +274,7 @@
     <div id="tbody-scanner-wrap" class="table-card" style="border-radius: 0 0 12px 12px;">
         <table style="width:100%; border-collapse:collapse;">
             <tbody id="tbody">
-                <tr><td colspan="10" class="empty-state"><h3>Yükleniyor...</h3></td></tr>
+                <tr><td colspan="10" class="empty-state"><h3 data-i18n="sm-loading">Yükleniyor...</h3></td></tr>
             </tbody>
         </table>
         <div class="pagination">
@@ -286,7 +286,7 @@
                     <option value="200">200</option>
                     <option value="500">500</option>
                 </select>
-                <span class="info">kayıt/sayfa</span>
+                <span class="info" data-i18n="db-per-page">kayıt/sayfa</span>
             </div>
             <div class="page-btns" id="pageBtns"></div>
         </div>
@@ -296,7 +296,7 @@
     <div id="tbody-leads-wrap" class="table-card hidden" style="border-radius: 0 0 12px 12px;">
         <table style="width:100%; border-collapse:collapse;">
             <tbody id="leadsTbody">
-                <tr><td colspan="7" class="empty-state"><h3>Yükleniyor...</h3></td></tr>
+                <tr><td colspan="7" class="empty-state"><h3 data-i18n="sm-loading">Yükleniyor...</h3></td></tr>
             </tbody>
         </table>
         <div class="pagination">
@@ -308,7 +308,7 @@
                     <option value="200">200</option>
                     <option value="500">500</option>
                 </select>
-                <span class="info">kayıt/sayfa</span>
+                <span class="info" data-i18n="db-per-page">kayıt/sayfa</span>
             </div>
             <div class="page-btns" id="leadsPageBtns"></div>
         </div>
@@ -362,7 +362,7 @@ function loadData() {
 function updateSectorFilter() {
     const sectors = [...new Set(allData.map(d => d.sector).filter(Boolean))].sort();
     const sel = document.getElementById('sectorFilter');
-    sel.innerHTML = '<option value="">Tüm Sektörler</option>' +
+    sel.innerHTML = `<option value="">${t('all-sectors','Tüm Sektörler')}</option>` +
         sectors.map(s => `<option value="${s}">${s}</option>`).join('');
 }
 
@@ -408,7 +408,7 @@ function renderTable() {
     const tbody = document.getElementById('tbody');
 
     if (!pageData.length) {
-        tbody.innerHTML = '<tr><td colspan="10" class="empty-state"><h3>Kayıt bulunamadı</h3></td></tr>';
+        tbody.innerHTML = `<tr><td colspan="10" class="empty-state"><h3>${t('dom-no-records','Kayıt bulunamadı')}</h3></td></tr>`;
         document.getElementById('pageInfo').textContent = '-';
         document.getElementById('pageBtns').innerHTML = '';
         return;
@@ -429,7 +429,7 @@ function renderTable() {
 
     const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
     document.getElementById('pageInfo').textContent =
-        `${start + 1}-${Math.min(end, filteredData.length)} / ${filteredData.length} kayıt`;
+        `${start + 1}-${Math.min(end, filteredData.length)} / ${filteredData.length} ${t('sm-records','kayıt')}`;
     let btns = '';
     for (let p = 1; p <= totalPages; p++) {
         if (totalPages > 7 && p > 3 && p < totalPages - 2 && Math.abs(p - currentPage) > 1) {
@@ -453,7 +453,7 @@ function toggleAllDb(el) {
 function updateDbActions() {
     const checked = scannerSelectAll ? filteredData.length : document.querySelectorAll('.db-check:checked').length;
     const btn = document.getElementById('dbDeleteBtn');
-    if (checked > 0) { btn.style.display = 'inline-block'; btn.textContent = `Seçilenleri Sil (${checked})`; }
+    if (checked > 0) { btn.style.display = 'inline-block'; btn.textContent = `${t('del-sel-btn','Seçilenleri Sil')} (${checked})`; }
     else { btn.style.display = 'none'; scannerSelectAll = false; }
 }
 
@@ -467,8 +467,8 @@ function deleteSelectedDb() {
         });
     }
     const total = scannerSelectAll ? filteredData.length : document.querySelectorAll('.db-check:checked').length;
-    if (!confirm(`${total} kayıt silinecek. Emin misiniz?`)) return;
-    if (!rows.length) { alert('Sadece Scanner kayıtları silinebilir.'); return; }
+    if (!confirm(`${total} ${t('dom-delete-confirm','kayıt silinecek. Emin misiniz?')}`)) return;
+    if (!rows.length) { alert(t('db-scanner-only','Sadece Scanner kayıtları silinebilir.')); return; }
     fetch('/api/domains/delete', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({rows})
@@ -503,8 +503,8 @@ function applyLeadsFilters() {
     leadsPage = 1;
     renderLeads();
     document.getElementById('leadsStatPills').innerHTML =
-        `<div class="stat-pill"><strong>${leadsFiltered.length}</strong> Bulunan</div>
-         <div class="stat-pill"><strong>${leadsData.filter(d=>d.email).length}</strong> E-postalı</div>`;
+        `<div class="stat-pill"><strong>${leadsFiltered.length}</strong> ${t('stat-found','Bulunan')}</div>
+         <div class="stat-pill"><strong>${leadsData.filter(d=>d.email).length}</strong> ${t('sm-w-email','E-postalı')}</div>`;
 }
 
 function leadsSort(field) {
@@ -520,7 +520,7 @@ function renderLeads() {
     const tbody = document.getElementById('leadsTbody');
 
     if (!pageData.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><h3>Kayıt bulunamadı</h3></td></tr>';
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state"><h3>${t('dom-no-records','Kayıt bulunamadı')}</h3></td></tr>`;
         document.getElementById('leadsPageInfo').textContent = '-';
         document.getElementById('leadsPageBtns').innerHTML = '';
         return;
@@ -538,7 +538,7 @@ function renderLeads() {
 
     const totalPages = Math.ceil(leadsFiltered.length / LEADS_PAGE_SIZE);
     document.getElementById('leadsPageInfo').textContent =
-        `${start + 1}-${Math.min(end, leadsFiltered.length)} / ${leadsFiltered.length} kayıt`;
+        `${start + 1}-${Math.min(end, leadsFiltered.length)} / ${leadsFiltered.length} ${t('sm-records','kayıt')}`;
     let btns = '';
     for (let p = 1; p <= totalPages; p++) {
         if (totalPages > 7 && p > 3 && p < totalPages - 2 && Math.abs(p - leadsPage) > 1) {
@@ -562,7 +562,7 @@ function toggleAllLeads(el) {
 function updateLeadsActions() {
     const checked = leadsSelectAll ? leadsFiltered.length : document.querySelectorAll('.leads-check:checked').length;
     const btn = document.getElementById('leadsDeleteBtn');
-    if (checked > 0) { btn.style.display = 'inline-block'; btn.textContent = `Seçilenleri Sil (${checked})`; }
+    if (checked > 0) { btn.style.display = 'inline-block'; btn.textContent = `${t('del-sel-btn','Seçilenleri Sil')} (${checked})`; }
     else { btn.style.display = 'none'; leadsSelectAll = false; }
 }
 
@@ -574,7 +574,7 @@ function deleteSelectedLeads() {
         document.querySelectorAll('.leads-check:checked').forEach(cb => rows.push(parseInt(cb.dataset.row)));
     }
     const total = leadsSelectAll ? leadsFiltered.length : document.querySelectorAll('.leads-check:checked').length;
-    if (!confirm(`${total} kayıt silinecek. Emin misiniz?`)) return;
+    if (!confirm(`${total} ${t('dom-delete-confirm','kayıt silinecek. Emin misiniz?')}`)) return;
     fetch('/api/leads/delete', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({rows})
