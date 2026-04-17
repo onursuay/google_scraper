@@ -243,6 +243,7 @@
             'mkt-seg-date-range':  'Registration Date Range',
             'mkt-seg-date-ph':     'All dates',
             'mkt-load-template':        'Load Default',
+            'mkt-prev-sample-note':     'Preview: variables shown with sample data',
             'mkt-auto-title':           'Automation',
             'mkt-auto-sub':             'Auto-send to new leads',
             'mkt-auto-flow-trigger':    'Trigger',

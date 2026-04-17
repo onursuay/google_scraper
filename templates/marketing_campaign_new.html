@@ -168,6 +168,15 @@
         .auto-flow-arrow { color:#334155; display:flex; align-items:center; }
         .auto-flow-arrow svg { width:16px; height:16px; }
 
+        /* ── Email preview iframe ── */
+        .email-preview-wrap { margin-top:10px; border:1px solid #334155; border-radius:10px; overflow:hidden; }
+        .email-preview-bar { display:flex; align-items:center; gap:7px; padding:8px 14px; background:#172133; border-bottom:1px solid #334155; font-size:11px; color:#475569; }
+        .email-preview-bar svg { width:13px; height:13px; flex-shrink:0; color:#475569; }
+        .email-preview-chrome { display:flex; align-items:center; gap:6px; padding:8px 14px; background:#1a2840; border-bottom:1px solid #334155; }
+        .ep-dot { width:10px; height:10px; border-radius:50%; background:#334155; display:inline-block; }
+        .ep-addr { flex:1; background:#0f172a; border:1px solid #334155; border-radius:4px; padding:3px 10px; font-size:11px; color:#475569; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .email-preview-frame { width:100%; height:520px; border:none; display:block; background:#f4f4f7; }
+
         /* Preview step */
         .preview-section { margin-bottom:16px; }
         .preview-section-title { font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
@@ -534,9 +543,17 @@
                     <span class="preview-key" data-i18n="mkt-field-subject">Konu</span>
                     <span class="preview-val" id="prev-subject">—</span>
                 </div>
-                <div>
-                    <div class="preview-key" style="margin-bottom:6px;" data-i18n="mkt-field-body">İçerik</div>
-                    <div class="preview-body" id="prev-body"></div>
+                <!-- Email render preview -->
+                <div class="email-preview-wrap">
+                    <div class="email-preview-bar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <span data-i18n="mkt-prev-sample-note">Önizleme: değişkenler örnek verilerle gösterilmektedir</span>
+                    </div>
+                    <div class="email-preview-chrome">
+                        <span class="ep-dot"></span><span class="ep-dot"></span><span class="ep-dot"></span>
+                        <div class="ep-addr" id="prev-addr-bar">—</div>
+                    </div>
+                    <iframe id="prev-email-frame" class="email-preview-frame" sandbox="allow-same-origin"></iframe>
                 </div>
             </div>
 
@@ -1098,25 +1115,91 @@ function buildPreview() {
     if (autoOn) schedText += (lang==='en' ? ' · Auto-trigger ON ⚡' : ' · Otomasyon Açık ⚡');
     document.getElementById('prev-schedule').textContent = schedText;
 
+    // Sample data for preview rendering
+    const src = document.getElementById('f-source').value || 'scanner';
+    const sectorVal = document.getElementById('f-sector').value || (lang==='en'?'Technology':'Teknoloji');
+    const sampleLead = src === 'scanner'
+        ? { firma_adi:'Örnek Teknoloji A.Ş.', ad:'', soyad:'', sektor: sectorVal, sehir:'İstanbul', domain:'ornek.com', email:'yetkili@ornek.com', unsubscribe_url:'#' }
+        : { firma_adi:'Ahmet Yılmaz', ad:'Ahmet', soyad:'Yılmaz', sektor:'', sehir:'İstanbul', domain:'', email:'ahmet@ornek.com', unsubscribe_url:'#' };
+
     // Content
     if (selectedType === 'broadcast') {
         document.getElementById('prev-bc-section').style.display = '';
         document.getElementById('prev-seq-section').style.display = 'none';
-        document.getElementById('prev-subject').textContent = getFullSubject() || '—';
-        document.getElementById('prev-body').textContent = document.getElementById('f-body').value.trim() || '—';
+        const subj = getFullSubject() || '—';
+        document.getElementById('prev-subject').textContent = renderSample(subj, sampleLead);
+        const bodyHtml = document.getElementById('f-body').value.trim();
+        renderEmailPreview(renderSample(bodyHtml, sampleLead), renderSample(subj, sampleLead));
     } else {
         document.getElementById('prev-bc-section').style.display = 'none';
         document.getElementById('prev-seq-section').style.display = '';
         const steps = collectSteps();
         const list = document.getElementById('prev-steps-list');
         list.innerHTML = steps.map((s, i) => `
-            <div class="preview-step-item">
-                <div class="ps-label">${lang==='en'?'Step':'Adım'} ${i+1}</div>
-                <div class="ps-subject">${s.subject || '—'}</div>
-                <div class="ps-delay">${i===0 ? (lang==='en'?'Send immediately':'Hemen gönder') : `${s.delay_hours}h ${lang==='en'?'after previous step':'sonra'}`}</div>
+            <div class="preview-step-item" style="cursor:pointer;" onclick="toggleStepPreview(${i})">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div>
+                        <div class="ps-label">${lang==='en'?'Step':'Adım'} ${i+1}</div>
+                        <div class="ps-subject">${renderSample(s.subject || '—', sampleLead)}</div>
+                        <div class="ps-delay">${i===0 ? (lang==='en'?'Send immediately':'Hemen gönder') : `${s.delay_hours}h ${lang==='en'?'after previous':'sonra'}`}</div>
+                    </div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;color:#64748b;flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div id="step-iframe-${i}" style="display:none;margin-top:10px;">
+                    <div class="email-preview-wrap">
+                        <div class="email-preview-chrome">
+                            <span class="ep-dot"></span><span class="ep-dot"></span><span class="ep-dot"></span>
+                            <div class="ep-addr">${renderSample(s.subject||'',sampleLead)}</div>
+                        </div>
+                        <iframe class="email-preview-frame seq-frame-${i}" sandbox="allow-same-origin" style="height:400px;"></iframe>
+                    </div>
+                </div>
             </div>
         `).join('');
+
+        // Inject HTML into each step iframe
+        steps.forEach((s, i) => {
+            const frame = document.querySelector(`.seq-frame-${i}`);
+            if (frame) injectFrame(frame, renderSample(s.body_html || '', sampleLead));
+        });
     }
+}
+
+function renderSample(template, lead) {
+    return (template || '')
+        .replace(/\{firma_adi\}/g, lead.firma_adi)
+        .replace(/\{ad\}/g,        lead.ad)
+        .replace(/\{soyad\}/g,     lead.soyad)
+        .replace(/\{sektor\}/g,    lead.sektor)
+        .replace(/\{sehir\}/g,     lead.sehir)
+        .replace(/\{domain\}/g,    lead.domain)
+        .replace(/\{email\}/g,     lead.email)
+        .replace(/\{unsubscribe_url\}/g, lead.unsubscribe_url);
+}
+
+function injectFrame(frame, html) {
+    const doc = frame.contentDocument || frame.contentWindow?.document;
+    if (!doc) return;
+    doc.open(); doc.write(html); doc.close();
+    // Auto-resize after load
+    frame.onload = () => {
+        try {
+            const h = frame.contentDocument.body.scrollHeight;
+            if (h > 100) frame.style.height = Math.min(h + 20, 700) + 'px';
+        } catch(e) {}
+    };
+}
+
+function renderEmailPreview(html, subject) {
+    const frame = document.getElementById('prev-email-frame');
+    const addrBar = document.getElementById('prev-addr-bar');
+    if (addrBar) addrBar.textContent = subject || '—';
+    injectFrame(frame, html);
+}
+
+function toggleStepPreview(i) {
+    const el = document.getElementById('step-iframe-'+i);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 // ── Create campaign ──
