@@ -283,9 +283,42 @@
         </nav>
 
         <div class="lp-right">
+            {% if current_user %}
+            <a href="/app" class="pill-base btn-shimmer" data-i18n="nav-launch" style="gap:7px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Uygulamayı Aç
+            </a>
+            <div class="lp-user-wrap" id="lpUserWrap">
+                <button class="lp-user-btn" onclick="toggleLpUser(event)">
+                    <div class="lp-ua">{{ current_user.initials }}</div>
+                    <span class="lp-uname">{{ current_user.full_name.split()[0] }}</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="lp-user-drop" id="lpUserDrop">
+                    <div class="lpud-head">
+                        <div class="lpud-av">{{ current_user.initials }}</div>
+                        <div>
+                            <div class="lpud-name">{{ current_user.full_name }}</div>
+                            <div class="lpud-email">{{ current_user.email }}</div>
+                        </div>
+                    </div>
+                    <div class="lpud-sep"></div>
+                    <a href="/account" class="lpud-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Hesabım
+                    </a>
+                    <div class="lpud-sep"></div>
+                    <a href="/logout" class="lpud-item lpud-logout">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Çıkış Yap
+                    </a>
+                </div>
+            </div>
+            {% else %}
             <a href="/login" class="lp-login" data-i18n="nav-login">Giriş Yap</a>
             <a href="#iletisim" class="pill-base btn-shimmer" data-i18n="nav-demo">Görüşme Planla</a>
-            <a href="/app" class="pill-base pill-filled btn-shimmer" data-i18n="nav-launch">Uygulamayı Başlat</a>
+            <a href="/register" class="pill-base pill-filled btn-shimmer" data-i18n="nav-register">Kayıt Ol</a>
+            {% endif %}
         </div>
     </div>
     <div class="lp-header-line"></div>
@@ -515,6 +548,48 @@
         background: linear-gradient(90deg, #34d399, #2dd4bf, #22d3ee);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
+
+    /* Landing user dropdown */
+    .lp-user-wrap { position: relative; }
+    .lp-user-btn {
+        display: flex; align-items: center; gap: 8px;
+        background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 9999px; padding: 5px 14px 5px 6px;
+        cursor: pointer; transition: background 0.2s;
+    }
+    .lp-user-btn:hover { background: rgba(255,255,255,0.1); }
+    .lp-user-btn svg { color: #64748b; }
+    .lp-ua {
+        width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+        background: linear-gradient(135deg, #10b981, #0891b2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 11px; font-weight: 700; color: #fff;
+    }
+    .lp-uname { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+    .lp-user-drop {
+        display: none; position: absolute; top: calc(100% + 10px); right: 0;
+        background: #111827; border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px; padding: 8px; min-width: 230px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6); z-index: 200;
+    }
+    .lp-user-wrap.open .lp-user-drop { display: block; }
+    .lpud-head { display: flex; align-items: center; gap: 10px; padding: 10px 10px 14px; }
+    .lpud-av {
+        width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+        background: linear-gradient(135deg, #10b981, #0891b2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 700; color: #fff;
+    }
+    .lpud-name { font-size: 13px; font-weight: 600; color: #f1f5f9; }
+    .lpud-email { font-size: 12px; color: #64748b; margin-top: 2px; }
+    .lpud-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 2px 0; }
+    .lpud-item {
+        display: flex; align-items: center; gap: 9px; padding: 9px 10px;
+        border-radius: 10px; font-size: 13px; font-weight: 500;
+        color: #94a3b8; text-decoration: none; transition: background 0.15s, color 0.15s;
+    }
+    .lpud-item:hover { background: rgba(255,255,255,0.05); color: #e2e8f0; }
+    .lpud-logout:hover { background: rgba(239,68,68,0.08); color: #f87171; }
 </style>
 
 <script>
@@ -547,6 +622,7 @@ const T = {
     'nav-login': 'Giriş Yap',
     'nav-demo': 'Görüşme Planla',
     'nav-launch': 'Uygulamayı Başlat',
+    'nav-register': 'Kayıt Ol',
     'hero-badge': 'Yo Scraper — Google Maps İşletme Tarayıcı',
     'hero-h1-line1': 'Yo Scraper ile İşletmeleri Tarayın,',
     'hero-h1-line2': 'Satışa Dönüştürün',
@@ -623,6 +699,7 @@ const T = {
     'nav-login': 'Sign In',
     'nav-demo': 'Book a Demo',
     'nav-launch': 'Launch App',
+    'nav-register': 'Sign Up',
     'hero-badge': 'Yo Scraper — Google Maps Business Scraper',
     'hero-h1-line1': 'Scrape Businesses with Yo Scraper,',
     'hero-h1-line2': 'Convert Them to Sales',
@@ -700,9 +777,17 @@ function toggleLangDrop(e) {
   document.getElementById('langWrap').classList.toggle('open');
 }
 
-document.addEventListener('click', function() {
+document.addEventListener('click', function(e) {
   document.getElementById('langWrap').classList.remove('open');
+  const uw = document.getElementById('lpUserWrap');
+  if (uw && !uw.contains(e.target)) uw.classList.remove('open');
 });
+
+function toggleLpUser(e) {
+  e.stopPropagation();
+  const uw = document.getElementById('lpUserWrap');
+  if (uw) uw.classList.toggle('open');
+}
 
 // Init
 applyLang(currentLang);

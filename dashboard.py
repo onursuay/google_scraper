@@ -2,14 +2,14 @@
 """
 Google Maps Isletme Tarayici - Web Dashboard
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import os
 import json
 import threading
 import logging
 import warnings
-from flask import Flask, render_template, request, jsonify, redirect, session, make_response
+from flask import Flask, render_template, request, jsonify, redirect, session, make_response, g
 from flask_socketio import SocketIO
 
 from scraper.maps_scraper import BusinessScraper
@@ -30,7 +30,47 @@ logger = logging.getLogger("dashboard")
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "ps-dev-secret-change-in-prod")
+app.config["SESSION_PERMANENT"] = True
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+
+from auth_utils import (
+    get_user_by_email, get_user_by_id, create_user,
+    update_user, update_password, verify_password, get_initials,
+)
+
+# ─── Auth helpers ─────────────────────────────────────────────────────────────
+
+_PROTECTED = ('/app', '/external', '/database', '/domains', '/sendmail',
+               '/marketing', '/clickbot', '/account')
+
+
+@app.before_request
+def require_auth():
+    path = request.path
+    if not any(path == p or path.startswith(p + '/') for p in _PROTECTED):
+        return
+    if session.get('user_id'):
+        return
+    if request.cookies.get('auth') == '1':
+        return  # legacy cookie grace period
+    if request.content_type and 'json' in request.content_type:
+        return jsonify({'error': 'Unauthorized'}), 401
+    return redirect('/login')
+
+
+@app.context_processor
+def inject_user():
+    if not hasattr(g, '_current_user'):
+        uid = session.get('user_id')
+        if uid and uid != '__admin__':
+            user = get_user_by_id(uid)
+            if user:
+                user['initials'] = get_initials(user.get('full_name', '?'))
+            g._current_user = user
+        else:
+            g._current_user = None
+    return {'current_user': g._current_user}
 
 # Click Bot entegrasyonu
 from clickbot.routes import clickbot_bp, init_clickbot, register_socketio_handlers
@@ -403,31 +443,108 @@ def landing():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if session.get('user_id'):
+        return redirect('/app')
     if request.method == "POST":
         data = request.get_json(silent=True) or {}
+        email = data.get("email", "").strip().lower()
         password = data.get("password", "")
+
+        if not email or not password:
+            return jsonify({"error": "E-posta ve şifre gereklidir."}), 400
+
+        user = get_user_by_email(email)
+        if user and verify_password(password, user.get("password_hash", "")):
+            session['user_id'] = user['id']
+            session.permanent = True
+            resp = make_response(jsonify({"success": True}))
+            resp.set_cookie("auth", "", expires=0)
+            return resp
+
+        # APP_PASSWORD fallback — admin login without user record
         app_password = os.getenv("APP_PASSWORD", "")
         if app_password and password == app_password:
-            resp = make_response(jsonify({"success": True}))
-            resp.set_cookie("auth", "1", max_age=86400 * 30, httponly=True, samesite="Lax")
-            return resp
-        elif not app_password:
-            # No password set — allow all
-            resp = make_response(jsonify({"success": True}))
-            resp.set_cookie("auth", "1", max_age=86400 * 30, httponly=True, samesite="Lax")
-            return resp
+            session['user_id'] = '__admin__'
+            session.permanent = True
+            return jsonify({"success": True})
+
         return jsonify({"error": "E-posta veya şifre hatalı."}), 401
     return render_template("login.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if session.get('user_id'):
+        return redirect('/app')
     if request.method == "POST":
-        # Single-user tool: registration just redirects to app
+        data = request.get_json(silent=True) or {}
+        name     = data.get("name", "").strip()
+        email    = data.get("email", "").strip()
+        company  = data.get("company", "").strip()
+        phone    = data.get("phone", "").strip()
+        password = data.get("password", "")
+
+        if not name or not email or not password:
+            return jsonify({"error": "Ad soyad, e-posta ve şifre gereklidir."}), 400
+        if len(password) < 8:
+            return jsonify({"error": "Şifre en az 8 karakter olmalıdır."}), 400
+
+        result = create_user(name, email, company, phone, password)
+        if "error" in result:
+            return jsonify(result), 400
+
+        session['user_id'] = result['id']
+        session.permanent = True
         resp = make_response(jsonify({"success": True}))
-        resp.set_cookie("auth", "1", max_age=86400 * 30, httponly=True, samesite="Lax")
+        resp.set_cookie("auth", "", expires=0)
         return resp
     return render_template("register.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    resp = make_response(redirect('/'))
+    resp.set_cookie("auth", "", expires=0)
+    return resp
+
+
+@app.route("/account", methods=["GET", "POST"])
+def account():
+    uid = session.get('user_id')
+    if not uid or uid == '__admin__':
+        return redirect('/login')
+    user = get_user_by_id(uid)
+    if not user:
+        session.clear()
+        return redirect('/login')
+
+    if request.method == "POST":
+        data   = request.get_json(silent=True) or {}
+        action = data.get("action", "update_profile")
+
+        if action == "update_profile":
+            result = update_user(uid, {
+                "full_name": data.get("full_name", user["full_name"]).strip(),
+                "company":   data.get("company",   user.get("company", "")).strip(),
+                "phone":     data.get("phone",     user.get("phone",   "")).strip(),
+            })
+            return jsonify({"success": True, "user": result})
+
+        if action == "change_password":
+            cur_pw = data.get("current_password", "")
+            new_pw = data.get("new_password", "")
+            if not verify_password(cur_pw, user["password_hash"]):
+                return jsonify({"error": "Mevcut şifre hatalı."}), 400
+            if len(new_pw) < 8:
+                return jsonify({"error": "Yeni şifre en az 8 karakter olmalıdır."}), 400
+            update_password(uid, new_pw)
+            return jsonify({"success": True})
+
+        return jsonify({"error": "Bilinmeyen işlem."}), 400
+
+    user['initials'] = get_initials(user.get('full_name', '?'))
+    return render_template("account.html", user=user)
 
 
 @app.route("/app")
