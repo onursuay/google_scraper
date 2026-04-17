@@ -7,206 +7,206 @@
     <title>Yo Scraper</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f172a; color:#e2e8f0; min-height:100vh; }
+        body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#f8fafc; color:#111827; min-height:100vh; }
         .container { max-width:860px; margin:0 auto; padding:24px 32px 100px; }
 
         .page-header { display:flex; align-items:center; gap:10px; margin-bottom:28px; }
-        .btn-back { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.05); border:1px solid #334155; color:#94a3b8; text-decoration:none; transition:all .15s; flex-shrink:0; }
-        .btn-back:hover { border-color:#3b82f6; color:#e2e8f0; background:rgba(59,130,246,.08); }
+        .btn-back { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; background:#f3f4f6; border:1px solid #e5e7eb; color:#6b7280; text-decoration:none; transition:all .15s; flex-shrink:0; }
+        .btn-back:hover { border-color:#3b82f6; color:#111827; background:rgba(59,130,246,.08); }
         .btn-back svg { width:14px; height:14px; }
-        .page-title { font-size:20px; font-weight:800; color:#f1f5f9; }
+        .page-title { font-size:20px; font-weight:800; color:#111827; }
 
         /* Wizard steps */
         .wizard-steps { display:flex; gap:0; margin-bottom:32px; }
         .wizard-step { flex:1; display:flex; flex-direction:column; align-items:center; position:relative; }
-        .wizard-step:not(:last-child)::after { content:''; position:absolute; top:15px; left:50%; width:100%; height:2px; background:#334155; z-index:0; }
-        .step-dot { width:30px; height:30px; border-radius:50%; background:#1e293b; border:2px solid #334155; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#64748b; z-index:1; transition:all .2s; }
+        .wizard-step:not(:last-child)::after { content:''; position:absolute; top:15px; left:50%; width:100%; height:2px; background:#e5e7eb; z-index:0; }
+        .step-dot { width:30px; height:30px; border-radius:50%; background:#ffffff; border:2px solid #e5e7eb; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#9ca3af; z-index:1; transition:all .2s; }
         .step-dot.active { border-color:#3b82f6; background:#3b82f6; color:#fff; }
         .step-dot.done { border-color:#22c55e; background:#22c55e; color:#fff; }
-        .step-label { font-size:11px; color:#64748b; margin-top:6px; text-align:center; font-weight:500; }
+        .step-label { font-size:11px; color:#9ca3af; margin-top:6px; text-align:center; font-weight:500; }
         .step-label.active { color:#3b82f6; }
         .step-label.done { color:#22c55e; }
 
         /* Card */
-        .card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:24px; margin-bottom:16px; }
-        .card-title { font-size:14px; font-weight:700; color:#f1f5f9; margin-bottom:18px; }
+        .card { background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:24px; margin-bottom:16px; }
+        .card-title { font-size:14px; font-weight:700; color:#111827; margin-bottom:18px; }
 
         /* Form */
         .form-group { margin-bottom:16px; }
-        .form-group label { display:block; font-size:12px; color:#94a3b8; margin-bottom:6px; font-weight:500; }
+        .form-group label { display:block; font-size:12px; color:#6b7280; margin-bottom:6px; font-weight:500; }
         .form-group input, .form-group textarea, .form-group select {
-            width:100%; padding:10px 12px; background:#0f172a; border:1px solid #334155;
-            border-radius:8px; color:#e2e8f0; font-size:13px; outline:none; font-family:inherit;
+            width:100%; padding:10px 12px; background:#f8fafc; border:1px solid #e5e7eb;
+            border-radius:8px; color:#111827; font-size:13px; outline:none; font-family:inherit;
             appearance:none; -webkit-appearance:none;
         }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:#3b82f6; }
         .form-group textarea { min-height:160px; resize:vertical; }
-        .form-hint { font-size:11px; color:#475569; margin-top:5px; }
+        .form-hint { font-size:11px; color:#9ca3af; margin-top:5px; }
 
         /* Type selector */
         .type-selector { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-        .type-option { border:2px solid #334155; border-radius:10px; padding:20px 16px; cursor:pointer; transition:all .15s; display:flex; flex-direction:column; align-items:flex-start; gap:10px; }
+        .type-option { border:2px solid #e5e7eb; border-radius:10px; padding:20px 16px; cursor:pointer; transition:all .15s; display:flex; flex-direction:column; align-items:flex-start; gap:10px; }
         .type-option.selected { border-color:#3b82f6; background:rgba(59,130,246,.06); }
-        .type-option:hover:not(.selected) { border-color:#475569; }
-        .type-icon { width:40px; height:40px; border-radius:10px; background:#0f172a; border:1px solid #334155; display:flex; align-items:center; justify-content:center; color:#64748b; flex-shrink:0; }
+        .type-option:hover:not(.selected) { border-color:#9ca3af; }
+        .type-icon { width:40px; height:40px; border-radius:10px; background:#f8fafc; border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; color:#9ca3af; flex-shrink:0; }
         .type-icon svg { width:20px; height:20px; }
-        .type-option.selected .type-icon { border-color:#475569; color:#94a3b8; }
-        .type-name { font-size:14px; font-weight:700; color:#f1f5f9; }
-        .type-desc { font-size:12px; color:#64748b; line-height:1.5; }
+        .type-option.selected .type-icon { border-color:#9ca3af; color:#6b7280; }
+        .type-name { font-size:14px; font-weight:700; color:#111827; }
+        .type-desc { font-size:12px; color:#9ca3af; line-height:1.5; }
 
         /* ── Segment two-panel layout ── */
         .seg-layout { display:grid; grid-template-columns:220px 1fr; gap:16px; }
         .seg-sources-panel { display:flex; flex-direction:column; gap:8px; }
-        .seg-sources-title { font-size:11px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
+        .seg-sources-title { font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
 
         .seg-source-item {
             display:flex; align-items:center; gap:12px;
-            background:#1e293b; border:1.5px solid #334155; border-radius:12px;
+            background:#ffffff; border:1.5px solid #e5e7eb; border-radius:12px;
             padding:14px 12px; cursor:pointer; transition:all .2s;
             position:relative;
         }
-        .seg-source-item:hover:not(.active) { border-color:#475569; background:#253347; }
+        .seg-source-item:hover:not(.active) { border-color:#9ca3af; background:#f0fdf4; }
         .seg-source-item.active { border-color:#3b82f6; background:rgba(59,130,246,.07); }
 
         .seg-src-icon {
             width:38px; height:38px; border-radius:10px; flex-shrink:0;
-            background:#0f172a; border:1px solid #334155;
-            display:flex; align-items:center; justify-content:center; color:#64748b;
+            background:#f8fafc; border:1px solid #e5e7eb;
+            display:flex; align-items:center; justify-content:center; color:#9ca3af;
             transition:all .2s;
         }
         .seg-src-icon svg { width:17px; height:17px; }
-        .seg-source-item.active .seg-src-icon { border-color:#475569; color:#94a3b8; }
+        .seg-source-item.active .seg-src-icon { border-color:#9ca3af; color:#6b7280; }
 
         .seg-src-body { flex:1; min-width:0; }
-        .seg-src-name { font-size:13px; font-weight:700; color:#f1f5f9; }
-        .seg-src-desc { font-size:11px; color:#64748b; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .seg-src-name { font-size:13px; font-weight:700; color:#111827; }
+        .seg-src-desc { font-size:11px; color:#9ca3af; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .seg-src-count { margin-top:6px; }
         .seg-src-count .cnt-val { font-size:18px; font-weight:800; color:#3b82f6; line-height:1; }
-        .seg-src-count .cnt-lbl { font-size:10px; color:#475569; }
-        .cnt-spinner { display:inline-block; width:14px; height:14px; border:2px solid #334155; border-top-color:#3b82f6; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; }
+        .seg-src-count .cnt-lbl { font-size:10px; color:#9ca3af; }
+        .cnt-spinner { display:inline-block; width:14px; height:14px; border:2px solid #e5e7eb; border-top-color:#3b82f6; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; }
 
         .seg-src-check { width:20px; height:20px; border-radius:50%; background:#3b82f6; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:opacity .2s; }
         .seg-src-check svg { width:10px; height:10px; stroke:#fff; }
         .seg-source-item:not(.active) .seg-src-check { opacity:0; }
 
-        .seg-filters-panel { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:20px; }
+        .seg-filters-panel { background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:20px; }
 
         /* Segment preview */
-        .segment-preview { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:12px 16px; display:flex; align-items:center; gap:10px; margin-top:8px; }
+        .segment-preview { background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:12px 16px; display:flex; align-items:center; gap:10px; margin-top:8px; }
         .preview-count { font-size:22px; font-weight:800; color:#3b82f6; }
-        .preview-label { font-size:12px; color:#64748b; }
-        .preview-spinner { width:18px; height:18px; border:2px solid #334155; border-top-color:#3b82f6; border-radius:50%; animation:spin .7s linear infinite; }
+        .preview-label { font-size:12px; color:#9ca3af; }
+        .preview-spinner { width:18px; height:18px; border:2px solid #e5e7eb; border-top-color:#3b82f6; border-radius:50%; animation:spin .7s linear infinite; }
         @keyframes spin { to { transform:rotate(360deg); } }
 
         /* ── Custom Date Range Picker ── */
         .drp-wrap { position:relative; }
-        .drp-trigger { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; background:#0f172a; border:1px solid #334155; border-radius:8px; color:#e2e8f0; font-size:13px; cursor:pointer; transition:border-color .15s; width:100%; }
+        .drp-trigger { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; color:#111827; font-size:13px; cursor:pointer; transition:border-color .15s; width:100%; }
         .drp-trigger:hover, .drp-trigger.open { border-color:#3b82f6; }
-        .drp-trigger svg { width:14px; height:14px; color:#64748b; flex-shrink:0; }
-        .drp-trigger .drp-text { flex:1; text-align:left; color:#94a3b8; }
-        .drp-trigger .drp-text.has-val { color:#e2e8f0; }
-        .drp-popup { position:absolute; top:calc(100% + 6px); left:0; z-index:999; background:#1e293b; border:1px solid #334155; border-radius:12px; padding:16px; display:none; box-shadow:0 20px 60px rgba(0,0,0,.6); min-width:560px; }
+        .drp-trigger svg { width:14px; height:14px; color:#9ca3af; flex-shrink:0; }
+        .drp-trigger .drp-text { flex:1; text-align:left; color:#6b7280; }
+        .drp-trigger .drp-text.has-val { color:#111827; }
+        .drp-popup { position:absolute; top:calc(100% + 6px); left:0; z-index:999; background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:16px; display:none; box-shadow:0 8px 32px rgba(0,0,0,.12); min-width:560px; }
         .drp-popup.open { display:flex; }
-        .drp-presets { display:flex; flex-direction:column; gap:2px; padding-right:16px; border-right:1px solid #334155; min-width:130px; }
-        .drp-presets button { text-align:left; font-size:12px; padding:7px 10px; border-radius:6px; background:none; border:none; color:#94a3b8; cursor:pointer; transition:all .15s; font-family:inherit; }
-        .drp-presets button:hover { background:rgba(59,130,246,.1); color:#e2e8f0; }
+        .drp-presets { display:flex; flex-direction:column; gap:2px; padding-right:16px; border-right:1px solid #e5e7eb; min-width:130px; }
+        .drp-presets button { text-align:left; font-size:12px; padding:7px 10px; border-radius:6px; background:none; border:none; color:#6b7280; cursor:pointer; transition:all .15s; font-family:inherit; }
+        .drp-presets button:hover { background:rgba(59,130,246,.1); color:#111827; }
         .drp-presets button.active { background:rgba(59,130,246,.15); color:#3b82f6; font-weight:600; }
         .drp-calendars { padding-left:16px; }
         .drp-cal-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-        .drp-cal-nav button { background:none; border:none; cursor:pointer; color:#64748b; padding:4px 8px; border-radius:6px; transition:all .15s; display:flex; align-items:center; }
-        .drp-cal-nav button:hover { background:rgba(255,255,255,.06); color:#e2e8f0; }
+        .drp-cal-nav button { background:none; border:none; cursor:pointer; color:#9ca3af; padding:4px 8px; border-radius:6px; transition:all .15s; display:flex; align-items:center; }
+        .drp-cal-nav button:hover { background:rgba(0,0,0,.04); color:#111827; }
         .drp-cal-nav button svg { width:14px; height:14px; }
         .drp-months { display:flex; gap:20px; }
         .drp-month { width:196px; }
-        .drp-month-title { text-align:center; font-size:12px; font-weight:700; color:#f1f5f9; margin-bottom:8px; }
+        .drp-month-title { text-align:center; font-size:12px; font-weight:700; color:#111827; margin-bottom:8px; }
         .drp-days-header { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; margin-bottom:4px; }
-        .drp-days-header span { text-align:center; font-size:10px; color:#475569; font-weight:600; padding:3px 0; }
+        .drp-days-header span { text-align:center; font-size:10px; color:#9ca3af; font-weight:600; padding:3px 0; }
         .drp-days { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; }
-        .drp-day { height:26px; display:flex; align-items:center; justify-content:center; font-size:11px; border-radius:5px; cursor:pointer; transition:all .1s; color:#94a3b8; border:none; background:none; font-family:inherit; }
-        .drp-day:hover:not(:disabled):not(.sel):not(.in-range) { background:rgba(255,255,255,.07); color:#e2e8f0; }
+        .drp-day { height:26px; display:flex; align-items:center; justify-content:center; font-size:11px; border-radius:5px; cursor:pointer; transition:all .1s; color:#6b7280; border:none; background:none; font-family:inherit; }
+        .drp-day:hover:not(:disabled):not(.sel):not(.in-range) { background:rgba(0,0,0,.04); color:#111827; }
         .drp-day.sel { background:#3b82f6; color:#fff; font-weight:700; border-radius:5px; }
         .drp-day.in-range { background:rgba(59,130,246,.18); color:#93c5fd; }
         .drp-day.sel-start { border-radius:5px 2px 2px 5px; }
         .drp-day.sel-end { border-radius:2px 5px 5px 2px; }
         .drp-day.today { box-shadow:0 0 0 1px #3b82f6; color:#60a5fa; }
-        .drp-day:disabled { color:#2d3748; cursor:default; }
+        .drp-day:disabled { color:#d1d5db; cursor:default; }
         .drp-day.empty { cursor:default; }
 
         /* Steps builder (sequence) */
         .steps-list { display:flex; flex-direction:column; gap:12px; }
-        .step-item { background:#0f172a; border:1px solid #334155; border-radius:10px; padding:14px 16px; position:relative; }
+        .step-item { background:#f8fafc; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; position:relative; }
         .step-item-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-        .step-num { font-size:11px; font-weight:700; color:#64748b; background:#1e293b; padding:3px 8px; border-radius:4px; }
-        .step-remove { position:absolute; top:12px; right:12px; background:none; border:none; color:#475569; cursor:pointer; font-size:16px; padding:2px 6px; border-radius:4px; }
+        .step-num { font-size:11px; font-weight:700; color:#9ca3af; background:#ffffff; padding:3px 8px; border-radius:4px; }
+        .step-remove { position:absolute; top:12px; right:12px; background:none; border:none; color:#9ca3af; cursor:pointer; font-size:16px; padding:2px 6px; border-radius:4px; }
         .step-remove:hover { color:#ef4444; background:rgba(239,68,68,.1); }
         .step-row { display:grid; grid-template-columns:120px 1fr; gap:10px; margin-bottom:10px; }
-        .btn-add-step { width:100%; padding:10px; background:rgba(59,130,246,.08); border:1px dashed #334155; border-radius:8px; color:#3b82f6; font-size:13px; font-weight:600; cursor:pointer; margin-top:8px; transition:all .15s; font-family:inherit; }
+        .btn-add-step { width:100%; padding:10px; background:rgba(59,130,246,.08); border:1px dashed #e5e7eb; border-radius:8px; color:#3b82f6; font-size:13px; font-weight:600; cursor:pointer; margin-top:8px; transition:all .15s; font-family:inherit; }
         .btn-add-step:hover { background:rgba(59,130,246,.14); border-color:#3b82f6; }
 
         /* Schedule */
         .schedule-options { display:flex; flex-direction:column; gap:8px; }
-        .schedule-option { display:flex; align-items:center; gap:10px; padding:12px 14px; background:#0f172a; border:1px solid #334155; border-radius:8px; cursor:pointer; transition:border-color .15s; }
+        .schedule-option { display:flex; align-items:center; gap:10px; padding:12px 14px; background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; cursor:pointer; transition:border-color .15s; }
         .schedule-option.selected { border-color:#3b82f6; }
         .schedule-option input[type=radio] { accent-color:#3b82f6; }
-        .schedule-label { font-size:13px; font-weight:600; color:#e2e8f0; }
-        .schedule-sub { font-size:11px; color:#64748b; }
+        .schedule-label { font-size:13px; font-weight:600; color:#111827; }
+        .schedule-sub { font-size:11px; color:#9ca3af; }
         .schedule-extra { margin-top:8px; margin-left:34px; }
 
         /* ── Automation toggle ── */
         .auto-toggle { position:relative; display:inline-block; width:46px; height:26px; flex-shrink:0; }
         .auto-toggle input { opacity:0; width:0; height:0; }
-        .auto-slider { position:absolute; inset:0; background:#334155; border-radius:13px; cursor:pointer; transition:.25s; }
-        .auto-slider::before { content:''; position:absolute; width:20px; height:20px; left:3px; bottom:3px; background:#64748b; border-radius:50%; transition:.25s; }
+        .auto-slider { position:absolute; inset:0; background:#e5e7eb; border-radius:13px; cursor:pointer; transition:.25s; }
+        .auto-slider::before { content:''; position:absolute; width:20px; height:20px; left:3px; bottom:3px; background:#9ca3af; border-radius:50%; transition:.25s; }
         .auto-toggle input:checked + .auto-slider { background:rgba(245,158,11,.25); }
         .auto-toggle input:checked + .auto-slider::before { background:#f59e0b; transform:translateX(20px); }
 
         .auto-flow { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
         .auto-flow-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
-        .auto-flow-icon { width:42px; height:42px; border-radius:10px; border:1px solid #334155; background:#0f172a; display:flex; align-items:center; justify-content:center; color:#64748b; }
+        .auto-flow-icon { width:42px; height:42px; border-radius:10px; border:1px solid #e5e7eb; background:#f8fafc; display:flex; align-items:center; justify-content:center; color:#9ca3af; }
         .auto-flow-icon svg { width:18px; height:18px; }
-        .auto-flow-label { font-size:11px; color:#64748b; font-weight:600; text-align:center; }
-        .auto-flow-arrow { color:#334155; display:flex; align-items:center; }
+        .auto-flow-label { font-size:11px; color:#9ca3af; font-weight:600; text-align:center; }
+        .auto-flow-arrow { color:#e5e7eb; display:flex; align-items:center; }
         .auto-flow-arrow svg { width:16px; height:16px; }
 
         /* ── Email preview iframe ── */
-        .email-preview-wrap { margin-top:10px; border:1px solid #334155; border-radius:10px; overflow:hidden; }
-        .email-preview-bar { display:flex; align-items:center; gap:7px; padding:8px 14px; background:#172133; border-bottom:1px solid #334155; font-size:11px; color:#475569; }
-        .email-preview-bar svg { width:13px; height:13px; flex-shrink:0; color:#475569; }
-        .email-preview-chrome { display:flex; align-items:center; gap:6px; padding:8px 14px; background:#1a2840; border-bottom:1px solid #334155; }
-        .ep-dot { width:10px; height:10px; border-radius:50%; background:#334155; display:inline-block; }
-        .ep-addr { flex:1; background:#0f172a; border:1px solid #334155; border-radius:4px; padding:3px 10px; font-size:11px; color:#475569; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .email-preview-wrap { margin-top:10px; border:1px solid #e5e7eb; border-radius:10px; overflow:hidden; }
+        .email-preview-bar { display:flex; align-items:center; gap:7px; padding:8px 14px; background:#f1f5f9; border-bottom:1px solid #e5e7eb; font-size:11px; color:#9ca3af; }
+        .email-preview-bar svg { width:13px; height:13px; flex-shrink:0; color:#9ca3af; }
+        .email-preview-chrome { display:flex; align-items:center; gap:6px; padding:8px 14px; background:#f1f5f9; border-bottom:1px solid #e5e7eb; }
+        .ep-dot { width:10px; height:10px; border-radius:50%; background:#e5e7eb; display:inline-block; }
+        .ep-addr { flex:1; background:#f8fafc; border:1px solid #e5e7eb; border-radius:4px; padding:3px 10px; font-size:11px; color:#9ca3af; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .email-preview-frame { width:100%; height:520px; border:none; display:block; background:#f4f4f7; }
 
         /* Preview step */
         .preview-section { margin-bottom:16px; }
-        .preview-section-title { font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
-        .preview-row { display:flex; gap:8px; align-items:flex-start; padding:8px 0; border-bottom:1px solid rgba(51,65,85,.4); }
+        .preview-section-title { font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
+        .preview-row { display:flex; gap:8px; align-items:flex-start; padding:8px 0; border-bottom:1px solid rgba(209,213,219,0.6); }
         .preview-row:last-child { border-bottom:none; }
-        .preview-key { font-size:12px; color:#64748b; min-width:120px; flex-shrink:0; }
-        .preview-val { font-size:12px; color:#e2e8f0; flex:1; word-break:break-word; }
-        .preview-body { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:12px; font-size:12px; color:#94a3b8; max-height:160px; overflow-y:auto; margin-top:4px; white-space:pre-wrap; word-break:break-word; }
+        .preview-key { font-size:12px; color:#9ca3af; min-width:120px; flex-shrink:0; }
+        .preview-val { font-size:12px; color:#111827; flex:1; word-break:break-word; }
+        .preview-body { background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:12px; font-size:12px; color:#6b7280; max-height:160px; overflow-y:auto; margin-top:4px; white-space:pre-wrap; word-break:break-word; }
         .badge-bc { padding:2px 8px; border-radius:6px; font-size:11px; background:rgba(139,92,246,.15); color:#a78bfa; }
         .badge-seq { padding:2px 8px; border-radius:6px; font-size:11px; background:rgba(20,184,166,.15); color:#2dd4bf; }
-        .preview-step-item { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:10px 12px; margin-bottom:8px; }
-        .preview-step-item .ps-label { font-size:10px; color:#475569; margin-bottom:3px; }
-        .preview-step-item .ps-subject { font-size:12px; color:#e2e8f0; font-weight:600; }
-        .preview-step-item .ps-delay { font-size:11px; color:#64748b; margin-top:3px; }
+        .preview-step-item { background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px; margin-bottom:8px; }
+        .preview-step-item .ps-label { font-size:10px; color:#9ca3af; margin-bottom:3px; }
+        .preview-step-item .ps-subject { font-size:12px; color:#111827; font-weight:600; }
+        .preview-step-item .ps-delay { font-size:11px; color:#9ca3af; margin-top:3px; }
 
         /* Navigation */
         .wizard-nav { display:flex; justify-content:space-between; align-items:center; margin-top:20px; }
         .btn { padding:10px 20px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all .15s; display:inline-flex; align-items:center; gap:6px; font-family:inherit; }
         .btn-primary { background:#3b82f6; color:#fff; }
         .btn-primary:hover { background:#2563eb; }
-        .btn-primary:disabled { background:#334155; color:#64748b; cursor:not-allowed; }
-        .btn-ghost { background:transparent; border:1px solid #334155; color:#94a3b8; }
-        .btn-ghost:hover { border-color:#3b82f6; color:#e2e8f0; }
+        .btn-primary:disabled { background:#e5e7eb; color:#9ca3af; cursor:not-allowed; }
+        .btn-ghost { background:transparent; border:1px solid #e5e7eb; color:#6b7280; }
+        .btn-ghost:hover { border-color:#3b82f6; color:#111827; }
         .btn svg { width:14px; height:14px; }
 
         code { color:#3b82f6; background:rgba(59,130,246,.1); padding:1px 5px; border-radius:3px; font-size:12px; }
 
         ::-webkit-scrollbar { width:6px; }
         ::-webkit-scrollbar-track { background:transparent; }
-        ::-webkit-scrollbar-thumb { background:#334155; border-radius:3px; }
+        ::-webkit-scrollbar-thumb { background:#e5e7eb; border-radius:3px; }
     </style>
 </head>
 <body>
@@ -450,7 +450,7 @@
                     </div>
                 </label>
                 <div class="schedule-extra" id="sched-later-input" style="display:none;">
-                    <input type="datetime-local" id="f-scheduled-at" style="padding:9px 12px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;font-size:13px;outline:none;appearance:none;-webkit-appearance:none;">
+                    <input type="datetime-local" id="f-scheduled-at" style="padding:9px 12px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;color:#111827;font-size:13px;outline:none;appearance:none;-webkit-appearance:none;">
                 </div>
             </div>
             <div class="form-hint" style="margin-top:14px;" data-i18n="mkt-sched-hint">Sekans kampanyalarında zamanlama ilk adım için geçerlidir. Sonraki adımlar her adımın kendi gecikmesi kadar bekler.</div>
@@ -460,11 +460,11 @@
         <div class="card" style="margin-top:0;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
                 <div>
-                    <div style="font-size:14px;font-weight:700;color:#f1f5f9;display:flex;align-items:center;gap:8px;">
+                    <div style="font-size:14px;font-weight:700;color:#111827;display:flex;align-items:center;gap:8px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                         <span data-i18n="mkt-auto-title">Otomasyon</span>
                     </div>
-                    <div style="font-size:12px;color:#64748b;margin-top:4px;" data-i18n="mkt-auto-sub">Yeni lead'lere otomatik gönder</div>
+                    <div style="font-size:12px;color:#9ca3af;margin-top:4px;" data-i18n="mkt-auto-sub">Yeni lead'lere otomatik gönder</div>
                 </div>
                 <!-- Toggle switch -->
                 <label class="auto-toggle" id="autoToggleLabel">
@@ -474,7 +474,7 @@
             </div>
 
             <!-- Expanded description (shown when ON) -->
-            <div id="auto-detail" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid #334155;">
+            <div id="auto-detail" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid #e5e7eb;">
                 <div class="auto-flow">
                     <div class="auto-flow-item">
                         <div class="auto-flow-icon" id="auto-src-icon">
@@ -501,7 +501,7 @@
                         <div class="auto-flow-label" data-i18n="mkt-auto-flow-send">Gönder</div>
                     </div>
                 </div>
-                <p style="font-size:12px;color:#64748b;margin-top:14px;line-height:1.7;" id="auto-desc-text"></p>
+                <p style="font-size:12px;color:#9ca3af;margin-top:14px;line-height:1.7;" id="auto-desc-text"></p>
             </div>
         </div>
     </div>
@@ -793,9 +793,9 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
 
 <!-- Header -->
 <tr>
-<td style="background:linear-gradient(135deg,#1e293b,#0f172a);padding:32px 40px;text-align:center;">
+<td style="background:linear-gradient(135deg,#ffffff,#f8fafc);padding:32px 40px;text-align:center;">
   <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:700;letter-spacing:-0.5px;">YO Dijital</h1>
-  <p style="margin:8px 0 0;color:#94a3b8;font-size:14px;">Google &amp; Meta Türkiye Reklam Partneri | 360° Dijital Ajans</p>
+  <p style="margin:8px 0 0;color:#6b7280;font-size:14px;">Google &amp; Meta Türkiye Reklam Partneri | 360° Dijital Ajans</p>
 </td>
 </tr>
 
@@ -803,15 +803,15 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
 <tr>
 <td style="padding:36px 40px 20px;">
 
-  <p style="margin:0 0 22px;color:#1e293b;font-size:17px;line-height:1.7;">
+  <p style="margin:0 0 22px;color:#ffffff;font-size:17px;line-height:1.7;">
     Sayın Yetkili,
   </p>
 
-  <p style="margin:0 0 22px;color:#334155;font-size:17px;line-height:1.8;">
-    <strong style="color:#1e293b;">{sehir}</strong> bölgesinde <strong style="color:#1e293b;">{sektor}</strong> sektöründe faaliyet gösteren <strong style="color:#1e293b;">{firma_adi}</strong> firmanızı inceledik.
+  <p style="margin:0 0 22px;color:#e5e7eb;font-size:17px;line-height:1.8;">
+    <strong style="color:#ffffff;">{sehir}</strong> bölgesinde <strong style="color:#ffffff;">{sektor}</strong> sektöründe faaliyet gösteren <strong style="color:#ffffff;">{firma_adi}</strong> firmanızı inceledik.
   </p>
 
-  <p style="margin:0 0 22px;color:#334155;font-size:17px;line-height:1.8;">
+  <p style="margin:0 0 22px;color:#e5e7eb;font-size:17px;line-height:1.8;">
     {sektor} sektöründe dijital rekabet her geçen gün artıyor. Rakiplerinizin önüne geçmek ve <strong>{sehir}</strong> bölgesinde daha fazla müşteriye ulaşmak için profesyonel dijital pazarlama desteğiyle tanışmanın tam zamanı.
   </p>
 
@@ -826,7 +826,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
     </tr>
   </table>
 
-  <p style="margin:0 0 16px;color:#1e293b;font-size:18px;font-weight:700;">
+  <p style="margin:0 0 16px;color:#ffffff;font-size:18px;font-weight:700;">
     Firmanız için neler yapabiliriz?
   </p>
 
@@ -837,7 +837,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
         <table cellpadding="0" cellspacing="0" width="100%"><tr>
           <td style="background:#eff6ff;border-radius:8px;padding:14px 18px;">
             <strong style="color:#1e40af;font-size:15px;">Google &amp; Meta Reklam</strong>
-            <p style="margin:6px 0 0;color:#64748b;font-size:14px;line-height:1.6;">"{sektor} {sehir}" arayan müşterileri doğrudan size yönlendiriyoruz</p>
+            <p style="margin:6px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">"{sektor} {sehir}" arayan müşterileri doğrudan size yönlendiriyoruz</p>
           </td>
         </tr></table>
       </td>
@@ -845,7 +845,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
         <table cellpadding="0" cellspacing="0" width="100%"><tr>
           <td style="background:#f0fdf4;border-radius:8px;padding:14px 18px;">
             <strong style="color:#166534;font-size:15px;">Web Sitesi Tasarımı</strong>
-            <p style="margin:6px 0 0;color:#64748b;font-size:14px;line-height:1.6;">Ziyaretçileri müşteriye çeviren modern ve hızlı web siteleri</p>
+            <p style="margin:6px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">Ziyaretçileri müşteriye çeviren modern ve hızlı web siteleri</p>
           </td>
         </tr></table>
       </td>
@@ -855,7 +855,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
         <table cellpadding="0" cellspacing="0" width="100%"><tr>
           <td style="background:#fefce8;border-radius:8px;padding:14px 18px;">
             <strong style="color:#854d0e;font-size:15px;">SEO Hizmeti</strong>
-            <p style="margin:6px 0 0;color:#64748b;font-size:14px;line-height:1.6;">"{sektor} {sehir}" aramalarında ilk sayfada çıkmanızı sağlıyoruz</p>
+            <p style="margin:6px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">"{sektor} {sehir}" aramalarında ilk sayfada çıkmanızı sağlıyoruz</p>
           </td>
         </tr></table>
       </td>
@@ -863,7 +863,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
         <table cellpadding="0" cellspacing="0" width="100%"><tr>
           <td style="background:#fdf2f8;border-radius:8px;padding:14px 18px;">
             <strong style="color:#9d174d;font-size:15px;">Grafik Tasarım</strong>
-            <p style="margin:6px 0 0;color:#64748b;font-size:14px;line-height:1.6;">Logo, kurumsal kimlik ve dikkat çeken sosyal medya içerikleri</p>
+            <p style="margin:6px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">Logo, kurumsal kimlik ve dikkat çeken sosyal medya içerikleri</p>
           </td>
         </tr></table>
       </td>
@@ -873,7 +873,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
         <table cellpadding="0" cellspacing="0" width="100%"><tr>
           <td style="background:#f5f3ff;border-radius:8px;padding:14px 18px;">
             <strong style="color:#5b21b6;font-size:15px;">Drone Çekimi</strong>
-            <p style="margin:6px 0 0;color:#64748b;font-size:14px;line-height:1.6;">İşletmenizi havadan etkileyici görsellerle tanıtıyoruz</p>
+            <p style="margin:6px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">İşletmenizi havadan etkileyici görsellerle tanıtıyoruz</p>
           </td>
         </tr></table>
       </td>
@@ -881,7 +881,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
         <table cellpadding="0" cellspacing="0" width="100%"><tr>
           <td style="background:#fff7ed;border-radius:8px;padding:14px 18px;">
             <strong style="color:#9a3412;font-size:15px;">Motion &amp; Video</strong>
-            <p style="margin:6px 0 0;color:#64748b;font-size:14px;line-height:1.6;">Tanıtım filmleri ve reklam videoları ile satışınızı katlıyoruz</p>
+            <p style="margin:6px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">Tanıtım filmleri ve reklam videoları ile satışınızı katlıyoruz</p>
           </td>
         </tr></table>
       </td>
@@ -892,15 +892,15 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
   <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
     <tr>
       <td style="background:#f8fafc;border-radius:12px;padding:28px;text-align:center;border:1px solid #e2e8f0;">
-        <p style="margin:0 0 8px;color:#1e293b;font-size:19px;font-weight:700;">
+        <p style="margin:0 0 8px;color:#ffffff;font-size:19px;font-weight:700;">
           15 Dakikalık Ücretsiz Strateji Görüşmesi
         </p>
-        <p style="margin:0 0 22px;color:#64748b;font-size:15px;line-height:1.6;">
+        <p style="margin:0 0 22px;color:#9ca3af;font-size:15px;line-height:1.6;">
           {sehir} bölgesinde {sektor} sektörüne özel dijital büyüme planınızı birlikte oluşturalım.
         </p>
         <div style="text-align:center;">
           <a href="https://wa.me/905382343200?text=Merhaba%2C%20dijital%20pazarlama%20hizmetleriniz%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
-             style="display:inline-block;background:#25d366;color:#1e293b;text-decoration:none;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:10px;margin:0 8px 8px 0;">
+             style="display:inline-block;background:#25d366;color:#ffffff;text-decoration:none;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:10px;margin:0 8px 8px 0;">
             Mesaj Gönder
           </a>
           <a href="https://cal.com/onursuay/15min"
@@ -908,11 +908,11 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
             Randevu Al
           </a>
           <a href="tel:+905382343200"
-             style="display:inline-block;background:#1e293b;color:#ffffff;text-decoration:none;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:10px;margin:0 0 8px 0;">
+             style="display:inline-block;background:#ffffff;color:#ffffff;text-decoration:none;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:10px;margin:0 0 8px 0;">
             &#9742; Bizi Arayın
           </a>
         </div>
-        <p style="margin:16px 0 0;color:#94a3b8;font-size:13px;">
+        <p style="margin:16px 0 0;color:#6b7280;font-size:13px;">
           Bu maile yanıtlayarak da bize ulaşabilirsiniz.
         </p>
       </td>
@@ -939,11 +939,11 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
   <table width="100%" cellpadding="0" cellspacing="0">
     <tr>
       <td>
-        <strong style="color:#1e293b;font-size:15px;">YO Dijital</strong><br>
-        <span style="color:#64748b;font-size:13px;">Google &amp; Meta Türkiye Reklam Partneri</span><br>
-        <span style="color:#94a3b8;font-size:12px;">360° Dijital Pazarlama | Kreatif Ajans</span>
+        <strong style="color:#ffffff;font-size:15px;">YO Dijital</strong><br>
+        <span style="color:#9ca3af;font-size:13px;">Google &amp; Meta Türkiye Reklam Partneri</span><br>
+        <span style="color:#6b7280;font-size:12px;">360° Dijital Pazarlama | Kreatif Ajans</span>
       </td>
-      <td align="right" style="color:#94a3b8;font-size:13px;">
+      <td align="right" style="color:#6b7280;font-size:13px;">
         <a href="https://yodijital.com" style="color:#2563eb;text-decoration:none;font-size:14px;">yodijital.com</a><br>
         info@yodijital.com
       </td>
@@ -1143,7 +1143,7 @@ function buildPreview() {
                         <div class="ps-subject">${renderSample(s.subject || '—', sampleLead)}</div>
                         <div class="ps-delay">${i===0 ? (lang==='en'?'Send immediately':'Hemen gönder') : `${s.delay_hours}h ${lang==='en'?'after previous':'sonra'}`}</div>
                     </div>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;color:#64748b;flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;color:#9ca3af;flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
                 <div id="step-iframe-${i}" style="display:none;margin-top:10px;">
                     <div class="email-preview-wrap">
