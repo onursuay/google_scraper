@@ -97,23 +97,6 @@
         .tb-btn:disabled { opacity: 0.35; cursor: not-allowed; }
         .tb-btn.active-glow { box-shadow: 0 0 0 3px rgba(43,182,115,0.25); }
 
-        .tb-selected-tag {
-            display: none;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 10px;
-            background: rgba(43,182,115,0.08);
-            border: 1px solid rgba(43,182,115,0.25);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #2BB673;
-            white-space: nowrap;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .tb-selected-tag.show { display: flex; }
 
         /* ── Main Results ── */
         .main {
@@ -174,11 +157,6 @@
         <select class="tb-select" id="subSectorSelect" disabled onchange="onSubSectorChange()">
             <option value="">Alt sektör seçin...</option>
         </select>
-
-        <span class="tb-selected-tag" id="selectedTag">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span id="selectedTagText"></span>
-        </span>
 
         <div class="tb-sep"></div>
 
@@ -275,13 +253,11 @@ let pollInterval = null;
 function onCategoryChange() {
     const cat = document.getElementById('categorySelect').value;
     const sub = document.getElementById('subSectorSelect');
-    const tag = document.getElementById('selectedTag');
     const catSel = document.getElementById('categorySelect');
 
     // Reset sub-sector
     sub.innerHTML = '<option value="">Alt sektör seçin...</option>';
     selectedSector = '';
-    tag.classList.remove('show');
     catSel.classList.toggle('filled', !!cat);
 
     if (cat && SECTORS_DATA[cat]) {
@@ -300,16 +276,9 @@ function onCategoryChange() {
 
 function onSubSectorChange() {
     const val = document.getElementById('subSectorSelect').value;
-    const tag = document.getElementById('selectedTag');
     const subSel = document.getElementById('subSectorSelect');
     selectedSector = val;
     subSel.classList.toggle('filled', !!val);
-    if (val) {
-        tag.classList.add('show');
-        document.getElementById('selectedTagText').textContent = val;
-    } else {
-        tag.classList.remove('show');
-    }
 }
 
 function showScanControls(running, paused) {
