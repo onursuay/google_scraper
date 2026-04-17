@@ -8,11 +8,12 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f172a; color:#e2e8f0; min-height:100vh; }
-        .container { max-width:860px; margin:0 auto; padding:24px 32px 80px; }
+        .container { max-width:860px; margin:0 auto; padding:24px 32px 100px; }
 
-        .page-header { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
-        .page-header a { color:#64748b; text-decoration:none; font-size:13px; }
-        .page-header a:hover { color:#e2e8f0; }
+        .page-header { display:flex; align-items:center; gap:10px; margin-bottom:28px; }
+        .btn-back { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.05); border:1px solid #334155; color:#94a3b8; text-decoration:none; transition:all .15s; flex-shrink:0; }
+        .btn-back:hover { border-color:#3b82f6; color:#e2e8f0; background:rgba(59,130,246,.08); }
+        .btn-back svg { width:14px; height:14px; }
         .page-title { font-size:20px; font-weight:800; color:#f1f5f9; }
 
         /* Wizard steps */
@@ -44,12 +45,14 @@
 
         /* Type selector */
         .type-selector { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-        .type-option { border:2px solid #334155; border-radius:10px; padding:16px; cursor:pointer; transition:all .15s; }
+        .type-option { border:2px solid #334155; border-radius:10px; padding:20px 16px; cursor:pointer; transition:all .15s; display:flex; flex-direction:column; align-items:flex-start; gap:10px; }
         .type-option.selected { border-color:#3b82f6; background:rgba(59,130,246,.06); }
         .type-option:hover:not(.selected) { border-color:#475569; }
-        .type-icon { font-size:24px; margin-bottom:8px; }
-        .type-name { font-size:13px; font-weight:700; color:#f1f5f9; margin-bottom:4px; }
-        .type-desc { font-size:11px; color:#64748b; line-height:1.5; }
+        .type-icon { width:40px; height:40px; border-radius:10px; background:rgba(59,130,246,.12); display:flex; align-items:center; justify-content:center; color:#3b82f6; flex-shrink:0; }
+        .type-icon svg { width:20px; height:20px; }
+        .type-option.selected .type-icon { background:rgba(59,130,246,.2); }
+        .type-name { font-size:14px; font-weight:700; color:#f1f5f9; }
+        .type-desc { font-size:12px; color:#64748b; line-height:1.5; }
 
         /* Segment preview */
         .segment-preview { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:12px 16px; display:flex; align-items:center; gap:10px; margin-top:8px; }
@@ -57,6 +60,40 @@
         .preview-label { font-size:12px; color:#64748b; }
         .preview-spinner { width:18px; height:18px; border:2px solid #334155; border-top-color:#3b82f6; border-radius:50%; animation:spin .7s linear infinite; }
         @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* ── Custom Date Range Picker ── */
+        .drp-wrap { position:relative; }
+        .drp-trigger { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; background:#0f172a; border:1px solid #334155; border-radius:8px; color:#e2e8f0; font-size:13px; cursor:pointer; transition:border-color .15s; width:100%; }
+        .drp-trigger:hover, .drp-trigger.open { border-color:#3b82f6; }
+        .drp-trigger svg { width:14px; height:14px; color:#64748b; flex-shrink:0; }
+        .drp-trigger .drp-text { flex:1; text-align:left; color:#94a3b8; }
+        .drp-trigger .drp-text.has-val { color:#e2e8f0; }
+        .drp-popup { position:absolute; top:calc(100% + 6px); left:0; z-index:999; background:#1e293b; border:1px solid #334155; border-radius:12px; padding:16px; display:none; box-shadow:0 20px 60px rgba(0,0,0,.6); min-width:560px; }
+        .drp-popup.open { display:flex; }
+        .drp-presets { display:flex; flex-direction:column; gap:2px; padding-right:16px; border-right:1px solid #334155; min-width:130px; }
+        .drp-presets button { text-align:left; font-size:12px; padding:7px 10px; border-radius:6px; background:none; border:none; color:#94a3b8; cursor:pointer; transition:all .15s; font-family:inherit; }
+        .drp-presets button:hover { background:rgba(59,130,246,.1); color:#e2e8f0; }
+        .drp-presets button.active { background:rgba(59,130,246,.15); color:#3b82f6; font-weight:600; }
+        .drp-calendars { padding-left:16px; }
+        .drp-cal-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .drp-cal-nav button { background:none; border:none; cursor:pointer; color:#64748b; padding:4px 8px; border-radius:6px; transition:all .15s; display:flex; align-items:center; }
+        .drp-cal-nav button:hover { background:rgba(255,255,255,.06); color:#e2e8f0; }
+        .drp-cal-nav button svg { width:14px; height:14px; }
+        .drp-months { display:flex; gap:20px; }
+        .drp-month { width:196px; }
+        .drp-month-title { text-align:center; font-size:12px; font-weight:700; color:#f1f5f9; margin-bottom:8px; }
+        .drp-days-header { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; margin-bottom:4px; }
+        .drp-days-header span { text-align:center; font-size:10px; color:#475569; font-weight:600; padding:3px 0; }
+        .drp-days { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; }
+        .drp-day { height:26px; display:flex; align-items:center; justify-content:center; font-size:11px; border-radius:5px; cursor:pointer; transition:all .1s; color:#94a3b8; border:none; background:none; font-family:inherit; }
+        .drp-day:hover:not(:disabled):not(.sel):not(.in-range) { background:rgba(255,255,255,.07); color:#e2e8f0; }
+        .drp-day.sel { background:#3b82f6; color:#fff; font-weight:700; border-radius:5px; }
+        .drp-day.in-range { background:rgba(59,130,246,.18); color:#93c5fd; }
+        .drp-day.sel-start { border-radius:5px 2px 2px 5px; }
+        .drp-day.sel-end { border-radius:2px 5px 5px 2px; }
+        .drp-day.today { box-shadow:0 0 0 1px #3b82f6; color:#60a5fa; }
+        .drp-day:disabled { color:#2d3748; cursor:default; }
+        .drp-day.empty { cursor:default; }
 
         /* Steps builder (sequence) */
         .steps-list { display:flex; flex-direction:column; gap:12px; }
@@ -66,7 +103,7 @@
         .step-remove { position:absolute; top:12px; right:12px; background:none; border:none; color:#475569; cursor:pointer; font-size:16px; padding:2px 6px; border-radius:4px; }
         .step-remove:hover { color:#ef4444; background:rgba(239,68,68,.1); }
         .step-row { display:grid; grid-template-columns:120px 1fr; gap:10px; margin-bottom:10px; }
-        .btn-add-step { width:100%; padding:10px; background:rgba(59,130,246,.08); border:1px dashed #334155; border-radius:8px; color:#3b82f6; font-size:13px; font-weight:600; cursor:pointer; margin-top:8px; transition:all .15s; }
+        .btn-add-step { width:100%; padding:10px; background:rgba(59,130,246,.08); border:1px dashed #334155; border-radius:8px; color:#3b82f6; font-size:13px; font-weight:600; cursor:pointer; margin-top:8px; transition:all .15s; font-family:inherit; }
         .btn-add-step:hover { background:rgba(59,130,246,.14); border-color:#3b82f6; }
 
         /* Schedule */
@@ -78,16 +115,31 @@
         .schedule-sub { font-size:11px; color:#64748b; }
         .schedule-extra { margin-top:8px; margin-left:34px; }
 
-        /* Navigation buttons */
-        .wizard-nav { display:flex; justify-content:space-between; margin-top:20px; }
-        .btn { padding:10px 20px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all .15s; }
+        /* Preview step */
+        .preview-section { margin-bottom:16px; }
+        .preview-section-title { font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
+        .preview-row { display:flex; gap:8px; align-items:flex-start; padding:8px 0; border-bottom:1px solid rgba(51,65,85,.4); }
+        .preview-row:last-child { border-bottom:none; }
+        .preview-key { font-size:12px; color:#64748b; min-width:120px; flex-shrink:0; }
+        .preview-val { font-size:12px; color:#e2e8f0; flex:1; word-break:break-word; }
+        .preview-body { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:12px; font-size:12px; color:#94a3b8; max-height:160px; overflow-y:auto; margin-top:4px; white-space:pre-wrap; word-break:break-word; }
+        .badge-bc { padding:2px 8px; border-radius:6px; font-size:11px; background:rgba(139,92,246,.15); color:#a78bfa; }
+        .badge-seq { padding:2px 8px; border-radius:6px; font-size:11px; background:rgba(20,184,166,.15); color:#2dd4bf; }
+        .preview-step-item { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:10px 12px; margin-bottom:8px; }
+        .preview-step-item .ps-label { font-size:10px; color:#475569; margin-bottom:3px; }
+        .preview-step-item .ps-subject { font-size:12px; color:#e2e8f0; font-weight:600; }
+        .preview-step-item .ps-delay { font-size:11px; color:#64748b; margin-top:3px; }
+
+        /* Navigation */
+        .wizard-nav { display:flex; justify-content:space-between; align-items:center; margin-top:20px; }
+        .btn { padding:10px 20px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all .15s; display:inline-flex; align-items:center; gap:6px; font-family:inherit; }
         .btn-primary { background:#3b82f6; color:#fff; }
         .btn-primary:hover { background:#2563eb; }
         .btn-primary:disabled { background:#334155; color:#64748b; cursor:not-allowed; }
         .btn-ghost { background:transparent; border:1px solid #334155; color:#94a3b8; }
         .btn-ghost:hover { border-color:#3b82f6; color:#e2e8f0; }
+        .btn svg { width:14px; height:14px; }
 
-        /* Variables hint */
         code { color:#3b82f6; background:rgba(59,130,246,.1); padding:1px 5px; border-radius:3px; font-size:12px; }
 
         ::-webkit-scrollbar { width:6px; }
@@ -102,11 +154,13 @@
 <div class="container">
 
     <div class="page-header">
-        <a href="/marketing" data-i18n="mkt-back">← Pazarlama</a>
+        <a href="/marketing" class="btn-back" aria-label="Geri">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
         <h1 class="page-title" data-i18n="mkt-new-campaign-title">Yeni Kampanya</h1>
     </div>
 
-    <!-- Wizard steps indicator -->
+    <!-- Wizard step indicator -->
     <div class="wizard-steps">
         <div class="wizard-step" id="step-ind-1">
             <div class="step-dot active" id="dot-1">1</div>
@@ -124,6 +178,10 @@
             <div class="step-dot" id="dot-4">4</div>
             <div class="step-label" data-i18n="mkt-ws-schedule">Zamanlama</div>
         </div>
+        <div class="wizard-step" id="step-ind-5">
+            <div class="step-dot" id="dot-5">5</div>
+            <div class="step-label" data-i18n="mkt-ws-preview">Önizleme</div>
+        </div>
     </div>
 
     <!-- Step 1: Name + Type -->
@@ -138,14 +196,22 @@
                 <label data-i18n="mkt-field-type">Kampanya Türü</label>
                 <div class="type-selector">
                     <div class="type-option selected" onclick="selectType('broadcast')" id="opt-broadcast">
-                        <div class="type-icon">📣</div>
-                        <div class="type-name">Broadcast</div>
-                        <div class="type-desc" data-i18n="mkt-type-bc-desc">Seçili segmente tek seferlik e-posta gönderimi.</div>
+                        <div class="type-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 8.5c0 4.69-4.48 8.5-10 8.5a11.3 11.3 0 0 1-4-.72L3 18l1.27-3.56A7.9 7.9 0 0 1 2 8.5C2 3.81 6.48 0 12 0s10 3.81 10 8.5z"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="12" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/></svg>
+                        </div>
+                        <div>
+                            <div class="type-name">Broadcast</div>
+                            <div class="type-desc" data-i18n="mkt-type-bc-desc">Seçili segmente tek seferlik e-posta gönderimi.</div>
+                        </div>
                     </div>
                     <div class="type-option" onclick="selectType('sequence')" id="opt-sequence">
-                        <div class="type-icon">⚡</div>
-                        <div class="type-name" data-i18n="mkt-type-seq">Sekans (Drip)</div>
-                        <div class="type-desc" data-i18n="mkt-type-seq-desc">Birden fazla adımdan oluşan otomatik e-posta serisi.</div>
+                        <div class="type-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        </div>
+                        <div>
+                            <div class="type-name" data-i18n="mkt-type-seq">Sekans (Drip)</div>
+                            <div class="type-desc" data-i18n="mkt-type-seq-desc">Birden fazla adımdan oluşan otomatik e-posta serisi.</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,18 +231,30 @@
                     {% endfor %}
                 </select>
             </div>
+            <!-- Date range picker -->
             <div class="form-group">
-                <label data-i18n="mkt-seg-name">Firma Adı İçerir</label>
-                <input type="text" id="f-name-filter" placeholder="..." oninput="debouncePreview()">
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div class="form-group">
-                    <label data-i18n="mkt-seg-from">Kayıt Tarihi Başlangıç</label>
-                    <input type="date" id="f-date-from" onchange="debouncePreview()">
-                </div>
-                <div class="form-group">
-                    <label data-i18n="mkt-seg-to">Kayıt Tarihi Bitiş</label>
-                    <input type="date" id="f-date-to" onchange="debouncePreview()">
+                <label data-i18n="mkt-seg-date-range">Kayıt Tarihi Aralığı</label>
+                <input type="hidden" id="f-date-from">
+                <input type="hidden" id="f-date-to">
+                <div class="drp-wrap" id="drpWrap">
+                    <button type="button" class="drp-trigger" id="drpTrigger" onclick="drpToggle()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span class="drp-text" id="drpText" data-i18n="mkt-seg-date-ph">Tüm tarihler</span>
+                    </button>
+                    <div class="drp-popup" id="drpPopup">
+                        <div class="drp-presets" id="drpPresets"></div>
+                        <div class="drp-calendars">
+                            <div class="drp-cal-nav">
+                                <button type="button" onclick="drpNav(-1)">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                                </button>
+                                <button type="button" onclick="drpNav(1)">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </button>
+                            </div>
+                            <div class="drp-months" id="drpMonths"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Preview -->
@@ -190,7 +268,6 @@
 
     <!-- Step 3: Content -->
     <div id="step-3" style="display:none;">
-        <!-- Broadcast: single subject+body -->
         <div id="content-broadcast">
             <div class="card">
                 <div class="card-title" data-i18n="mkt-ws-cont-title">E-posta İçeriği</div>
@@ -205,7 +282,6 @@
                 </div>
             </div>
         </div>
-        <!-- Sequence: steps builder -->
         <div id="content-sequence" style="display:none;">
             <div class="card">
                 <div class="card-title" data-i18n="mkt-ws-steps-title">Sekans Adımları</div>
@@ -243,25 +319,84 @@
         </div>
     </div>
 
+    <!-- Step 5: Preview -->
+    <div id="step-5" style="display:none;">
+        <div class="card">
+            <div class="card-title" data-i18n="mkt-ws-preview-title">Kampanya Önizlemesi</div>
+
+            <!-- General info -->
+            <div class="preview-section">
+                <div class="preview-section-title" data-i18n="mkt-prev-general">Genel Bilgiler</div>
+                <div class="preview-row">
+                    <span class="preview-key" data-i18n="mkt-prev-name">Kampanya Adı</span>
+                    <span class="preview-val" id="prev-name">—</span>
+                </div>
+                <div class="preview-row">
+                    <span class="preview-key" data-i18n="mkt-prev-type">Tür</span>
+                    <span class="preview-val" id="prev-type">—</span>
+                </div>
+                <div class="preview-row">
+                    <span class="preview-key" data-i18n="mkt-prev-segment">Segment</span>
+                    <span class="preview-val" id="prev-segment">—</span>
+                </div>
+                <div class="preview-row">
+                    <span class="preview-key" data-i18n="mkt-prev-leads">Hedef Lead</span>
+                    <span class="preview-val"><span id="prev-lead-count" style="color:#3b82f6;font-weight:700;">—</span> <span data-i18n="mkt-seg-match">lead eşleşiyor</span></span>
+                </div>
+                <div class="preview-row">
+                    <span class="preview-key" data-i18n="mkt-prev-schedule">Zamanlama</span>
+                    <span class="preview-val" id="prev-schedule">—</span>
+                </div>
+            </div>
+
+            <!-- Content preview -->
+            <div class="preview-section" id="prev-bc-section">
+                <div class="preview-section-title" data-i18n="mkt-ws-cont-title">E-posta İçeriği</div>
+                <div class="preview-row">
+                    <span class="preview-key" data-i18n="mkt-field-subject">Konu</span>
+                    <span class="preview-val" id="prev-subject">—</span>
+                </div>
+                <div>
+                    <div class="preview-key" style="margin-bottom:6px;" data-i18n="mkt-field-body">İçerik</div>
+                    <div class="preview-body" id="prev-body"></div>
+                </div>
+            </div>
+
+            <!-- Sequence steps preview -->
+            <div class="preview-section" id="prev-seq-section" style="display:none;">
+                <div class="preview-section-title" data-i18n="mkt-ws-steps-title">Sekans Adımları</div>
+                <div id="prev-steps-list"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <div class="wizard-nav">
-        <button class="btn btn-ghost" id="btnBack" onclick="prevStep()" style="display:none;" data-i18n="mkt-back-btn">← Geri</button>
-        <div style="margin-left:auto;">
-            <button class="btn btn-primary" id="btnNext" onclick="nextStep()" data-i18n="mkt-next-btn">Devam →</button>
-        </div>
+        <button class="btn btn-ghost" id="btnBack" onclick="prevStep()" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <span data-i18n="mkt-back-btn">Geri</span>
+        </button>
+        <button class="btn btn-primary" id="btnNext" onclick="nextStep()" style="margin-left:auto;">
+            <span id="btnNextLabel" data-i18n="mkt-next-btn">İleri</span>
+            <svg id="btnNextArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
     </div>
 
 </div>
 
 <script>
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 let currentStep = 1;
 let selectedType = 'broadcast';
 let stepCount = 0;
 let previewTimer = null;
 
-const sectors = {{ sectors | tojson }};
+// ── i18n helper ──
+function tl(key, fallback) {
+    return (typeof t === 'function') ? t(key, fallback) : fallback;
+}
 
+// ── Type selector ──
 function selectType(type) {
     selectedType = type;
     document.getElementById('opt-broadcast').classList.toggle('selected', type === 'broadcast');
@@ -273,23 +408,27 @@ function selectSchedule(mode) {
     document.getElementById('sched-later-input').style.display = mode === 'later' ? 'block' : 'none';
 }
 
+// ── Wizard navigation ──
 function updateStepIndicator() {
     for (let i = 1; i <= TOTAL_STEPS; i++) {
         const dot = document.getElementById('dot-'+i);
         const lbl = document.getElementById('step-ind-'+i).querySelector('.step-label');
         dot.classList.remove('active','done');
         lbl.classList.remove('active','done');
-        if (i < currentStep) { dot.classList.add('done'); dot.textContent = '✓'; lbl.classList.add('done'); }
+        if (i < currentStep) { dot.classList.add('done'); dot.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>'; lbl.classList.add('done'); }
         else if (i === currentStep) { dot.classList.add('active'); dot.textContent = i; lbl.classList.add('active'); }
         else { dot.textContent = i; }
     }
     document.getElementById('btnBack').style.display = currentStep > 1 ? 'inline-flex' : 'none';
     const lang = localStorage.getItem('lp_lang') || 'tr';
-    const btnNext = document.getElementById('btnNext');
+    const lbl = document.getElementById('btnNextLabel');
+    const arrow = document.getElementById('btnNextArrow');
     if (currentStep === TOTAL_STEPS) {
-        btnNext.textContent = lang === 'en' ? '🚀 Create Campaign' : '🚀 Kampanyayı Oluştur';
+        lbl.textContent = lang === 'en' ? '🚀 Create Campaign' : '🚀 Kampanyayı Oluştur';
+        if (arrow) arrow.style.display = 'none';
     } else {
-        btnNext.textContent = lang === 'en' ? 'Continue →' : 'Devam →';
+        lbl.textContent = lang === 'en' ? 'Next' : 'İleri';
+        if (arrow) arrow.style.display = '';
     }
 }
 
@@ -309,6 +448,7 @@ function nextStep() {
         document.getElementById('content-sequence').style.display = selectedType === 'sequence' ? 'block' : 'none';
         if (selectedType === 'sequence' && stepCount === 0) addStep();
     }
+    if (currentStep === 5) buildPreview();
 }
 
 function prevStep() {
@@ -321,8 +461,10 @@ function prevStep() {
 function validateStep() {
     const lang = localStorage.getItem('lp_lang') || 'tr';
     if (currentStep === 1) {
-        const name = document.getElementById('f-name').value.trim();
-        if (!name) { alert(lang === 'en' ? 'Please enter a campaign name.' : 'Kampanya adı giriniz.'); return false; }
+        if (!document.getElementById('f-name').value.trim()) {
+            alert(lang === 'en' ? 'Please enter a campaign name.' : 'Kampanya adı giriniz.');
+            return false;
+        }
     }
     if (currentStep === 3) {
         if (selectedType === 'broadcast') {
@@ -350,7 +492,7 @@ async function doPreview() {
     document.getElementById('preview-count').style.display = 'none';
     const params = new URLSearchParams({
         sector: document.getElementById('f-sector').value,
-        name_contains: document.getElementById('f-name-filter').value,
+        name_contains: '',
         date_from: document.getElementById('f-date-from').value,
         date_to: document.getElementById('f-date-to').value,
     });
@@ -378,7 +520,7 @@ function addStep() {
         <div class="step-item-header">
             <span class="step-num">${lang==='en'?'Step':'Adım'} ${n}</span>
         </div>
-        <button class="step-remove" onclick="removeStep(${n})" title="${lang==='en'?'Remove':'Kaldır'}">✕</button>
+        <button type="button" class="step-remove" onclick="removeStep(${n})" title="${lang==='en'?'Remove':'Kaldır'}">✕</button>
         <div class="step-row">
             <div class="form-group" style="margin-bottom:0;">
                 <label>${lang==='en'?'Wait (hours)':'Bekleme (saat)'}</label>
@@ -411,6 +553,60 @@ function collectSteps() {
     }));
 }
 
+// ── Preview builder ──
+function buildPreview() {
+    const lang = localStorage.getItem('lp_lang') || 'tr';
+
+    document.getElementById('prev-name').textContent = document.getElementById('f-name').value.trim() || '—';
+
+    const typeBadge = selectedType === 'broadcast'
+        ? `<span class="badge-bc">Broadcast</span>`
+        : `<span class="badge-seq">${lang==='en'?'Sequence':'Sekans'}</span>`;
+    document.getElementById('prev-type').innerHTML = typeBadge;
+
+    // Segment
+    const sector = document.getElementById('f-sector').value;
+    const df = document.getElementById('f-date-from').value;
+    const dt = document.getElementById('f-date-to').value;
+    const segParts = [];
+    if (sector) segParts.push(sector);
+    if (df || dt) segParts.push((df || '...') + ' → ' + (dt || '...'));
+    document.getElementById('prev-segment').textContent = segParts.length ? segParts.join(' · ') : (lang==='en'?'All leads':'Tüm lead\'ler');
+
+    // Lead count from preview box
+    const cnt = document.getElementById('preview-count').textContent;
+    document.getElementById('prev-lead-count').textContent = cnt;
+
+    // Schedule
+    const schedMode = document.querySelector('input[name=schedule]:checked')?.value || 'now';
+    if (schedMode === 'now') {
+        document.getElementById('prev-schedule').textContent = lang==='en'?'Send immediately':'Hemen gönder';
+    } else {
+        const sat = document.getElementById('f-scheduled-at').value;
+        document.getElementById('prev-schedule').textContent = sat ? new Date(sat).toLocaleString(lang==='en'?'en-US':'tr-TR') : '—';
+    }
+
+    // Content
+    if (selectedType === 'broadcast') {
+        document.getElementById('prev-bc-section').style.display = '';
+        document.getElementById('prev-seq-section').style.display = 'none';
+        document.getElementById('prev-subject').textContent = document.getElementById('f-subject').value.trim() || '—';
+        document.getElementById('prev-body').textContent = document.getElementById('f-body').value.trim() || '—';
+    } else {
+        document.getElementById('prev-bc-section').style.display = 'none';
+        document.getElementById('prev-seq-section').style.display = '';
+        const steps = collectSteps();
+        const list = document.getElementById('prev-steps-list');
+        list.innerHTML = steps.map((s, i) => `
+            <div class="preview-step-item">
+                <div class="ps-label">${lang==='en'?'Step':'Adım'} ${i+1}</div>
+                <div class="ps-subject">${s.subject || '—'}</div>
+                <div class="ps-delay">${i===0 ? (lang==='en'?'Send immediately':'Hemen gönder') : `${s.delay_hours}h ${lang==='en'?'after previous step':'sonra'}`}</div>
+            </div>
+        `).join('');
+    }
+}
+
 // ── Create campaign ──
 async function createCampaign() {
     const btn = document.getElementById('btnNext');
@@ -424,7 +620,7 @@ async function createCampaign() {
         type:  selectedType,
         segment_filter: {
             sector:       document.getElementById('f-sector').value,
-            name_contains: document.getElementById('f-name-filter').value,
+            name_contains: '',
             date_from:    document.getElementById('f-date-from').value,
             date_to:      document.getElementById('f-date-to').value,
         },
@@ -432,12 +628,11 @@ async function createCampaign() {
     };
 
     if (selectedType === 'broadcast') {
-        payload.subject  = document.getElementById('f-subject').value.trim();
+        payload.subject   = document.getElementById('f-subject').value.trim();
         payload.body_html = document.getElementById('f-body').value.trim();
     } else {
-        payload.steps = collectSteps();
-        // Use first step subject as campaign subject
-        payload.subject  = payload.steps[0]?.subject || '';
+        payload.steps     = collectSteps();
+        payload.subject   = payload.steps[0]?.subject || '';
         payload.body_html = payload.steps[0]?.body_html || '';
     }
 
@@ -450,7 +645,6 @@ async function createCampaign() {
         const d = await r.json();
         if (d.error) { alert(d.error); btn.disabled = false; return; }
 
-        // Auto-launch if scheduled_at is null (now)
         if (!scheduledAt) {
             const lr = await fetch(`/api/marketing/campaigns/${d.id}/launch`, {method:'POST'});
             const ld = await lr.json();
@@ -463,7 +657,201 @@ async function createCampaign() {
     }
 }
 
-// Init
+// ════════════════════════════════════════════════════
+//  CUSTOM DATE RANGE PICKER
+// ════════════════════════════════════════════════════
+const MONTH_TR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const MONTH_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAY_TR   = ['Pt','Sa','Ça','Pe','Cu','Ct','Pz'];
+const DAY_EN   = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+
+const PRESETS_TR = [
+    {key:'all',   label:'Tüm Tarihler'},
+    {key:'7d',    label:'Son 7 Gün'},
+    {key:'30d',   label:'Son 30 Gün'},
+    {key:'month', label:'Bu Ay'},
+    {key:'last',  label:'Geçen Ay'},
+];
+const PRESETS_EN = [
+    {key:'all',   label:'All Dates'},
+    {key:'7d',    label:'Last 7 Days'},
+    {key:'30d',   label:'Last 30 Days'},
+    {key:'month', label:'This Month'},
+    {key:'last',  label:'Last Month'},
+];
+
+let drpState = {
+    open: false,
+    rangeStart: null,
+    rangeEnd: null,
+    picking: null, // 'start' | 'end' | null
+    tempStart: null,
+    preset: null,
+    viewYear: new Date().getFullYear(),
+    viewMonth: new Date().getMonth() === 0 ? 11 : new Date().getMonth() - 1,
+};
+if (drpState.viewMonth === 11 && new Date().getMonth() !== 0) drpState.viewYear = new Date().getFullYear();
+if (new Date().getMonth() === 0) drpState.viewYear = new Date().getFullYear() - 1;
+
+function drpISODate(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function drpFromISO(s) {
+    const [y,m,d] = s.split('-').map(Number);
+    return new Date(y, m-1, d);
+}
+function drpSameDay(a, b) {
+    return a && b && a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+function drpPresetRange(key) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    switch(key) {
+        case 'all':   return {start: null, end: null};
+        case '7d':    { const s=new Date(today); s.setDate(s.getDate()-7); return {start:s,end:today}; }
+        case '30d':   { const s=new Date(today); s.setDate(s.getDate()-30); return {start:s,end:today}; }
+        case 'month': return {start: new Date(today.getFullYear(),today.getMonth(),1), end: today};
+        case 'last':  { const s=new Date(today.getFullYear(),today.getMonth()-1,1); const e=new Date(today.getFullYear(),today.getMonth(),0); return {start:s,end:e}; }
+        default:      return {start:null,end:null};
+    }
+}
+function drpFormatDisplay(s, e) {
+    const lang = localStorage.getItem('lp_lang') || 'tr';
+    if (!s && !e) return lang==='en' ? 'All dates' : 'Tüm tarihler';
+    const fmt = (d) => d.toLocaleDateString(lang==='en'?'en-GB':'tr-TR', {day:'2-digit',month:'short',year:'numeric'});
+    if (s && !e) return fmt(s);
+    if (s && e) return fmt(s) + ' → ' + fmt(e);
+    return '—';
+}
+
+function drpToggle() {
+    drpState.open = !drpState.open;
+    drpState.picking = 'start';
+    drpState.tempStart = null;
+    const popup = document.getElementById('drpPopup');
+    const trigger = document.getElementById('drpTrigger');
+    popup.classList.toggle('open', drpState.open);
+    trigger.classList.toggle('open', drpState.open);
+    if (drpState.open) drpRender();
+}
+function drpClose() {
+    drpState.open = false;
+    document.getElementById('drpPopup').classList.remove('open');
+    document.getElementById('drpTrigger').classList.remove('open');
+}
+
+function drpNav(dir) {
+    let m = drpState.viewMonth + dir;
+    let y = drpState.viewYear;
+    if (m < 0) { m = 11; y--; }
+    if (m > 11) { m = 0; y++; }
+    drpState.viewMonth = m;
+    drpState.viewYear = y;
+    drpRender();
+}
+
+function drpSelectPreset(key) {
+    const r = drpPresetRange(key);
+    drpState.rangeStart = r.start;
+    drpState.rangeEnd   = r.end;
+    drpState.preset     = key;
+    drpState.tempStart  = null;
+    drpState.picking    = null;
+    drpApply();
+    drpClose();
+}
+
+function drpDayClick(dateStr) {
+    const d = drpFromISO(dateStr);
+    if (drpState.picking === 'start' || !drpState.tempStart) {
+        drpState.tempStart = d;
+        drpState.picking   = 'end';
+        drpState.rangeStart = d;
+        drpState.rangeEnd   = null;
+        drpRender();
+    } else {
+        let start = drpState.tempStart, end = d;
+        if (end < start) { const tmp=start; start=end; end=tmp; }
+        drpState.rangeStart = start;
+        drpState.rangeEnd   = end;
+        drpState.preset     = 'custom';
+        drpState.tempStart  = null;
+        drpState.picking    = null;
+        drpApply();
+        drpClose();
+    }
+}
+
+function drpApply() {
+    const df = drpState.rangeStart ? drpISODate(drpState.rangeStart) : '';
+    const dt = drpState.rangeEnd   ? drpISODate(drpState.rangeEnd)   : '';
+    document.getElementById('f-date-from').value = df;
+    document.getElementById('f-date-to').value   = dt;
+    const txt = document.getElementById('drpText');
+    const display = drpFormatDisplay(drpState.rangeStart, drpState.rangeEnd);
+    txt.textContent = display;
+    txt.classList.toggle('has-val', !!(drpState.rangeStart || drpState.rangeEnd));
+    debouncePreview();
+}
+
+function drpRender() {
+    const lang = localStorage.getItem('lp_lang') || 'tr';
+    const PRESETS = lang==='en' ? PRESETS_EN : PRESETS_TR;
+    const MONTHS  = lang==='en' ? MONTH_EN : MONTH_TR;
+    const DAYS    = lang==='en' ? DAY_EN : DAY_TR;
+
+    // Presets
+    const presetsEl = document.getElementById('drpPresets');
+    presetsEl.innerHTML = PRESETS.map(p =>
+        `<button type="button" onclick="drpSelectPreset('${p.key}')" class="${drpState.preset===p.key?'active':''}">${p.label}</button>`
+    ).join('');
+
+    // Two months
+    const m1 = { y: drpState.viewYear, m: drpState.viewMonth };
+    let m2month = m1.m + 1, m2year = m1.y;
+    if (m2month > 11) { m2month = 0; m2year++; }
+    const m2 = { y: m2year, m: m2month };
+
+    document.getElementById('drpMonths').innerHTML =
+        drpRenderMonth(m1.y, m1.m, MONTHS, DAYS) +
+        drpRenderMonth(m2.y, m2.m, MONTHS, DAYS);
+}
+
+function drpRenderMonth(year, month, MONTHS, DAYS) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const firstDay = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    let startDow = firstDay.getDay() - 1; // Monday=0
+    if (startDow < 0) startDow = 6;
+
+    const dayHeader = DAYS.map(d => `<span>${d}</span>`).join('');
+    let cells = '';
+    for (let i=0; i<startDow; i++) cells += `<button class="drp-day empty" disabled></button>`;
+    for (let day=1; day<=daysInMonth; day++) {
+        const d = new Date(year, month, day);
+        const iso = drpISODate(d);
+        const isToday = drpSameDay(d, today);
+        const displayStart = drpState.picking==='end' && drpState.tempStart ? drpState.tempStart : drpState.rangeStart;
+        const displayEnd   = drpState.picking==='end' ? null : drpState.rangeEnd;
+        const isSel   = drpSameDay(d, displayStart) || drpSameDay(d, displayEnd);
+        const isStart = drpSameDay(d, displayStart);
+        const isEnd   = drpSameDay(d, displayEnd);
+        const inRange = displayStart && displayEnd && d>displayStart && d<displayEnd;
+        let cls = 'drp-day';
+        if (isSel) cls += ' sel' + (isStart?' sel-start':'') + (isEnd?' sel-end':'');
+        else if (inRange) cls += ' in-range';
+        if (isToday && !isSel) cls += ' today';
+        cells += `<button type="button" class="${cls}" onclick="drpDayClick('${iso}')">${day}</button>`;
+    }
+    return `<div class="drp-month"><div class="drp-month-title">${MONTHS[month]} ${year}</div><div class="drp-days-header">${dayHeader}</div><div class="drp-days">${cells}</div></div>`;
+}
+
+// Close on outside click
+document.addEventListener('mousedown', function(e) {
+    const wrap = document.getElementById('drpWrap');
+    if (wrap && !wrap.contains(e.target)) drpClose();
+});
+
+// ── Init ──
 updateStepIndicator();
 showStep(1);
 </script>
