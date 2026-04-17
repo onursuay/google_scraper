@@ -7,60 +7,60 @@
     <title>Yo Scraper — Marketing</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f172a; color:#e2e8f0; min-height:100vh; }
+        body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background: #f8fafc; color: #111827; min-height:100vh; }
         .container { max-width:1200px; margin:0 auto; padding:24px 32px 80px; }
 
         /* Page header */
         .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
-        .page-title { font-size:22px; font-weight:800; color:#f1f5f9; }
+        .page-title { font-size:22px; font-weight:800; color: #111827; }
         .btn { padding:10px 20px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all .15s; text-decoration:none; display:inline-flex; align-items:center; gap:7px; }
         .btn-primary { background:#3b82f6; color:#fff; }
         .btn-primary:hover { background:#2563eb; }
         .btn-sm { padding:6px 14px; font-size:12px; }
         .btn-danger { background:rgba(239,68,68,.15); color:#ef4444; border:1px solid rgba(239,68,68,.3); }
         .btn-danger:hover { background:rgba(239,68,68,.25); }
-        .btn-ghost { background:transparent; border:1px solid #334155; color:#94a3b8; }
-        .btn-ghost:hover { border-color:#3b82f6; color:#e2e8f0; }
+        .btn-ghost { background:transparent; border: 1px solid #e5e7eb; color: #6b7280; }
+        .btn-ghost:hover { border-color:#3b82f6; color: #111827; }
 
         /* Stats */
         .stats-bar { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
-        .stat-card { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:16px 20px; flex:1; min-width:140px; }
-        .stat-card .label { font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
-        .stat-card .value { font-size:26px; font-weight:700; color:#f1f5f9; }
+        .stat-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius:10px; padding:16px 20px; flex:1; min-width:140px; }
+        .stat-card .label { font-size:11px; color: #9ca3af; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
+        .stat-card .value { font-size:26px; font-weight:700; color: #111827; }
         .stat-card .value.blue { color:#3b82f6; }
         .stat-card .value.green { color:#22c55e; }
         .stat-card .value.yellow { color:#f59e0b; }
 
         /* Card */
-        .card { background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden; }
-        .card-header { padding:14px 18px; border-bottom:1px solid #334155; display:flex; align-items:center; justify-content:space-between; }
-        .card-title { font-size:13px; font-weight:700; color:#f1f5f9; text-transform:uppercase; letter-spacing:.5px; }
+        .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius:12px; overflow:hidden; }
+        .card-header { padding:14px 18px; border-bottom: 1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between; }
+        .card-title { font-size:13px; font-weight:700; color: #111827; text-transform:uppercase; letter-spacing:.5px; }
 
         /* Table */
         .table { width:100%; border-collapse:collapse; }
-        .table th { padding:10px 14px; text-align:left; font-size:11px; text-transform:uppercase; color:#64748b; background:#172133; border-bottom:1px solid #334155; }
-        .table td { padding:10px 14px; font-size:13px; color:#cbd5e1; border-bottom:1px solid rgba(51,65,85,.3); vertical-align:middle; }
+        .table th { padding:10px 14px; text-align:left; font-size:11px; text-transform:uppercase; color: #9ca3af; background: #f1f5f9; border-bottom: 1px solid #e5e7eb; }
+        .table td { padding:10px 14px; font-size:13px; color: #374151; border-bottom:1px solid rgba(51,65,85,.3); vertical-align:middle; }
         .table tr:hover td { background:rgba(59,130,246,.04); }
         .table td a { color:#3b82f6; text-decoration:none; font-weight:500; }
         .table td a:hover { text-decoration:underline; }
 
         /* Badges */
         .badge { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
-        .badge-draft     { background:rgba(100,116,139,.2); color:#94a3b8; }
+        .badge-draft     { background:rgba(100,116,139,.2); color: #6b7280; }
         .badge-running   { background:rgba(34,197,94,.15); color:#22c55e; }
         .badge-scheduled { background:rgba(59,130,246,.15); color:#60a5fa; }
-        .badge-completed { background:rgba(148,163,184,.15); color:#94a3b8; }
+        .badge-completed { background:rgba(148,163,184,.15); color: #6b7280; }
         .badge-cancelled { background:rgba(239,68,68,.15); color:#ef4444; }
         .badge-paused    { background:rgba(245,158,11,.15); color:#f59e0b; }
         .type-badge { padding:2px 8px; border-radius:6px; font-size:11px; }
         .type-broadcast { background:rgba(139,92,246,.15); color:#a78bfa; }
         .type-sequence  { background:rgba(20,184,166,.15); color:#2dd4bf; }
 
-        .empty-msg { text-align:center; padding:48px; color:#475569; font-size:13px; }
+        .empty-msg { text-align:center; padding:48px; color: #9ca3af; font-size:13px; }
 
         ::-webkit-scrollbar { width:6px; }
         ::-webkit-scrollbar-track { background:transparent; }
-        ::-webkit-scrollbar-thumb { background:#334155; border-radius:3px; }
+        ::-webkit-scrollbar-thumb { background:#e5e7eb; border-radius:3px; }
     </style>
 </head>
 <body>
@@ -161,7 +161,7 @@ async function loadCampaigns() {
                 <td><a href="/marketing/campaigns/${c.id}">${c.name}</a></td>
                 <td>${typeBadge(c.type)}</td>
                 <td>${statusBadge(c.status)}</td>
-                <td style="color:#64748b;font-size:12px;">${fmtDate(c.created_at)}</td>
+                <td style="color: #9ca3af;font-size:12px;">${fmtDate(c.created_at)}</td>
                 <td>
                     <a href="/marketing/campaigns/${c.id}" class="btn btn-ghost btn-sm" style="font-size:11px;">${t('mkt-detail','Detay')}</a>
                     ${c.status === 'draft' ? `<button onclick="launchCampaign('${c.id}')" class="btn btn-primary btn-sm" style="margin-left:4px;font-size:11px;">${t('mkt-launch','Başlat')}</button>` : ''}

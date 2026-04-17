@@ -15,109 +15,185 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
             min-height: 100vh;
         }
 
-        /* Main Content */
+        /* Two-column layout: sector panel + results */
+        .scanner-wrap {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        /* ── Sector Panel ── */
+        .sector-panel {
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+        }
+        .sector-panel-head {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #f3f4f6;
+            flex-shrink: 0;
+        }
+        .sector-panel-head h2 {
+            font-size: 11px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+        .sector-groups { flex: 1; overflow-y: auto; padding: 8px; }
+        .sector-groups::-webkit-scrollbar { width: 3px; }
+        .sector-groups::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 2px; }
+
+        /* Sector group accordion */
+        .sg-group { margin-bottom: 2px; }
+        .sg-title {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px; border-radius: 7px;
+            font-size: 12px; font-weight: 600; color: #374151;
+            cursor: pointer; background: none; border: none;
+            width: 100%; text-align: left; font-family: inherit;
+            transition: background 0.12s;
+        }
+        .sg-title:hover { background: #f9fafb; }
+        .sg-title .sg-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.5; }
+        .sg-title .sg-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sg-title .sg-chev {
+            width: 12px; height: 12px; flex-shrink: 0; fill: none;
+            stroke: #9ca3af; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+            transition: transform 0.2s;
+        }
+        .sg-group.open .sg-chev { transform: rotate(90deg); }
+
+        .sg-list { overflow: hidden; max-height: 0; transition: max-height 0.25s ease; }
+        .sg-group.open .sg-list { max-height: 600px; }
+
+        .sg-item {
+            padding: 6px 10px 6px 32px;
+            font-size: 12px; color: #6b7280;
+            cursor: pointer; border-radius: 6px;
+            transition: background 0.1s, color 0.1s;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .sg-item:hover { background: #f9fafb; color: #374151; }
+        .sg-item.selected { background: rgba(43,182,115,0.08); color: #2BB673; font-weight: 500; }
+
+        /* Scan controls */
+        .scan-controls {
+            border-top: 1px solid #f3f4f6;
+            padding: 14px 12px 80px;
+            flex-shrink: 0;
+        }
+        .sc-selected {
+            font-size: 11px; color: #2BB673; font-weight: 600;
+            margin-bottom: 10px; min-height: 16px;
+        }
+        .sc-label {
+            font-size: 10px; font-weight: 700; color: #9ca3af;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            display: block; margin-bottom: 4px;
+        }
+        .sc-select, .sc-input {
+            width: 100%; padding: 8px 10px; font-size: 12px;
+            border: 1px solid #e5e7eb; border-radius: 7px;
+            background: #fff; color: #374151; margin-bottom: 10px;
+            appearance: none; -webkit-appearance: none;
+            font-family: inherit; outline: none;
+        }
+        .sc-select:focus, .sc-input:focus { border-color: #2BB673; }
+        .scan-btns { display: flex; gap: 6px; margin-top: 4px; }
+        .scan-btn {
+            flex: 1; padding: 8px 4px; font-size: 12px; font-weight: 600;
+            border-radius: 7px; border: none; cursor: pointer;
+            font-family: inherit; transition: opacity 0.15s;
+        }
+        .scan-btn.start { background: #2BB673; color: #fff; }
+        .scan-btn.pause { background: #f59e0b; color: #fff; }
+        .scan-btn.stop  { background: #ef4444; color: #fff; }
+        .scan-btn:hover { opacity: 0.85; }
+        .scan-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        /* ── Main Results Area ── */
         .main {
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             min-height: 100vh;
         }
 
         /* Status Card */
         .status-card {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 20px;
+            background: #fff; border: 1px solid #e5e7eb;
+            border-radius: 12px; padding: 16px;
         }
-        .status-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .status-text { font-size: 15px; color: #94a3b8; }
-        .status-text.running { color: #fbbf24; }
-        .status-text.done { color: #34d399; }
-        .status-text.error { color: #f87171; }
+        .status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .status-text { font-size: 14px; color: #6b7280; }
+        .status-text.running { color: #f59e0b; }
+        .status-text.done { color: #2BB673; }
+        .status-text.error { color: #ef4444; }
 
-        .progress-bar { height: 6px; background: #334155; border-radius: 3px; overflow: hidden; }
+        .progress-bar { height: 5px; background: #f3f4f6; border-radius: 3px; overflow: hidden; }
         .progress-fill {
             height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6);
             border-radius: 3px; transition: width 0.3s; width: 0%;
         }
 
         /* Stats Row */
-        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .stat-card {
-            background: #1e293b; border: 1px solid #334155;
+            background: #fff; border: 1px solid #e5e7eb;
             border-radius: 12px; padding: 16px; text-align: center;
         }
-        .stat-value { font-size: 32px; font-weight: 800; color: #f1f5f9; }
-        .stat-label { font-size: 12px; color: #64748b; text-transform: uppercase; margin-top: 4px; }
+        .stat-value { font-size: 28px; font-weight: 800; color: #111827; }
+        .stat-label { font-size: 11px; color: #9ca3af; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.04em; }
 
         /* Results Table */
         .results-card {
-            background: #1e293b; border: 1px solid #334155;
+            background: #fff; border: 1px solid #e5e7eb;
             border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
         }
         .results-header {
-            padding: 16px 20px; border-bottom: 1px solid #334155;
+            padding: 14px 18px; border-bottom: 1px solid #f3f4f6;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .results-header h3 { font-size: 16px; color: #f1f5f9; }
+        .results-header h3 { font-size: 14px; font-weight: 700; color: #111827; }
         .results-table-wrap { overflow-y: auto; flex: 1; }
         table { width: 100%; border-collapse: collapse; }
         th {
-            position: sticky; top: 0; background: #1e293b;
-            padding: 12px 16px; text-align: left;
-            font-size: 12px; text-transform: uppercase; color: #64748b;
-            border-bottom: 1px solid #334155;
+            position: sticky; top: 0; background: #f9fafb;
+            padding: 10px 14px; text-align: left;
+            font-size: 11px; text-transform: uppercase; color: #9ca3af;
+            border-bottom: 1px solid #e5e7eb; letter-spacing: 0.04em;
         }
-        td { padding: 10px 16px; font-size: 13px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
-        tr:hover td { background: rgba(59,130,246,0.05); }
+        td { padding: 9px 14px; font-size: 13px; border-bottom: 1px solid #f9fafb; color: #374151; }
+        tr:hover td { background: rgba(59,130,246,0.03); }
 
         /* Log Panel */
         .log-panel {
-            background: #0f172a; border: 1px solid #334155;
-            border-radius: 12px; padding: 16px;
-            max-height: 200px; overflow-y: auto;
+            background: #f9fafb; border: 1px solid #e5e7eb;
+            border-radius: 12px; padding: 14px;
+            max-height: 180px; overflow-y: auto;
             font-family: 'SF Mono', Monaco, monospace; font-size: 12px;
         }
-        .log-line { padding: 2px 0; color: #64748b; }
-        .log-line.found { color: #34d399; }
-        .log-line.error { color: #f87171; }
-        .log-line.skip { color: #fbbf24; }
+        .log-line { padding: 2px 0; color: #9ca3af; }
+        .log-line.found { color: #2BB673; }
+        .log-line.error { color: #ef4444; }
+        .log-line.skip { color: #f59e0b; }
 
-        /* Spinner */
-        .spinner {
-            display: inline-block; width: 16px; height: 16px;
-            border: 2px solid #334155; border-top: 2px solid #3b82f6;
-            border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; background: rgba(34,197,94,0.1); } to { opacity: 1; background: transparent; } }
+        @keyframes fadeIn { from { opacity: 0; background: rgba(43,182,115,0.06); } to { opacity: 1; background: transparent; } }
 
-        /* Scan button glow (applied via JS to #scanBtn, #pauseBtn, #stopBtn in sidebar) */
-        @property --border-angle {
-            syntax: '<angle>'; initial-value: 0deg; inherits: false;
-        }
+        /* Scan button glow for start/pause */
         #scanBtn.active-glow, #pauseBtn.active-glow {
             box-shadow: 0 0 0 2px #2BB673;
-            animation: scan-snake 2s linear infinite;
-        }
-        @keyframes scan-snake {
-            0% { --border-angle: 0deg; }
-            100% { --border-angle: 360deg; }
         }
     </style>
 </head>
@@ -125,84 +201,128 @@
 
 {% include 'header.html' %}
 
-<div class="main">
+<div class="scanner-wrap">
 
-    <!-- Status -->
-    <div class="status-card">
-        <div class="status-header">
-            <span class="status-text" id="statusText" data-i18n="ready-status">Hazır - Sektör ve şehir seçerek başlayın</span>
+    <!-- Sector Panel -->
+    <div class="sector-panel">
+        <div class="sector-panel-head">
+            <h2 data-i18n="sector-label">Sektör Seçin</h2>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+        <div class="sector-groups" id="sectorGroups">
+            {% for group_name, sector_list in sectors.items() %}
+            <div class="sg-group" id="sgg-{{ loop.index }}">
+                <button class="sg-title" onclick="toggleSgGroup('sgg-{{ loop.index }}')">
+                    <span class="sg-icon">{{ sector_icons.get(group_name, '')|safe }}</span>
+                    <span class="sg-label">{{ group_name }}</span>
+                    <svg class="sg-chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+                <div class="sg-list">
+                    {% for sector in sector_list %}
+                    <div class="sg-item" onclick="selectSector(this, '{{ sector }}')">{{ sector }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
         </div>
-    </div>
 
-    <!-- Stats -->
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="stat-value" id="statTotal">0</div>
-            <div class="stat-label" data-i18n="stat-scanned">Taranan</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="statFound" style="color:#34d399">0</div>
-            <div class="stat-label" data-i18n="stat-found">Bulunan</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="statSheets" style="color:#3b82f6">0</div>
-            <div class="stat-label" data-i18n="stat-sheets">Sheets'e Eklenen</div>
-        </div>
-    </div>
-
-    <!-- Results Table -->
-    <div class="results-card">
-        <div class="results-header">
-            <h3 data-i18n="found-biz">Bulunan İşletmeler</h3>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span id="resultCount" style="color:#64748b; font-size:13px;">0 <span data-i18n="results-sfx">sonuç</span></span>
-                <button onclick="deleteSelectedResults()" id="deleteResultsBtn" style="display:none; padding:5px 12px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;" data-i18n="del-sel">Seçilenleri Sil</button>
-                <button onclick="clearResults()" id="clearResultsBtn" style="display:none; padding:5px 12px; background:#334155; color:#94a3b8; border:none; border-radius:6px; font-size:12px; cursor:pointer;" data-i18n="clear-btn">Temizle</button>
+        <div class="scan-controls">
+            <div class="sc-selected" id="selectedInfo"></div>
+            <span class="sc-label" data-i18n="city-label">Şehir</span>
+            <select class="sc-select" id="citySelect">
+                <option value="" data-i18n="city-ph">Şehir seçin...</option>
+                {% for city in cities %}
+                <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+            </select>
+            <span class="sc-label" data-i18n="min-res-label">Min. Sonuç</span>
+            <input class="sc-input" type="number" id="minResults" value="20" min="5" max="100">
+            <div class="scan-btns">
+                <button class="scan-btn start" id="scanBtn" onclick="startScan()" data-i18n="start-btn">Başlat</button>
+                <button class="scan-btn pause" id="pauseBtn" onclick="pauseScan()" disabled data-i18n="pause-btn">Duraklat</button>
+                <button class="scan-btn stop"  id="stopBtn"  onclick="stopScan()"  disabled data-i18n="stop-btn">Durdur</button>
             </div>
         </div>
-        <div class="results-table-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width:36px"><input type="checkbox" id="checkAllResults" onchange="toggleAllResults(this)"></th>
-                        <th>#</th>
-                        <th data-i18n="th-date">Tarih</th>
-                        <th data-i18n="th-sector">Sektör</th>
-                        <th data-i18n="th-company">Firma Adı</th>
-                        <th data-i18n="th-phone">Telefon</th>
-                        <th data-i18n="th-email">E-posta</th>
-                        <th data-i18n="th-domain">Domain</th>
-                        <th>Instagram</th>
-                        <th>Facebook</th>
-                        <th>LinkedIn</th>
-                    </tr>
-                </thead>
-                <tbody id="resultsBody">
-                    <tr><td colspan="11" style="text-align:center; padding:40px; color:#475569;" data-i18n="no-scans">Henüz tarama yapılmadı</td></tr>
-                </tbody>
-            </table>
+    </div>
+
+    <!-- Results -->
+    <div class="main">
+
+        <div class="status-card">
+            <div class="status-header">
+                <span class="status-text" id="statusText" data-i18n="ready-status">Hazır — Sektör ve şehir seçerek başlayın</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
         </div>
-    </div>
 
-    <!-- Logs -->
-    <div class="log-panel" id="logPanel">
-        <div class="log-line" data-i18n="sys-log">Sistem hazır. Tarama başlatmak için sol panelden sektör ve şehir seçin.</div>
-    </div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label" data-i18n="stat-scanned">Taranan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statFound" style="color:#2BB673">0</div>
+                <div class="stat-label" data-i18n="stat-found">Bulunan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statSheets" style="color:#3b82f6">0</div>
+                <div class="stat-label" data-i18n="stat-sheets">Sheets'e Eklenen</div>
+            </div>
+        </div>
 
+        <div class="results-card">
+            <div class="results-header">
+                <h3 data-i18n="found-biz">Bulunan İşletmeler</h3>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span id="resultCount" style="color:#9ca3af; font-size:13px;">0 <span data-i18n="results-sfx">sonuç</span></span>
+                    <button onclick="deleteSelectedResults()" id="deleteResultsBtn" style="display:none; padding:4px 10px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;" data-i18n="del-sel">Seçilenleri Sil</button>
+                    <button onclick="clearResults()" id="clearResultsBtn" style="display:none; padding:4px 10px; background:#f3f4f6; color:#6b7280; border:none; border-radius:6px; font-size:12px; cursor:pointer;" data-i18n="clear-btn">Temizle</button>
+                </div>
+            </div>
+            <div class="results-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:36px"><input type="checkbox" id="checkAllResults" onchange="toggleAllResults(this)"></th>
+                            <th>#</th>
+                            <th data-i18n="th-date">Tarih</th>
+                            <th data-i18n="th-sector">Sektör</th>
+                            <th data-i18n="th-company">Firma Adı</th>
+                            <th data-i18n="th-phone">Telefon</th>
+                            <th data-i18n="th-email">E-posta</th>
+                            <th data-i18n="th-domain">Domain</th>
+                            <th>Instagram</th>
+                            <th>Facebook</th>
+                            <th>LinkedIn</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        <tr><td colspan="11" style="text-align:center; padding:40px; color:#9ca3af;" data-i18n="no-scans">Henüz tarama yapılmadı</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="log-panel" id="logPanel">
+            <div class="log-line" data-i18n="sys-log">Sistem hazır. Sol panelden sektör ve şehir seçin.</div>
+        </div>
+
+    </div>
 </div>
 
 <script>
 let selectedSector = '';
 let pollInterval = null;
 
+function toggleSgGroup(id) {
+    document.getElementById(id).classList.toggle('open');
+}
+
 function selectSector(el, sector) {
-    document.querySelectorAll('.sn-sector-item').forEach(i => i.classList.remove('selected'));
+    document.querySelectorAll('.sg-item').forEach(i => i.classList.remove('selected'));
     el.classList.add('selected');
     selectedSector = sector;
-
     const info = document.getElementById('selectedInfo');
     if (info) info.textContent = t('selected-pfx', 'Seçilen: ') + sector;
 }
@@ -212,15 +332,11 @@ function showScanControls(running, paused) {
     const pauseBtn = document.getElementById('pauseBtn');
     const stopBtn = document.getElementById('stopBtn');
     if (!scanBtn) return;
-
     scanBtn.classList.remove('active-glow');
     pauseBtn.classList.remove('active-glow');
-    stopBtn.classList.remove('active-glow');
-
     if (running) {
         scanBtn.disabled = true;
         scanBtn.classList.add('active-glow');
-        scanBtn.textContent = 'Başlat';
         pauseBtn.disabled = false;
         stopBtn.disabled = false;
         if (paused) {
@@ -257,59 +373,36 @@ function stopScan() {
     fetch('/api/scan/stop', {method: 'POST'}).then(() => {
         showScanControls(false, false);
         const stopBtn = document.getElementById('stopBtn');
-        if (stopBtn) {
-            stopBtn.classList.add('active-glow');
-            setTimeout(() => stopBtn.classList.remove('active-glow'), 2000);
-        }
+        if (stopBtn) { stopBtn.classList.add('active-glow'); setTimeout(() => stopBtn.classList.remove('active-glow'), 2000); }
     });
 }
 
-// Page load: check if scan is running
 fetch('/api/status').then(r => r.json()).then(data => {
-    if (data.running) {
-        showScanControls(true, data.paused || false);
-        startPolling();
-    } else {
-        fetch('/api/reset', {method: 'POST'});
-    }
+    if (data.running) { showScanControls(true, data.paused || false); startPolling(); }
+    else { fetch('/api/reset', {method: 'POST'}); }
 });
 
 function startScan() {
     const city = document.getElementById('citySelect').value;
     const minResults = document.getElementById('minResults').value;
-
     if (!selectedSector) { alert('Lütfen bir sektör seçin!'); return; }
     if (!city) { alert('Lütfen bir şehir seçin!'); return; }
-
     showScanControls(true, false);
-
-    // UI reset
     document.getElementById('statusText').textContent = 'Başlatılıyor...';
     document.getElementById('statusText').className = 'status-text running';
     document.getElementById('progressFill').style.width = '0%';
     document.getElementById('statTotal').textContent = '0';
     document.getElementById('statFound').textContent = '0';
     document.getElementById('statSheets').textContent = '0';
-    document.getElementById('resultsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:#475569;">${t('scanning-msg','Taranıyor...')}</td></tr>`;
+    document.getElementById('resultsBody').innerHTML = `<tr><td colspan="11" style="text-align:center;padding:40px;color:#9ca3af;">${t('scanning-msg','Taranıyor...')}</td></tr>`;
     document.getElementById('resultCount').textContent = `0 ${t('results-sfx','sonuç')}`;
     document.getElementById('logPanel').innerHTML = '';
-
     fetch('/api/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            sector: selectedSector,
-            city: city,
-            min_results: parseInt(minResults)
-        })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error);
-            showScanControls(false, false);
-            return;
-        }
+        body: JSON.stringify({ sector: selectedSector, city: city, min_results: parseInt(minResults) })
+    }).then(r => r.json()).then(data => {
+        if (data.error) { alert(data.error); showScanControls(false, false); return; }
         showScanControls(true, false);
         startPolling();
     });
@@ -321,65 +414,53 @@ function startPolling() {
 }
 
 function fetchStatus() {
-    fetch('/api/status')
-        .then(r => r.json())
-        .then(data => {
-            const statusEl = document.getElementById('statusText');
-            statusEl.textContent = data.status;
-            statusEl.className = 'status-text' + (data.running ? ' running' : (data.status.includes('Hata') ? ' error' : ' done'));
-
-            const pct = data.total > 0 ? (data.progress / data.total * 100) : 0;
-            document.getElementById('progressFill').style.width = pct + '%';
-
-            document.getElementById('statTotal').textContent = data.progress;
-            document.getElementById('statFound').textContent = data.results.length;
-            document.getElementById('statSheets').textContent = data.results.length;
-
-            const tbody = document.getElementById('resultsBody');
-            document.getElementById('resultCount').textContent = data.results.length + ' ' + t('results-sfx','sonuç');
-            const currentRowCount = tbody.querySelectorAll('tr[data-idx]').length;
-
-            if (data.results.length > 0 && data.results.length !== currentRowCount) {
-                if (currentRowCount === 0) tbody.innerHTML = '';
-
-                for (let i = currentRowCount; i < data.results.length; i++) {
-                    const r = data.results[i];
-                    const tr = document.createElement('tr');
-                    tr.dataset.idx = i;
-                    tr.style.animation = 'fadeIn 0.3s ease';
-                    tr.innerHTML = `
-                        <td><input type="checkbox" class="result-check" value="${i}" onchange="updateResultActions()"></td>
-                        <td>${i + 1}</td>
-                        <td>${r.date || '-'}</td>
-                        <td>${r.sector || '-'}</td>
-                        <td>${r.name}</td>
-                        <td>${r.phone || '-'}</td>
-                        <td>${r.email}</td>
-                        <td>${r.domain ? '<a href="https://' + r.domain + '" target="_blank" style="color:#3b82f6">' + r.domain + '</a>' : '-'}</td>
-                        <td>${r.instagram ? '<a href="' + r.instagram + '" target="_blank" style="color:#e1306c">IG</a>' : '-'}</td>
-                        <td>${r.facebook ? '<a href="' + r.facebook + '" target="_blank" style="color:#1877f2">FB</a>' : '-'}</td>
-                        <td>${r.linkedin ? '<a href="' + r.linkedin + '" target="_blank" style="color:#0077b5">LI</a>' : '-'}</td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-                document.getElementById('clearResultsBtn').style.display = 'inline-block';
+    fetch('/api/status').then(r => r.json()).then(data => {
+        const statusEl = document.getElementById('statusText');
+        statusEl.textContent = data.status;
+        statusEl.className = 'status-text' + (data.running ? ' running' : (data.status.includes('Hata') ? ' error' : ' done'));
+        const pct = data.total > 0 ? (data.progress / data.total * 100) : 0;
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('statTotal').textContent = data.progress;
+        document.getElementById('statFound').textContent = data.results.length;
+        document.getElementById('statSheets').textContent = data.results.length;
+        const tbody = document.getElementById('resultsBody');
+        document.getElementById('resultCount').textContent = data.results.length + ' ' + t('results-sfx','sonuç');
+        const currentRowCount = tbody.querySelectorAll('tr[data-idx]').length;
+        if (data.results.length > 0 && data.results.length !== currentRowCount) {
+            if (currentRowCount === 0) tbody.innerHTML = '';
+            for (let i = currentRowCount; i < data.results.length; i++) {
+                const r = data.results[i];
+                const tr = document.createElement('tr');
+                tr.dataset.idx = i;
+                tr.style.animation = 'fadeIn 0.3s ease';
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="result-check" value="${i}" onchange="updateResultActions()"></td>
+                    <td>${i + 1}</td>
+                    <td>${r.date || '-'}</td>
+                    <td>${r.sector || '-'}</td>
+                    <td>${r.name}</td>
+                    <td>${r.phone || '-'}</td>
+                    <td>${r.email}</td>
+                    <td>${r.domain ? '<a href="https://' + r.domain + '" target="_blank" style="color:#3b82f6">' + r.domain + '</a>' : '-'}</td>
+                    <td>${r.instagram ? '<a href="' + r.instagram + '" target="_blank" style="color:#e1306c">IG</a>' : '-'}</td>
+                    <td>${r.facebook ? '<a href="' + r.facebook + '" target="_blank" style="color:#1877f2">FB</a>' : '-'}</td>
+                    <td>${r.linkedin ? '<a href="' + r.linkedin + '" target="_blank" style="color:#0077b5">LI</a>' : '-'}</td>
+                `;
+                tbody.appendChild(tr);
             }
-
-            const logPanel = document.getElementById('logPanel');
-            logPanel.innerHTML = data.logs.map(log => {
-                let cls = 'log-line';
-                if (log.includes('BULUNDU')) cls += ' found';
-                else if (log.includes('HATA')) cls += ' error';
-                else if (log.includes('MÜKERRER')) cls += ' skip';
-                return `<div class="${cls}">${log}</div>`;
-            }).join('');
-            logPanel.scrollTop = logPanel.scrollHeight;
-
-            if (!data.running) {
-                clearInterval(pollInterval);
-                showScanControls(false, false);
-            }
-        });
+            document.getElementById('clearResultsBtn').style.display = 'inline-block';
+        }
+        const logPanel = document.getElementById('logPanel');
+        logPanel.innerHTML = data.logs.map(log => {
+            let cls = 'log-line';
+            if (log.includes('BULUNDU')) cls += ' found';
+            else if (log.includes('HATA')) cls += ' error';
+            else if (log.includes('MÜKERRER')) cls += ' skip';
+            return `<div class="${cls}">${log}</div>`;
+        }).join('');
+        logPanel.scrollTop = logPanel.scrollHeight;
+        if (!data.running) { clearInterval(pollInterval); showScanControls(false, false); }
+    });
 }
 
 function toggleAllResults(el) {
@@ -390,27 +471,18 @@ function toggleAllResults(el) {
 function updateResultActions() {
     const checked = document.querySelectorAll('.result-check:checked').length;
     const btn = document.getElementById('deleteResultsBtn');
-    if (checked > 0) {
-        btn.style.display = 'inline-block';
-        btn.textContent = `${t('del-sel-btn','Seçilenleri Sil')} (${checked})`;
-    } else {
-        btn.style.display = 'none';
-    }
+    if (checked > 0) { btn.style.display = 'inline-block'; btn.textContent = `${t('del-sel-btn','Seçilenleri Sil')} (${checked})`; }
+    else { btn.style.display = 'none'; }
 }
 
 function deleteSelectedResults() {
-    const indices = Array.from(document.querySelectorAll('.result-check:checked'))
-        .map(cb => parseInt(cb.value));
+    const indices = Array.from(document.querySelectorAll('.result-check:checked')).map(cb => parseInt(cb.value));
     if (!indices.length) return;
     if (!confirm(`${indices.length} ${t('scan-delete-confirm','kayıt Scanner sonuçlarından ve Google Sheets\'ten silinecek. Emin misiniz?')}`)) return;
-
     fetch('/api/scan/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ indices: indices })
-    })
-    .then(r => r.json())
-    .then(data => {
+    }).then(r => r.json()).then(data => {
         if (data.error) { alert(data.error); return; }
         alert(data.message);
         document.getElementById('checkAllResults').checked = false;
@@ -420,14 +492,14 @@ function deleteSelectedResults() {
 }
 
 function clearResults() {
-    if (!confirm(t('scan-clear-confirm','Tüm tarama sonuçları ekrandan temizlenecek. Google Sheets\'teki veriler kalacak. Emin misiniz?'))) return;
+    if (!confirm(t('scan-clear-confirm','Tüm tarama sonuçları ekrandan temizlenecek. Emin misiniz?'))) return;
     fetch('/api/reset', {method: 'POST'}).then(() => {
-        document.getElementById('resultsBody').innerHTML = `<tr><td colspan="12" style="text-align:center;padding:40px;color:#475569;">${t('no-scans','Henüz tarama yapılmadı')}</td></tr>`;
+        document.getElementById('resultsBody').innerHTML = `<tr><td colspan="11" style="text-align:center;padding:40px;color:#9ca3af;">${t('no-scans','Henüz tarama yapılmadı')}</td></tr>`;
         document.getElementById('statTotal').textContent = '0';
         document.getElementById('statFound').textContent = '0';
         document.getElementById('statSheets').textContent = '0';
         document.getElementById('resultCount').textContent = `0 ${t('results-sfx','sonuç')}`;
-        document.getElementById('statusText').textContent = t('ready-status','Hazır — tarama başlatmak için sol panelden sektör ve şehir seçin');
+        document.getElementById('statusText').textContent = t('ready-status','Hazır — sol panelden sektör ve şehir seçin');
         document.getElementById('progressFill').style.width = '0%';
         document.getElementById('logPanel').innerHTML = '';
         document.getElementById('clearResultsBtn').style.display = 'none';

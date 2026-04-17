@@ -9,17 +9,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1e293b;
-  --bg-card-alt: #172133;
-  --bg-input: #0f172a;
-  --border: #334155;
-  --border-hover: #475569;
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f1f5f9;
+  --bg-input: #f8fafc;
+  --border: #e5e7eb;
+  --border-hover: #d1d5db;
   --border-active: rgba(59,130,246,0.4);
-  --text: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-dim: #64748b;
+  --text: #111827;
+  --text-secondary: #6b7280;
+  --text-dim: #9ca3af;
   --accent: #3b82f6;
   --accent-bright: #60a5fa;
   --accent-glow: rgba(59,130,246,0.15);
@@ -41,8 +41,8 @@
 
 .clickbot-app {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
+  background: #f8fafc;
+  color: #111827;
   min-height: calc(100vh - 64px);
   overflow-x: hidden;
   position: relative;
@@ -138,7 +138,7 @@
   padding: 4px 10px; border-radius: 8px;
   background: #1e293b;
   border: 1px solid #334155;
-  font-size: 13px; color: #94a3b8;
+  font-size: 13px; color: #6b7280;
 }
 .clickbot-app .stat-chip strong { color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 14px; }
 
@@ -148,7 +148,7 @@
   padding: 10px 20px; border-radius: 12px;
   background: #1e293b;
   border: 1px solid #334155;
-  font-size: 13px; color: #94a3b8;
+  font-size: 13px; color: #6b7280;
   align-items: center; gap: 16px;
 }
 .clickbot-app .current-bar strong { color: var(--accent-bright); font-weight: 600; }
@@ -181,7 +181,7 @@
 
 .clickbot-app .card-title {
   font-size: 12px; font-weight: 700;
-  letter-spacing: 0.08em; color: #94a3b8;
+  letter-spacing: 0.08em; color: #6b7280;
   display: inline-flex; align-items: center; gap: 4px;
 }
 
@@ -227,7 +227,7 @@
 .clickbot-app input, .clickbot-app select, .clickbot-app textarea {
   width: 100%;
   padding: 9px 12px;
-  background: #0f172a;
+  background: #f8fafc;
   border: 1px solid #334155;
   border-radius: 8px;
   color: var(--text);
@@ -247,7 +247,7 @@
 .clickbot-app input::placeholder { color: var(--text-dim); }
 .clickbot-app textarea { resize: vertical; min-height: 80px; font-size: 13px; line-height: 1.5; }
 .clickbot-app select { cursor: pointer; height: 38px; box-sizing: border-box; }
-.clickbot-app select option { background: #1e293b; color: #e2e8f0; }
+.clickbot-app select option { background: #1e293b; color: #111827; }
 
 .clickbot-app .form-group { margin-bottom: 10px; }
 .clickbot-app .form-row { display: flex; gap: 8px; }
@@ -390,7 +390,7 @@
 .clickbot-app .tag-container {
   display: flex; flex-wrap: wrap; gap: 4px;
   padding: 8px; border-radius: 8px;
-  background: #0f172a;
+  background: #f8fafc;
   border: 1px solid #334155;
   min-height: 36px;
   max-height: 100px; overflow-y: auto;
@@ -410,7 +410,7 @@
 
 /* ==================== LOG CONSOLE ==================== */
 .clickbot-app .log-console {
-  background: #0f172a;
+  background: #f8fafc;
   border: 1px solid #334155;
   border-radius: 12px;
   padding: 10px;
