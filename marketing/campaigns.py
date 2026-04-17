@@ -238,6 +238,56 @@ def _process_enrollment(enrollment: dict):
         })
 
 
+def auto_trigger_leads(leads: list[dict], source: str) -> int:
+    """Yeni gelen leadlere trigger_type='lead_created' olan aktif kampanyaları tetikle."""
+    if not leads:
+        return 0
+    try:
+        campaigns = sb_select("campaigns", {
+            "trigger_type": "eq.lead_created",
+            "status":       "eq.running",
+            "select":       "*",
+        })
+    except Exception as e:
+        logger.warning(f"auto_trigger_leads fetch error: {e}")
+        return 0
+
+    sent = 0
+    for campaign in campaigns:
+        seg_filter = campaign.get("segment_filter") or {}
+        if seg_filter.get("source", "scanner") != source:
+            continue
+        for lead in leads:
+            if not lead.get("email"):
+                continue
+            if not _lead_matches_filter(lead, seg_filter):
+                continue
+            if campaign["type"] == "broadcast":
+                _enqueue(
+                    to_email=lead["email"],
+                    to_name=lead.get("name", ""),
+                    subject=_render(campaign.get("subject", ""), lead),
+                    body_html=_render(campaign.get("body_html", ""), lead),
+                    campaign_id=campaign["id"],
+                )
+                sent += 1
+            elif campaign["type"] == "sequence":
+                if enroll_lead(campaign["id"], lead["email"], lead.get("name", ""), lead):
+                    sent += 1
+    return sent
+
+
+def _lead_matches_filter(lead: dict, f: dict) -> bool:
+    """Bir lead'in kampanya segment filtresine uyup uymadığını kontrol et."""
+    sector = (f.get("sector") or "").strip()
+    city   = (f.get("city") or "").strip().lower()
+    if sector and lead.get("sector", "") != sector:
+        return False
+    if city and city not in lead.get("city", "").lower():
+        return False
+    return True
+
+
 def enroll_lead(cid: str, lead_email: str, lead_name: str = "", lead_data: dict | None = None) -> bool:
     """Bir lead'i sequence kampanyasına enroll et (trigger: lead_created)."""
     campaign = get_campaign(cid)

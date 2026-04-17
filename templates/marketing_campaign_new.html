@@ -152,6 +152,22 @@
         .schedule-sub { font-size:11px; color:#64748b; }
         .schedule-extra { margin-top:8px; margin-left:34px; }
 
+        /* ── Automation toggle ── */
+        .auto-toggle { position:relative; display:inline-block; width:46px; height:26px; flex-shrink:0; }
+        .auto-toggle input { opacity:0; width:0; height:0; }
+        .auto-slider { position:absolute; inset:0; background:#334155; border-radius:13px; cursor:pointer; transition:.25s; }
+        .auto-slider::before { content:''; position:absolute; width:20px; height:20px; left:3px; bottom:3px; background:#64748b; border-radius:50%; transition:.25s; }
+        .auto-toggle input:checked + .auto-slider { background:rgba(245,158,11,.25); }
+        .auto-toggle input:checked + .auto-slider::before { background:#f59e0b; transform:translateX(20px); }
+
+        .auto-flow { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+        .auto-flow-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
+        .auto-flow-icon { width:42px; height:42px; border-radius:10px; border:1px solid #334155; background:#0f172a; display:flex; align-items:center; justify-content:center; color:#64748b; }
+        .auto-flow-icon svg { width:18px; height:18px; }
+        .auto-flow-label { font-size:11px; color:#64748b; font-weight:600; text-align:center; }
+        .auto-flow-arrow { color:#334155; display:flex; align-items:center; }
+        .auto-flow-arrow svg { width:16px; height:16px; }
+
         /* Preview step */
         .preview-section { margin-bottom:16px; }
         .preview-section-title { font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
@@ -430,6 +446,55 @@
             </div>
             <div class="form-hint" style="margin-top:14px;" data-i18n="mkt-sched-hint">Sekans kampanyalarında zamanlama ilk adım için geçerlidir. Sonraki adımlar her adımın kendi gecikmesi kadar bekler.</div>
         </div>
+
+        <!-- Automation card -->
+        <div class="card" style="margin-top:0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                <div>
+                    <div style="font-size:14px;font-weight:700;color:#f1f5f9;display:flex;align-items:center;gap:8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:#f59e0b;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        <span data-i18n="mkt-auto-title">Otomasyon</span>
+                    </div>
+                    <div style="font-size:12px;color:#64748b;margin-top:4px;" data-i18n="mkt-auto-sub">Yeni lead'lere otomatik gönder</div>
+                </div>
+                <!-- Toggle switch -->
+                <label class="auto-toggle" id="autoToggleLabel">
+                    <input type="checkbox" id="f-auto-trigger" onchange="toggleAuto(this.checked)">
+                    <span class="auto-slider"></span>
+                </label>
+            </div>
+
+            <!-- Expanded description (shown when ON) -->
+            <div id="auto-detail" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid #334155;">
+                <div class="auto-flow">
+                    <div class="auto-flow-item">
+                        <div class="auto-flow-icon" id="auto-src-icon">
+                            <!-- filled by JS -->
+                        </div>
+                        <div class="auto-flow-label" id="auto-src-label">Scanner</div>
+                    </div>
+                    <div class="auto-flow-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </div>
+                    <div class="auto-flow-item">
+                        <div class="auto-flow-icon" style="background:rgba(245,158,11,.12);color:#f59e0b;border-color:rgba(245,158,11,.25);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <div class="auto-flow-label" data-i18n="mkt-auto-flow-trigger">Tetikle</div>
+                    </div>
+                    <div class="auto-flow-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </div>
+                    <div class="auto-flow-item">
+                        <div class="auto-flow-icon" style="background:rgba(34,197,94,.1);color:#22c55e;border-color:rgba(34,197,94,.25);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </div>
+                        <div class="auto-flow-label" data-i18n="mkt-auto-flow-send">Gönder</div>
+                    </div>
+                </div>
+                <p style="font-size:12px;color:#64748b;margin-top:14px;line-height:1.7;" id="auto-desc-text"></p>
+            </div>
+        </div>
     </div>
 
     <!-- Step 5: Preview -->
@@ -657,6 +722,40 @@ async function doPreview() {
     }
     document.getElementById('preview-spinner').style.display = 'none';
     document.getElementById('preview-count').style.display = 'inline';
+}
+
+// ── Automation toggle ──
+function toggleAuto(on) {
+    document.getElementById('auto-detail').style.display = on ? 'block' : 'none';
+    if (on) updateAutoDesc();
+}
+
+function updateAutoDesc() {
+    const src  = document.getElementById('f-source').value || 'scanner';
+    const lang = localStorage.getItem('lp_lang') || 'tr';
+
+    // Source icon
+    const iconEl = document.getElementById('auto-src-icon');
+    if (src === 'scanner') {
+        iconEl.style.cssText = 'width:42px;height:42px;border-radius:10px;border:1px solid rgba(59,130,246,.3);background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;color:#3b82f6;';
+        iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>';
+    } else {
+        iconEl.style.cssText = 'width:42px;height:42px;border-radius:10px;border:1px solid rgba(139,92,246,.3);background:rgba(139,92,246,.1);display:flex;align-items:center;justify-content:center;color:#a78bfa;';
+        iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    }
+    document.getElementById('auto-src-label').textContent = src === 'scanner' ? 'Scanner' : 'Import';
+
+    // Description
+    const descEl = document.getElementById('auto-desc-text');
+    if (lang === 'en') {
+        descEl.textContent = src === 'scanner'
+            ? 'Every time a new business is scraped from Google Maps and has an email address, this campaign will automatically trigger and send the email.'
+            : 'Every time new contacts are imported via the External page and have an email address, this campaign will automatically trigger and send the email.';
+    } else {
+        descEl.textContent = src === 'scanner'
+            ? 'Scanner\'dan her yeni işletme tarandığında ve e-posta adresi bulunduğunda bu kampanya otomatik tetiklenecek ve mail gönderilecek.'
+            : 'External sayfasından her yeni kişi içe aktarıldığında ve e-posta adresi olduğunda bu kampanya otomatik tetiklenecek ve mail gönderilecek.';
+    }
 }
 
 // ── Step 3 init ──
@@ -990,12 +1089,16 @@ function buildPreview() {
 
     // Schedule
     const schedMode = document.querySelector('input[name=schedule]:checked')?.value || 'now';
+    const autoOn = document.getElementById('f-auto-trigger')?.checked || false;
+    let schedText = '';
     if (schedMode === 'now') {
-        document.getElementById('prev-schedule').textContent = lang==='en'?'Send immediately':'Hemen gönder';
+        schedText = lang==='en' ? 'Send immediately' : 'Hemen gönder';
     } else {
         const sat = document.getElementById('f-scheduled-at').value;
-        document.getElementById('prev-schedule').textContent = sat ? new Date(sat).toLocaleString(lang==='en'?'en-US':'tr-TR') : '—';
+        schedText = sat ? new Date(sat).toLocaleString(lang==='en'?'en-US':'tr-TR') : '—';
     }
+    if (autoOn) schedText += (lang==='en' ? ' · Auto-trigger ON ⚡' : ' · Otomasyon Açık ⚡');
+    document.getElementById('prev-schedule').textContent = schedText;
 
     // Content
     if (selectedType === 'broadcast') {
@@ -1026,9 +1129,11 @@ async function createCampaign() {
     const schedMode = document.querySelector('input[name=schedule]:checked')?.value || 'now';
     const scheduledAt = schedMode === 'later' ? document.getElementById('f-scheduled-at').value : null;
 
+    const autoOn = document.getElementById('f-auto-trigger')?.checked || false;
     const payload = {
-        name:  document.getElementById('f-name').value.trim(),
-        type:  selectedType,
+        name:         document.getElementById('f-name').value.trim(),
+        type:         selectedType,
+        trigger_type: autoOn ? 'lead_created' : 'manual',
         segment_filter: {
             source:    document.getElementById('f-source').value || 'scanner',
             sector:    document.getElementById('f-sector').value,

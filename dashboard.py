@@ -210,26 +210,28 @@ def add_log(message: str):
         scan_state["logs"] = scan_state["logs"][-50:]
 
 
-def _auto_enroll_new_leads(businesses: list[dict]):
-    """trigger_type='lead_created' olan aktif sequence kampanyalarına yeni leadleri enroll et."""
+def _auto_trigger_scanner_leads(businesses: list[dict]):
+    """Scanner'dan gelen yeni leadleri trigger_type='lead_created' kampanyalarına gönder."""
     try:
-        from marketing.db import sb_select
-        from marketing.campaigns import enroll_lead
-        campaigns = sb_select("campaigns", {
-            "type":         "eq.sequence",
-            "trigger_type": "eq.lead_created",
-            "status":       "eq.running",
-            "select":       "id",
-        })
-        for c in campaigns:
-            for biz in businesses:
-                if biz.get("email"):
-                    enroll_lead(c["id"], biz["email"], biz.get("name", ""), {
-                        "sector": biz.get("sector", ""),
-                        "domain": biz.get("domain", ""),
-                    })
+        from marketing.campaigns import auto_trigger_leads
+        leads = [
+            {
+                "email":  b.get("email", ""),
+                "name":   b.get("name", ""),
+                "sector": b.get("sector", ""),
+                "city":   b.get("city", ""),
+                "domain": b.get("domain", ""),
+                "website": b.get("website", ""),
+                "first_name": "",
+                "last_name":  "",
+            }
+            for b in businesses if b.get("email")
+        ]
+        n = auto_trigger_leads(leads, "scanner")
+        if n:
+            logger.info(f"auto_trigger: {n} scanner lead için kampanya tetiklendi")
     except Exception as e:
-        logger.debug(f"auto_enroll error: {e}")
+        logger.debug(f"auto_trigger_scanner error: {e}")
 
 
 def run_scan(sector: str, city: str, min_results: int):
@@ -370,7 +372,7 @@ def run_scan(sector: str, city: str, min_results: int):
             scan_state["status"] = f"Tamamlandı! {len(valid_businesses)} işletme bulundu, {added} yeni kayıt eklendi."
 
             # Auto-enroll: lead_created trigger olan sequence kampanyalarına enroll et
-            _auto_enroll_new_leads(valid_businesses)
+            _auto_trigger_scanner_leads(valid_businesses)
         elif len(scan_state["results"]) > 0:
             # Sonuclar bulundu ama hepsi zaten kayitli
             scan_state["status"] = f"Tamamlandı! {len(scan_state['results'])} işletme bulundu (hepsi zaten kayıtlı)."
@@ -1451,6 +1453,30 @@ def import_execute():
 
         total_valid = len(leads)
         added = leads_mgr.append_leads(leads)
+
+        # Auto-trigger: import kaynaklı lead_created kampanyalarını tetikle
+        if added > 0:
+            try:
+                from marketing.campaigns import auto_trigger_leads
+                trigger_leads = [
+                    {
+                        "email":      l.get("email", ""),
+                        "name":       f"{l.get('first_name','')} {l.get('last_name','')}".strip() or l.get("email",""),
+                        "first_name": l.get("first_name", ""),
+                        "last_name":  l.get("last_name", ""),
+                        "city":       l.get("city", ""),
+                        "sector":     "",
+                        "domain":     "",
+                        "website":    "",
+                    }
+                    for l in leads if l.get("email")
+                ]
+                n = auto_trigger_leads(trigger_leads, "import")
+                if n:
+                    logger.info(f"auto_trigger: {n} import lead için kampanya tetiklendi")
+            except Exception as te:
+                logger.debug(f"auto_trigger_import error: {te}")
+
         return jsonify({
             "created": added,
             "skipped": total_valid - added,
