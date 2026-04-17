@@ -9,6 +9,12 @@
 (function () {
     var DICT = {
         en: {
+            // ── HEADER NAV ──
+            'nav-clickbot-lbl':  'Click Bot',
+            'nav-scanner-lbl':   'Scanner',
+            'nav-external-lbl':  'Import',
+            'nav-database-lbl':  'Database',
+
             // ── HEADER ──
             'h-scanning':   'Scanning...',
             'h-go-scanner': 'Go to Scanner →',
