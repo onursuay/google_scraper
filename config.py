@@ -96,6 +96,9 @@ CONTACT_PAGES = [
     "/about-us",
 ]
 
+# Admin
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
+
 # E-posta ayarlari (Resend API)
 FROM_NAME = os.getenv("FROM_NAME", "YO Dijital")
 FROM_EMAIL = os.getenv("FROM_EMAIL", "info@yodijital.com")

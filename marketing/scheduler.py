@@ -29,8 +29,17 @@ def start_scheduler():
         replace_existing=True,
     )
 
+    _scheduler.add_job(
+        _run_daily_report,
+        trigger="cron",
+        hour=17,
+        minute=0,
+        id="daily_report",
+        replace_existing=True,
+    )
+
     _scheduler.start()
-    logger.info("APScheduler started (queue_processor@1min, advance_sequences@5min)")
+    logger.info("APScheduler started (queue_processor@1min, advance_sequences@5min, daily_report@17:00UTC)")
 
 
 def _run_queue_processor():
@@ -47,3 +56,11 @@ def _run_advance_sequences():
         advance_sequences()
     except Exception as e:
         logger.warning(f"advance_sequences error: {e}")
+
+
+def _run_daily_report():
+    from .report import send_daily_report
+    try:
+        send_daily_report()
+    except Exception as e:
+        logger.warning(f"daily_report error: {e}")
