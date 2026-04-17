@@ -54,6 +54,43 @@
         .type-name { font-size:14px; font-weight:700; color:#f1f5f9; }
         .type-desc { font-size:12px; color:#64748b; line-height:1.5; }
 
+        /* ── Segment two-panel layout ── */
+        .seg-layout { display:grid; grid-template-columns:220px 1fr; gap:16px; }
+        .seg-sources-panel { display:flex; flex-direction:column; gap:8px; }
+        .seg-sources-title { font-size:11px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
+
+        .seg-source-item {
+            display:flex; align-items:center; gap:12px;
+            background:#1e293b; border:1.5px solid #334155; border-radius:12px;
+            padding:14px 12px; cursor:pointer; transition:all .2s;
+            position:relative;
+        }
+        .seg-source-item:hover:not(.active) { border-color:#475569; background:#253347; }
+        .seg-source-item.active { border-color:#3b82f6; background:rgba(59,130,246,.07); }
+
+        .seg-src-icon {
+            width:38px; height:38px; border-radius:10px; flex-shrink:0;
+            background:#0f172a; border:1px solid #334155;
+            display:flex; align-items:center; justify-content:center; color:#64748b;
+            transition:all .2s;
+        }
+        .seg-src-icon svg { width:17px; height:17px; }
+        .seg-source-item.active .seg-src-icon { background:rgba(59,130,246,.12); border-color:rgba(59,130,246,.3); color:#3b82f6; }
+
+        .seg-src-body { flex:1; min-width:0; }
+        .seg-src-name { font-size:13px; font-weight:700; color:#f1f5f9; }
+        .seg-src-desc { font-size:11px; color:#64748b; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .seg-src-count { margin-top:6px; }
+        .seg-src-count .cnt-val { font-size:18px; font-weight:800; color:#3b82f6; line-height:1; }
+        .seg-src-count .cnt-lbl { font-size:10px; color:#475569; }
+        .cnt-spinner { display:inline-block; width:14px; height:14px; border:2px solid #334155; border-top-color:#3b82f6; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; }
+
+        .seg-src-check { width:20px; height:20px; border-radius:50%; background:#3b82f6; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:opacity .2s; }
+        .seg-src-check svg { width:10px; height:10px; stroke:#fff; }
+        .seg-source-item:not(.active) .seg-src-check { opacity:0; }
+
+        .seg-filters-panel { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:20px; }
+
         /* Segment preview */
         .segment-preview { background:#0f172a; border:1px solid #334155; border-radius:8px; padding:12px 16px; display:flex; align-items:center; gap:10px; margin-top:8px; }
         .preview-count { font-size:22px; font-weight:800; color:#3b82f6; }
@@ -220,48 +257,104 @@
 
     <!-- Step 2: Segment -->
     <div id="step-2" style="display:none;">
-        <div class="card">
-            <div class="card-title" data-i18n="mkt-ws-seg-title">Hedef Segment</div>
-            <div class="form-group">
-                <label data-i18n="mkt-seg-sector">Sektör</label>
-                <select id="f-sector" onchange="debouncePreview()">
-                    <option value="" data-i18n="mkt-seg-all-sectors">Tüm Sektörler</option>
-                    {% for sector in sectors %}
-                    <option value="{{ sector }}">{{ sector }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <!-- Date range picker -->
-            <div class="form-group">
-                <label data-i18n="mkt-seg-date-range">Kayıt Tarihi Aralığı</label>
-                <input type="hidden" id="f-date-from">
-                <input type="hidden" id="f-date-to">
-                <div class="drp-wrap" id="drpWrap">
-                    <button type="button" class="drp-trigger" id="drpTrigger" onclick="drpToggle()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                        <span class="drp-text" id="drpText" data-i18n="mkt-seg-date-ph">Tüm tarihler</span>
-                    </button>
-                    <div class="drp-popup" id="drpPopup">
-                        <div class="drp-presets" id="drpPresets"></div>
-                        <div class="drp-calendars">
-                            <div class="drp-cal-nav">
-                                <button type="button" onclick="drpNav(-1)">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                                </button>
-                                <button type="button" onclick="drpNav(1)">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                                </button>
-                            </div>
-                            <div class="drp-months" id="drpMonths"></div>
+        <input type="hidden" id="f-source" value="scanner">
+        <input type="hidden" id="f-date-from">
+        <input type="hidden" id="f-date-to">
+
+        <div class="seg-layout">
+
+            <!-- Left: Data source selector -->
+            <div class="seg-sources-panel">
+                <div class="seg-sources-title" data-i18n="mkt-source-title">Veri Kaynağı</div>
+
+                <div class="seg-source-item active" id="src-scanner" onclick="selectSource('scanner')">
+                    <div class="seg-src-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    </div>
+                    <div class="seg-src-body">
+                        <div class="seg-src-name">Scanner</div>
+                        <div class="seg-src-desc" data-i18n="mkt-source-scanner-desc">Google Maps işletmeleri</div>
+                        <div class="seg-src-count" id="cnt-scanner">
+                            <span class="cnt-spinner"></span>
                         </div>
+                    </div>
+                    <div class="seg-src-check" id="chk-scanner">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                </div>
+
+                <div class="seg-source-item" id="src-import" onclick="selectSource('import')">
+                    <div class="seg-src-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </div>
+                    <div class="seg-src-body">
+                        <div class="seg-src-name">Import</div>
+                        <div class="seg-src-desc" data-i18n="mkt-source-import-desc">İçe aktarılan kişiler</div>
+                        <div class="seg-src-count" id="cnt-import">
+                            <span class="cnt-spinner"></span>
+                        </div>
+                    </div>
+                    <div class="seg-src-check" id="chk-import" style="opacity:0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     </div>
                 </div>
             </div>
-            <!-- Preview -->
-            <div class="segment-preview">
-                <div id="preview-spinner" class="preview-spinner" style="display:none;"></div>
-                <div class="preview-count" id="preview-count">—</div>
-                <div class="preview-label" data-i18n="mkt-seg-match">lead eşleşiyor</div>
+
+            <!-- Right: Filters -->
+            <div class="seg-filters-panel">
+
+                <!-- Scanner filters -->
+                <div id="filters-scanner">
+                    <div class="form-group">
+                        <label data-i18n="mkt-seg-sector">Sektör</label>
+                        <select id="f-sector" onchange="debouncePreview()">
+                            <option value="" data-i18n="mkt-seg-all-sectors">Tüm Sektörler</option>
+                            {% for sector in sectors %}
+                            <option value="{{ sector }}">{{ sector }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Import filters -->
+                <div id="filters-import" style="display:none;">
+                    <div class="form-group">
+                        <label data-i18n="mkt-seg-city">Şehir</label>
+                        <input type="text" id="f-city" placeholder="İstanbul, Ankara..." oninput="debouncePreview()">
+                    </div>
+                </div>
+
+                <!-- Shared: Date range -->
+                <div class="form-group">
+                    <label data-i18n="mkt-seg-date-range">Kayıt Tarihi Aralığı</label>
+                    <div class="drp-wrap" id="drpWrap">
+                        <button type="button" class="drp-trigger" id="drpTrigger" onclick="drpToggle()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span class="drp-text" id="drpText" data-i18n="mkt-seg-date-ph">Tüm tarihler</span>
+                        </button>
+                        <div class="drp-popup" id="drpPopup">
+                            <div class="drp-presets" id="drpPresets"></div>
+                            <div class="drp-calendars">
+                                <div class="drp-cal-nav">
+                                    <button type="button" onclick="drpNav(-1)">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                                    </button>
+                                    <button type="button" onclick="drpNav(1)">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </button>
+                                </div>
+                                <div class="drp-months" id="drpMonths"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview count -->
+                <div class="segment-preview">
+                    <div id="preview-spinner" class="preview-spinner" style="display:none;"></div>
+                    <div class="preview-count" id="preview-count">—</div>
+                    <div class="preview-label" data-i18n="mkt-seg-match">lead eşleşiyor</div>
+                </div>
             </div>
         </div>
     </div>
@@ -442,7 +535,7 @@ function nextStep() {
     currentStep++;
     showStep(currentStep);
     updateStepIndicator();
-    if (currentStep === 2) doPreview();
+    if (currentStep === 2) { loadSourceCounts(); doPreview(); }
     if (currentStep === 3) {
         document.getElementById('content-broadcast').style.display = selectedType === 'broadcast' ? 'block' : 'none';
         document.getElementById('content-sequence').style.display = selectedType === 'sequence' ? 'block' : 'none';
@@ -481,6 +574,42 @@ function validateStep() {
     return true;
 }
 
+// ── Source selector ──
+let selectedSource = 'scanner';
+
+function selectSource(src) {
+    selectedSource = src;
+    document.getElementById('f-source').value = src;
+
+    ['scanner','import'].forEach(s => {
+        document.getElementById('src-'+s).classList.toggle('active', s === src);
+        document.getElementById('chk-'+s).style.opacity = s === src ? '1' : '0';
+    });
+
+    document.getElementById('filters-scanner').style.display = src === 'scanner' ? '' : 'none';
+    document.getElementById('filters-import').style.display  = src === 'import'  ? '' : 'none';
+
+    debouncePreview();
+}
+
+async function loadSourceCounts() {
+    try {
+        const r = await fetch('/api/marketing/segment/counts');
+        const d = await r.json();
+        ['scanner','import'].forEach(src => {
+            const lang = localStorage.getItem('lp_lang') || 'tr';
+            const lbl = lang === 'en' ? 'leads with email' : 'e-postalı lead';
+            const el = document.getElementById('cnt-'+src);
+            if (el) el.innerHTML = `<span class="cnt-val">${d[src] ?? 0}</span> <span class="cnt-lbl">${lbl}</span>`;
+        });
+    } catch(e) {
+        ['scanner','import'].forEach(src => {
+            const el = document.getElementById('cnt-'+src);
+            if (el) el.innerHTML = '<span class="cnt-lbl">—</span>';
+        });
+    }
+}
+
 // ── Segment preview ──
 function debouncePreview() {
     clearTimeout(previewTimer);
@@ -490,11 +619,13 @@ function debouncePreview() {
 async function doPreview() {
     document.getElementById('preview-spinner').style.display = 'inline-block';
     document.getElementById('preview-count').style.display = 'none';
+    const src = document.getElementById('f-source').value || 'scanner';
     const params = new URLSearchParams({
-        sector: document.getElementById('f-sector').value,
-        name_contains: '',
+        source:    src,
+        sector:    document.getElementById('f-sector').value,
+        city:      document.getElementById('f-city')?.value || '',
         date_from: document.getElementById('f-date-from').value,
-        date_to: document.getElementById('f-date-to').value,
+        date_to:   document.getElementById('f-date-to').value,
     });
     try {
         const r = await fetch('/api/marketing/segment/preview?' + params);
@@ -565,13 +696,16 @@ function buildPreview() {
     document.getElementById('prev-type').innerHTML = typeBadge;
 
     // Segment
+    const src    = document.getElementById('f-source').value || 'scanner';
     const sector = document.getElementById('f-sector').value;
+    const city   = document.getElementById('f-city')?.value || '';
     const df = document.getElementById('f-date-from').value;
     const dt = document.getElementById('f-date-to').value;
-    const segParts = [];
+    const segParts = [`[${src === 'import' ? 'Import' : 'Scanner'}]`];
     if (sector) segParts.push(sector);
+    if (city) segParts.push(city);
     if (df || dt) segParts.push((df || '...') + ' → ' + (dt || '...'));
-    document.getElementById('prev-segment').textContent = segParts.length ? segParts.join(' · ') : (lang==='en'?'All leads':'Tüm lead\'ler');
+    document.getElementById('prev-segment').textContent = segParts.join(' · ');
 
     // Lead count from preview box
     const cnt = document.getElementById('preview-count').textContent;
@@ -619,10 +753,11 @@ async function createCampaign() {
         name:  document.getElementById('f-name').value.trim(),
         type:  selectedType,
         segment_filter: {
-            sector:       document.getElementById('f-sector').value,
-            name_contains: '',
-            date_from:    document.getElementById('f-date-from').value,
-            date_to:      document.getElementById('f-date-to').value,
+            source:    document.getElementById('f-source').value || 'scanner',
+            sector:    document.getElementById('f-sector').value,
+            city:      document.getElementById('f-city')?.value || '',
+            date_from: document.getElementById('f-date-from').value,
+            date_to:   document.getElementById('f-date-to').value,
         },
         scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
     };

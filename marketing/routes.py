@@ -6,7 +6,7 @@ from .campaigns import (
     get_campaign_stats, get_recent_events, get_enrollments,
     get_overview_stats, get_steps, save_steps, enroll_lead,
 )
-from .segments import load_leads
+from .segments import load_leads, count_source
 
 marketing_bp = Blueprint("marketing", __name__)
 
@@ -39,17 +39,31 @@ def api_marketing_stats():
 @marketing_bp.route("/api/marketing/segment/preview")
 def api_segment_preview():
     """Filtre parametrelerine göre kaç lead eşleştiğini döndür."""
+    source = request.args.get("source", "scanner")
     f = {
-        "sector":       request.args.get("sector", ""),
-        "name_contains": request.args.get("name_contains", ""),
-        "date_from":    request.args.get("date_from", ""),
-        "date_to":      request.args.get("date_to", ""),
+        "source":    source,
+        "sector":    request.args.get("sector", ""),
+        "city":      request.args.get("city", ""),
+        "date_from": request.args.get("date_from", ""),
+        "date_to":   request.args.get("date_to", ""),
     }
     try:
         leads = load_leads(f)
         return jsonify({"count": len(leads)})
     except Exception as e:
         return jsonify({"count": 0, "error": str(e)})
+
+
+@marketing_bp.route("/api/marketing/segment/counts")
+def api_segment_counts():
+    """Her kaynak için toplam e-postalı lead sayısını döndür."""
+    try:
+        return jsonify({
+            "scanner": count_source("scanner"),
+            "import":  count_source("import"),
+        })
+    except Exception as e:
+        return jsonify({"scanner": 0, "import": 0, "error": str(e)})
 
 
 # ─── API: KAMPANYALAR ────────────────────────────────────────────────────────
