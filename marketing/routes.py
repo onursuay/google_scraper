@@ -13,11 +13,13 @@ marketing_bp = Blueprint("marketing", __name__)
 # ─── SAYFA ROUTE'LARI ────────────────────────────────────────────────────────
 
 @marketing_bp.route("/marketing")
+@marketing_bp.route("/pazarlama")
 def marketing_index():
     return render_template("marketing_index.html")
 
 
 @marketing_bp.route("/marketing/campaigns/new")
+@marketing_bp.route("/pazarlama/kampanyalar/yeni")
 def marketing_campaign_new():
     from dashboard import SECTORS  # kampanya wizard sektör listesi için
     sectors = list(SECTORS.keys())
@@ -25,6 +27,7 @@ def marketing_campaign_new():
 
 
 @marketing_bp.route("/marketing/campaigns/<cid>")
+@marketing_bp.route("/pazarlama/kampanyalar/<cid>")
 def marketing_campaign_detail(cid):
     return render_template("marketing_campaign_detail.html", campaign_id=cid)
 

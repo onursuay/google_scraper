@@ -511,6 +511,7 @@ def logout():
 
 
 @app.route("/account", methods=["GET", "POST"])
+@app.route("/hesabim", methods=["GET", "POST"])
 def account():
     uid = session.get('user_id')
     if not uid or uid == '__admin__':
@@ -564,11 +565,13 @@ def yardim():
 
 
 @app.route("/dashboard")
+@app.route("/genel-bakis")
 def app_dashboard():
     return render_template("app_dashboard.html")
 
 
 @app.route("/app")
+@app.route("/tarayici")
 def index():
     return render_template("index.html", sectors=SECTORS, cities=CITIES, sector_icons=SECTOR_ICONS)
 
@@ -825,6 +828,7 @@ def domains_page():
 
 
 @app.route("/external")
+@app.route("/ice-aktarma")
 def external_page():
     lead_url = app.config.get("LEAD_SHEET_URL", "")
     lead_sheet = app.config.get("LEAD_SHEET_NAME", "")
@@ -832,6 +836,7 @@ def external_page():
 
 
 @app.route("/database")
+@app.route("/veritabani")
 def database_page():
     return render_template("database.html")
 
