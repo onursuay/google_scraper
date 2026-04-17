@@ -155,14 +155,20 @@
 
 /* ==================== SIDEBAR ==================== */
 .clickbot-app .cb-sidebar {
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex; flex-direction: column;
   max-height: calc(100vh - 120px);
-  overflow-y: auto;
-  padding-right: 4px;
+  overflow: hidden;
 }
-.clickbot-app .cb-sidebar::-webkit-scrollbar { width: 4px; }
-.clickbot-app .cb-sidebar::-webkit-scrollbar-track { background: transparent; }
-.clickbot-app .cb-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 4px; }
+.clickbot-app .cb-sidebar-scroll {
+  display: flex; flex-direction: column; gap: 12px;
+  flex: 1; overflow-y: auto; padding-right: 4px;
+}
+.clickbot-app .cb-sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.clickbot-app .cb-sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+.clickbot-app .cb-sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 4px; }
+.clickbot-app .cb-action-footer {
+  flex-shrink: 0; padding-top: 12px;
+}
 
 /* ==================== CARDS ==================== */
 .clickbot-app .card {
@@ -286,40 +292,55 @@
 .clickbot-app .setting-input-wrap.unsafe .warn-icon { display: block; }
 
 /* ==================== BUTTONS ==================== */
+/* Shimmer sweep animation */
+@keyframes cb-shimmer {
+  0%   { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(250%)  skewX(-15deg); }
+}
+
 .clickbot-app .btn {
   position: relative; overflow: hidden;
   padding: 8px 18px;
   border: none;
   border-radius: 8px;
-  background: #000;
+  background: linear-gradient(135deg, #2BB673 0%, #1a9e5e 100%);
   color: #fff;
   font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif;
   cursor: pointer; transition: all 0.3s ease;
   display: inline-flex; align-items: center; gap: 6px;
 }
-.clickbot-app .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+.clickbot-app .btn::after {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  animation: cb-shimmer 2.4s ease-in-out infinite;
+}
+.clickbot-app .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(43,182,115,0.4); }
 .clickbot-app .btn:active { transform: translateY(0); }
-.clickbot-app .btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+.clickbot-app .btn:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
 .clickbot-app .btn:disabled:hover { transform: none; box-shadow: none; }
+.clickbot-app .btn:disabled::after { display: none; }
 
 .clickbot-app .btn-primary {
-  background: #000; color: #fff;
+  background: linear-gradient(135deg, #2BB673 0%, #1a9e5e 100%); color: #fff;
 }
-.clickbot-app .btn-primary:hover { background: #111; }
+.clickbot-app .btn-primary:hover { background: linear-gradient(135deg, #229d5e 0%, #16834e 100%); }
 
 .clickbot-app .btn-danger {
-  background: #000; color: #fff;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff;
 }
 
 .clickbot-app .btn-warning {
-  background: #000; color: #fff;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff;
 }
 
 /* Click Bot action buttons */
 .clickbot-app .cb-action-btn {
   flex: 1;
   padding: 12px;
-  background: #000;
+  background: linear-gradient(135deg, #2BB673 0%, #1a9e5e 100%);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -331,31 +352,28 @@
   position: relative;
   overflow: hidden;
 }
+.clickbot-app .cb-action-btn::after {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  animation: cb-shimmer 2.4s ease-in-out infinite;
+  animation-delay: var(--shimmer-delay, 0s);
+}
 .clickbot-app .cb-action-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  background: #e5e7eb; color: #9ca3af;
+  opacity: 1; cursor: not-allowed;
 }
+.clickbot-app .cb-action-btn:disabled::after { display: none; }
+.clickbot-app .cb-action-btn:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(43,182,115,0.4); }
 .clickbot-app .cb-action-btn.active-glow {
-  background: #000;
-  color: #fff;
-  border: 2px solid transparent;
-  background-image: linear-gradient(#000, #000), linear-gradient(var(--border-angle, 0deg), #fff 0%, transparent 40%, transparent 60%, transparent 100%);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  animation: cb-snake 2s linear infinite;
-}
-@keyframes cb-snake {
-  0% { --border-angle: 0deg; }
-  100% { --border-angle: 360deg; }
-}
-@property --border-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
+  background: linear-gradient(135deg, #2BB673 0%, #1a9e5e 100%);
+  box-shadow: 0 0 0 3px rgba(43,182,115,0.3);
 }
 
 .clickbot-app .btn-success {
-  background: #000; color: #fff; font-weight: 700;
+  background: linear-gradient(135deg, #2BB673 0%, #1a9e5e 100%); color: #fff; font-weight: 700;
 }
 
 .clickbot-app .btn-ghost { border-color: transparent; background: transparent; }
@@ -565,6 +583,7 @@
 
   <!-- SIDEBAR -->
   <aside class="cb-sidebar" id="sidebarEl">
+  <div class="cb-sidebar-scroll">
 
     <!-- City Selection -->
     <div class="card">
@@ -762,14 +781,16 @@
       </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div style="position:sticky;bottom:0;z-index:10;padding:16px 0 0 0;">
-      <div style="display:flex;gap:8px;">
-        <button class="cb-action-btn" id="btnStart" onclick="startBot()" data-i18n="cb-start-btn">Başlat</button>
-        <button class="cb-action-btn" id="btnPause" onclick="cbTogglePause()" disabled data-i18n="cb-pause-btn">Duraklat</button>
-        <button class="cb-action-btn" id="btnStop" onclick="stopBot()" disabled data-i18n="cb-stop-btn">Durdur</button>
-      </div>
+  </div><!-- end .cb-sidebar-scroll -->
+
+  <!-- Action Buttons — sidebar scroll dışında, her zaman altta sabit -->
+  <div class="cb-action-footer">
+    <div style="display:flex;gap:8px;">
+      <button class="cb-action-btn" id="btnStart" onclick="startBot()" data-i18n="cb-start-btn" style="--shimmer-delay:0s">Başlat</button>
+      <button class="cb-action-btn" id="btnPause" onclick="cbTogglePause()" disabled data-i18n="cb-pause-btn" style="--shimmer-delay:0.8s">Duraklat</button>
+      <button class="cb-action-btn" id="btnStop" onclick="stopBot()" disabled data-i18n="cb-stop-btn" style="--shimmer-delay:1.6s">Durdur</button>
     </div>
+  </div>
   </aside>
 
   <!-- MAIN CONTENT -->
