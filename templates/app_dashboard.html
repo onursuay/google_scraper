@@ -70,8 +70,8 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; back
 @media (max-width: 1024px) { .qa-grid { grid-template-columns: repeat(3,1fr); } }
 @media (max-width: 540px) { .qa-grid { grid-template-columns: repeat(2,1fr); } }
 
-.qa-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 14px; text-align: center; text-decoration: none; transition: all 0.2s; }
-.qa-card:hover { border-color: #2BB673; background: rgba(43,182,115,0.03); }
+.qa-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 14px; text-align: center; text-decoration: none; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.qa-card:hover { border-color: #2BB673; background: rgba(43,182,115,0.03); box-shadow: 0 8px 24px rgba(43,182,115,0.14); transform: translateY(-3px); }
 .qa-card .qa-icon { width: 36px; height: 36px; border-radius: 10px; background: #f9fafb; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: #374151; }
 .qa-card .qa-icon svg { width: 16px; height: 16px; }
 .qa-card:hover .qa-icon { background: rgba(43,182,115,0.08); border-color: rgba(43,182,115,0.2); color: #2BB673; }
