@@ -406,13 +406,25 @@
 
                 <!-- Body -->
                 <div class="form-group">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px;flex-wrap:wrap;">
                         <label style="margin-bottom:0;" data-i18n="mkt-field-body">İçerik (HTML)</label>
-                        <button type="button" onclick="loadDefaultTemplate()" style="
-                            font-size:11px;font-weight:600;color:#3b82f6;background:rgba(59,130,246,.1);
-                            border:1px solid rgba(59,130,246,.25);border-radius:5px;padding:3px 10px;
-                            cursor:pointer;font-family:inherit;transition:all .15s;
-                        " data-i18n="mkt-load-template">Varsayılanı Yükle</button>
+                        <div style="display:flex;gap:6px;">
+                            <button type="button" onclick="sendTestEmail()" style="
+                                font-size:11px;font-weight:600;color:#fff;
+                                background:linear-gradient(135deg,#2BB673 0%,#1a9e5e 100%);
+                                border:none;border-radius:5px;padding:4px 11px;
+                                cursor:pointer;font-family:inherit;transition:all .15s;
+                                display:inline-flex;align-items:center;gap:5px;
+                            ">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                Test Maili Gönder
+                            </button>
+                            <button type="button" onclick="loadDefaultTemplate()" style="
+                                font-size:11px;font-weight:600;color:#3b82f6;background:rgba(59,130,246,.1);
+                                border:1px solid rgba(59,130,246,.25);border-radius:5px;padding:3px 10px;
+                                cursor:pointer;font-family:inherit;transition:all .15s;
+                            " data-i18n="mkt-load-template">Varsayılanı Yükle</button>
+                        </div>
                     </div>
                     <textarea id="f-body" placeholder="HTML mail içeriği..." style="min-height:200px;font-family:'SF Mono',Consolas,monospace;font-size:12px;"></textarea>
                     <div class="form-hint" id="vars-hint" style="margin-top:6px;"></div>
@@ -927,6 +939,44 @@ function initStep3() {
             subjEl.value = DEFAULT_SUBJECT_REST;
         }
         step3Initialized = true;
+    }
+}
+
+async function sendTestEmail() {
+    const subject = (document.getElementById('f-subject').value || '').trim();
+    const body    = (document.getElementById('f-body').value    || '').trim();
+    const source  = document.getElementById('f-source').value || 'scanner';
+    const fullSubject = getFullSubject();
+
+    if (!subject) { alert('Önce konu kısmını doldurun.'); return; }
+    if (!body)    { alert('Önce içerik kısmını doldurun.'); return; }
+
+    const lastEmail = localStorage.getItem('mkt_test_email') || '';
+    const to = prompt('Test maili hangi adrese gönderilsin?\n\nÖrnek lead değerleri ({firma_adi}, {sehir}, {sektor}…) yerleştirilecek.', lastEmail);
+    if (!to || !to.trim()) return;
+    const toEmail = to.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toEmail)) { alert('Geçerli bir e-posta giriniz.'); return; }
+    localStorage.setItem('mkt_test_email', toEmail);
+
+    try {
+        const r = await fetch('/api/marketing/test-send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                to_email:  toEmail,
+                subject:   fullSubject,
+                body_html: body,
+                source:    source,
+            }),
+        });
+        const d = await r.json();
+        if (r.ok && d.ok) {
+            alert(`✓ Test maili "${toEmail}" adresine gönderildi.\n\nKonu başına otomatik [TEST] etiketi eklendi.`);
+        } else {
+            alert(`Gönderim başarısız:\n\n${d.error || 'Bilinmeyen hata'}`);
+        }
+    } catch (e) {
+        alert('Ağ hatası: ' + e.message);
     }
 }
 

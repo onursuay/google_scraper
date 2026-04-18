@@ -146,3 +146,79 @@ def api_campaign_enroll(cid):
         return jsonify({"error": "E-posta zorunlu"}), 400
     ok = enroll_lead(cid, email, data.get("name", ""), data.get("lead_data"))
     return jsonify({"ok": ok})
+
+
+# ─── TEST MAİL GÖNDERİMİ ─────────────────────────────────────────────────────
+
+@marketing_bp.route("/api/marketing/test-send", methods=["POST"])
+def api_test_send():
+    """Wizard'dan kullanıcının kendisine örnek değerlerle test maili gönderir."""
+    import os
+    import requests as _req
+    from .campaigns import _render
+    from .queue import _email_footer
+    from .unsub import generate_token
+
+    data = request.json or {}
+    to_email   = (data.get("to_email") or "").strip()
+    subject    = data.get("subject") or ""
+    body_html  = data.get("body_html") or ""
+    source     = data.get("source") or "scanner"
+
+    if not to_email or "@" not in to_email:
+        return jsonify({"error": "Geçerli bir e-posta giriniz."}), 400
+    if not subject.strip() or not body_html.strip():
+        return jsonify({"error": "Konu ve içerik boş olamaz."}), 400
+
+    # Örnek lead — gerçek kampanya değişkenleriyle aynı isimler
+    if source == "scanner":
+        sample_lead = {
+            "name":   "Örnek Teknoloji A.Ş.",
+            "email":  to_email,
+            "sector": "Teknoloji",
+            "city":   "İstanbul",
+            "domain": "ornek.com",
+        }
+    else:
+        sample_lead = {
+            "name":       "Ahmet Yılmaz",
+            "first_name": "Ahmet",
+            "last_name":  "Yılmaz",
+            "email":      to_email,
+            "city":       "İstanbul",
+        }
+
+    rendered_subject = "[TEST] " + _render(subject, sample_lead)
+    rendered_body    = _render(body_html, sample_lead)
+
+    api_key    = os.getenv("RESEND_API_KEY", "")
+    from_name  = os.getenv("FROM_NAME", "YO Dijital")
+    from_email = os.getenv("FROM_EMAIL", "info@yodijital.com")
+    base_url   = os.getenv("APP_BASE_URL", "https://scraper.yodijital.com")
+
+    if not api_key:
+        return jsonify({"error": "RESEND_API_KEY tanımlı değil — test gönderilemez."}), 500
+
+    unsub_url = f"{base_url}/unsubscribe?token={generate_token(to_email)}"
+    final_html = rendered_body + _email_footer(unsub_url)
+
+    try:
+        resp = _req.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": f"{from_name} <{from_email}>",
+                "to": [to_email],
+                "subject": rendered_subject,
+                "html": final_html,
+            },
+            timeout=15,
+        )
+        if resp.status_code == 200:
+            return jsonify({"ok": True, "message_id": resp.json().get("id", "")})
+        return jsonify({"error": resp.json().get("message", resp.text)[:300]}), 502
+    except Exception as e:
+        return jsonify({"error": str(e)[:300]}), 500
