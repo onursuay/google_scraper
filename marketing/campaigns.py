@@ -419,14 +419,58 @@ def get_overview_stats() -> dict:
 
 # ─── HELPERS ─────────────────────────────────────────────────────────────────
 
+_BACK_VOWELS  = set("aıouAIOU")   # kalın ünlüler → 'da
+_FRONT_VOWELS = set("eiöüEİÖÜ")   # ince ünlüler  → 'de
+
+
+def format_city_locative(city) -> str:
+    """Şehir adına Türkçe büyük ünlü uyumuna göre apostroflu locative eki ekler.
+
+    Kurallar:
+      - Kelimenin SON ünlüsüne bakılır.
+      - Kalın (a, ı, o, u) → 'da
+      - İnce (e, i, ö, ü) → 'de
+      - Apostrof U+2019 (’) kullanılır, özel isim vurgusu için.
+      - Boş / None / hiç ünlü yoksa güvenli fallback döner.
+
+    Örnek:
+      İstanbul  → İstanbul’da
+      Ankara    → Ankara’da
+      İzmir     → İzmir’de
+      Bursa     → Bursa’da
+      Eskişehir → Eskişehir’de
+      Ordu      → Ordu’da
+    """
+    if not city:
+        return ""
+    name = str(city).strip()
+    if not name:
+        return ""
+    last_group = None
+    for ch in reversed(name):
+        if ch in _BACK_VOWELS:
+            last_group = "back"
+            break
+        if ch in _FRONT_VOWELS:
+            last_group = "front"
+            break
+    if last_group is None:
+        # Hiç ünlü yok (ör. "42" gibi) — ham haliyle döndür, ek koyma
+        return name
+    suffix = "’de" if last_group == "front" else "’da"
+    return f"{name}{suffix}"
+
+
 def _render(template: str, lead: dict) -> str:
+    city = lead.get("city", "")
     return (template
             .replace("{firma_adi}", lead.get("name", ""))
             .replace("{ad}",        lead.get("first_name", lead.get("name", "")))
             .replace("{soyad}",     lead.get("last_name", ""))
             .replace("{email}",     lead.get("email", ""))
             .replace("{sektor}",    lead.get("sector", ""))
-            .replace("{sehir}",     lead.get("city", ""))
+            .replace("{sehir_de}",  format_city_locative(city))
+            .replace("{sehir}",     city)
             .replace("{domain}",    lead.get("domain", "")))
 
 

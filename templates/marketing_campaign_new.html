@@ -817,7 +817,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
   <p style="margin:0 0 20px;">Sayın <strong>{firma_adi}</strong> Yetkilisi,</p>
 
   <p style="margin:0 0 20px;">
-    <strong>{sehir}</strong> bölgede <strong>{sektor}</strong> sektöründe faaliyet gösteren işletmeler için dijital görünürlük, bugün müşteri kazanımını doğrudan etkileyen en önemli etkenlerden biri haline gelmiştir.
+    <strong>{sehir_de}</strong> <strong>{sektor}</strong> sektöründe faaliyet gösteren işletmeler için dijital görünürlük, bugün müşteri kazanımını doğrudan etkileyen en önemli etkenlerden biri haline gelmiştir.
   </p>
 
   <p style="margin:0 0 24px;">
@@ -976,10 +976,12 @@ function initStep3() {
     const varsEl = document.getElementById('vars-hint');
     if (src === 'scanner') {
         varsEl.innerHTML = (lang==='en'?'Variables: ':'Değişkenler: ') +
-            '<code>{firma_adi}</code> <code>{sektor}</code> <code>{sehir}</code> <code>{domain}</code> <code>{email}</code>';
+            '<code>{firma_adi}</code> <code>{sektor}</code> <code>{sehir}</code> <code>{sehir_de}</code> <code>{domain}</code> <code>{email}</code>' +
+            (lang==='en' ? ' &nbsp;· <code>{sehir_de}</code> auto-adds Turkish locative (İstanbul’da / İzmir’de)'
+                         : ' &nbsp;· <code>{sehir_de}</code> Türkçe ek uyumlu çekim ekler (İstanbul’da / İzmir’de)');
     } else {
         varsEl.innerHTML = (lang==='en'?'Variables: ':'Değişkenler: ') +
-            '<code>{firma_adi}</code> <code>{ad}</code> <code>{soyad}</code> <code>{sehir}</code> <code>{email}</code>';
+            '<code>{firma_adi}</code> <code>{ad}</code> <code>{soyad}</code> <code>{sehir}</code> <code>{sehir_de}</code> <code>{email}</code>';
     }
 
     // Subject: fill with default every time user enters step 3 if still empty
