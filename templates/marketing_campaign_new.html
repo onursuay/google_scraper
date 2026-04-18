@@ -393,14 +393,7 @@
                 <!-- Subject -->
                 <div class="form-group">
                     <label data-i18n="mkt-field-subject">Konu</label>
-                    <div style="position:relative;">
-                        <div id="subject-prefix" style="
-                            position:absolute; left:12px; top:50%; transform:translateY(-50%);
-                            font-size:13px; color:#60a5fa; font-weight:600; pointer-events:none;
-                            white-space:nowrap; z-index:1;
-                        "></div>
-                        <input type="text" id="f-subject" style="padding-left:var(--subj-pl,12px);">
-                    </div>
+                    <input type="text" id="f-subject" placeholder="Örn: {firma_adi} için Dijitalde Yeni Müşteri Kazanma Yolları">
                     <div class="form-hint" id="subject-hint" style="margin-top:5px;"></div>
                 </div>
 
@@ -676,7 +669,7 @@ function validateStep() {
     }
     if (currentStep === 3) {
         if (selectedType === 'broadcast') {
-            if (!document.getElementById('f-subject').value.trim()) { alert(lang==='en'?'Enter email subject (after the prefix).':'Konu giriniz (ön ek sonrasını doldurunuz).'); return false; }
+            if (!document.getElementById('f-subject').value.trim()) { alert(lang==='en'?'Enter email subject.':'Konu giriniz.'); return false; }
             if (!document.getElementById('f-body').value.trim()) { alert(lang==='en'?'Enter email content.':'Mail içeriği giriniz.'); return false; }
         } else {
             const steps = collectSteps();
@@ -791,7 +784,7 @@ let step3Initialized = false;
 const DEFAULT_SUBJECT_SCANNER = '{firma_adi} ';
 const DEFAULT_SUBJECT_IMPORT  = '{ad} {soyad} ';
 
-const DEFAULT_SUBJECT_REST = 'için Dijitalde Yeni Müşteri Kazanma Yolları';
+const DEFAULT_SUBJECT = '{firma_adi} için Dijitalde Yeni Müşteri Kazanma Yolları';
 
 const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
 <html>
@@ -799,76 +792,182 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0;padding:0;background:#f4f4f7;font-family:'Helvetica Neue',Arial,sans-serif;color:#111827;">
+<body style="margin:0;padding:0;background:#eef2f7;font-family:'Helvetica Neue',Arial,sans-serif;color:#111827;">
 
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f7;padding:32px 16px;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#eef2f7;padding:32px 16px;">
 <tr><td align="center">
-<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+<table width="620" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 10px 40px rgba(15,23,42,0.08);">
 
-<!-- Body -->
+<!-- HERO HEADER -->
 <tr>
-<td style="padding:36px 40px 28px;color:#1f2937;font-size:15px;line-height:1.75;">
-
-  <p style="margin:0 0 18px;">Sayın <strong>{firma_adi}</strong> Yetkilisi,</p>
-
-  <p style="margin:0 0 18px;">
-    <strong>{sehir}</strong>'de <strong>{sektor}</strong> sektöründe faaliyet gösteren işletmeler için dijital görünürlük, bugün müşteri kazanımını doğrudan etkileyen temel unsurlardan biri haline gelmiştir.
-  </p>
-
-  <p style="margin:0 0 18px;">
-    Aynı sektörde faaliyet gösteren birçok firmayla çalışırken en sık karşılaştığımız ana sorunlar; Google aramalarında yeterince görünür olmamak, web sitesinin yetersiz kalması ve reklam çalışmalarının hiç yapılmaması ya da verimsiz yönetilmesidir.
-  </p>
-
-  <p style="margin:0 0 12px;">
-    <strong>YO Dijital</strong> olarak bu süreci sizin için 3 ana başlıkta uçtan uca yönetiyoruz:
-  </p>
-
-  <ul style="margin:0 0 22px;padding-left:22px;color:#1f2937;">
-    <li style="margin-bottom:6px;">SEO, SGE, AEO ve GEO çalışmaları</li>
-    <li style="margin-bottom:6px;">Web sitesi tasarımı ve dönüşüm odaklı iyileştirmeler</li>
-    <li style="margin-bottom:6px;">Meta (Instagram/Facebook) ve Google reklam yönetimi</li>
-  </ul>
-
-  <p style="margin:0 0 22px;">
-    Uygun görmeniz halinde, <strong>{firma_adi}</strong> için 15 dakikalık kısa bir ön görüşmede mevcut durumunuzu ve geliştirilmesi gereken alanları birlikte değerlendirebiliriz.
-  </p>
-
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 22px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;">
+<td style="background:linear-gradient(135deg,#0f3d2e 0%,#1a9e5e 55%,#2BB673 100%);padding:36px 40px 32px;position:relative;">
+  <table width="100%" cellpadding="0" cellspacing="0">
     <tr>
-      <td style="padding:18px 22px;">
-        <p style="margin:0 0 10px;font-weight:700;color:#111827;font-size:14px;">İletişim</p>
-        <p style="margin:0 0 4px;font-size:14px;color:#374151;">
-          <strong>WhatsApp:</strong>
-          <a href="https://wa.me/905345763361" style="color:#16a34a;text-decoration:none;">0534 576 33 61</a>
-        </p>
-        <p style="margin:0 0 4px;font-size:14px;color:#374151;">
-          <strong>E-posta:</strong>
-          <a href="mailto:info@yodijital.com" style="color:#2563eb;text-decoration:none;">info@yodijital.com</a>
-        </p>
-        <p style="margin:0;font-size:14px;color:#374151;">
-          <strong>Randevu:</strong>
-          <a href="https://cal.com/onursuay/15min" style="color:#2563eb;text-decoration:none;">cal.com/onursuay/15min</a>
+      <td>
+        <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:999px;padding:5px 14px;font-size:11px;font-weight:700;color:#ffffff;letter-spacing:0.6px;text-transform:uppercase;">
+          Dijital Büyüme · {sehir}
+        </div>
+        <h1 style="margin:14px 0 6px;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:-0.4px;line-height:1.3;">
+          {firma_adi} için<br>yeni müşteriler sizi bekliyor.
+        </h1>
+        <p style="margin:0;color:rgba(255,255,255,0.9);font-size:15px;line-height:1.55;">
+          {sektor} sektöründe dijitalde görünür olmak, bugün müşteri kazanmanın en hızlı yolu.
         </p>
       </td>
     </tr>
   </table>
+</td>
+</tr>
 
-  <p style="margin:0;color:#374151;">İyi çalışmalar dilerim.</p>
+<!-- PAIN POINTS -->
+<tr>
+<td style="padding:32px 40px 8px;color:#1f2937;font-size:15px;line-height:1.75;">
+
+  <p style="margin:0 0 20px;">Sayın <strong>{firma_adi}</strong> Yetkilisi,</p>
+
+  <p style="margin:0 0 22px;">
+    <strong>{sehir}</strong>'de <strong>{sektor}</strong> sektöründe faaliyet gösteren birçok firmayla çalışırken en sık karşılaştığımız 3 kritik sorun var:
+  </p>
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+    <tr>
+      <td style="padding:0 0 10px;">
+        <table cellpadding="0" cellspacing="0" width="100%" style="background:#fef2f2;border-left:4px solid #ef4444;border-radius:0 10px 10px 0;">
+          <tr>
+            <td style="padding:14px 18px;">
+              <strong style="color:#991b1b;font-size:14px;">Google'da yeterince görünmemek</strong>
+              <p style="margin:4px 0 0;color:#7f1d1d;font-size:13px;line-height:1.5;">Potansiyel müşteriler sizi değil, rakibinizi buluyor.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:0 0 10px;">
+        <table cellpadding="0" cellspacing="0" width="100%" style="background:#fff7ed;border-left:4px solid #f59e0b;border-radius:0 10px 10px 0;">
+          <tr>
+            <td style="padding:14px 18px;">
+              <strong style="color:#92400e;font-size:14px;">Yetersiz web sitesi</strong>
+              <p style="margin:4px 0 0;color:#78350f;font-size:13px;line-height:1.5;">Ziyaretçiler sitede duruyor ama müşteriye dönüşmüyor.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table cellpadding="0" cellspacing="0" width="100%" style="background:#fdf4ff;border-left:4px solid #a855f7;border-radius:0 10px 10px 0;">
+          <tr>
+            <td style="padding:14px 18px;">
+              <strong style="color:#6b21a8;font-size:14px;">Reklamların verimsiz yönetilmesi</strong>
+              <p style="margin:4px 0 0;color:#581c87;font-size:13px;line-height:1.5;">Her ay bütçe harcanıyor ama gerçek bir sonuç alınmıyor.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <!-- SOLUTION -->
+  <p style="margin:0 0 14px;color:#111827;font-size:18px;font-weight:800;">
+    YO Dijital olarak sizin için uçtan uca yönetiyoruz:
+  </p>
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+    <tr>
+      <td width="33.33%" valign="top" style="padding:0 4px 8px 0;">
+        <table cellpadding="0" cellspacing="0" width="100%" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;">
+          <tr>
+            <td style="padding:16px 14px;text-align:center;">
+              <div style="font-size:24px;margin-bottom:6px;">🎯</div>
+              <strong style="color:#166534;font-size:13px;display:block;line-height:1.3;">SEO · SGE · AEO · GEO</strong>
+              <span style="color:#166534;font-size:11px;display:block;margin-top:4px;opacity:0.8;">Aramalarda ilk sırada</span>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td width="33.33%" valign="top" style="padding:0 4px 8px 4px;">
+        <table cellpadding="0" cellspacing="0" width="100%" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;">
+          <tr>
+            <td style="padding:16px 14px;text-align:center;">
+              <div style="font-size:24px;margin-bottom:6px;">💻</div>
+              <strong style="color:#1e40af;font-size:13px;display:block;line-height:1.3;">Web Sitesi &amp; Dönüşüm</strong>
+              <span style="color:#1e40af;font-size:11px;display:block;margin-top:4px;opacity:0.8;">Ziyaretçi → müşteri</span>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td width="33.33%" valign="top" style="padding:0 0 8px 4px;">
+        <table cellpadding="0" cellspacing="0" width="100%" style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;">
+          <tr>
+            <td style="padding:16px 14px;text-align:center;">
+              <div style="font-size:24px;margin-bottom:6px;">📣</div>
+              <strong style="color:#854d0e;font-size:13px;display:block;line-height:1.3;">Meta &amp; Google Reklam</strong>
+              <span style="color:#854d0e;font-size:11px;display:block;margin-top:4px;opacity:0.8;">Verimli bütçe yönetimi</span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <!-- CTA BANNER -->
+  <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;background:linear-gradient(135deg,#0f3d2e 0%,#2BB673 100%);border-radius:14px;">
+    <tr>
+      <td style="padding:26px 28px;text-align:center;">
+        <p style="margin:0 0 6px;color:#ffffff;font-size:13px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;opacity:0.85;">15 DAKİKALIK ÜCRETSİZ GÖRÜŞME</p>
+        <p style="margin:0 0 18px;color:#ffffff;font-size:19px;font-weight:800;line-height:1.4;">
+          {firma_adi} için büyüme planını birlikte çıkaralım.
+        </p>
+        <a href="https://cal.com/onursuay/15min"
+           style="display:inline-block;background:#ffffff;color:#0f3d2e;text-decoration:none;font-family:Arial,sans-serif;font-size:15px;font-weight:800;padding:13px 30px;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,0.15);">
+          Randevu Oluştur →
+        </a>
+      </td>
+    </tr>
+  </table>
+
+  <!-- CONTACT CARD -->
+  <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 6px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;">
+    <tr>
+      <td style="padding:16px 20px;">
+        <p style="margin:0 0 10px;font-weight:800;color:#111827;font-size:13px;letter-spacing:0.3px;text-transform:uppercase;">Direkt İletişim</p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="33.33%" style="font-size:13px;color:#374151;padding:2px 0;">
+              <span style="color:#6b7280;font-size:11px;display:block;">WhatsApp</span>
+              <a href="https://wa.me/905345763361" style="color:#16a34a;text-decoration:none;font-weight:700;">0534 576 33 61</a>
+            </td>
+            <td width="33.33%" style="font-size:13px;color:#374151;padding:2px 0;">
+              <span style="color:#6b7280;font-size:11px;display:block;">E-posta</span>
+              <a href="mailto:info@yodijital.com" style="color:#2563eb;text-decoration:none;font-weight:700;">info@yodijital.com</a>
+            </td>
+            <td width="33.33%" style="font-size:13px;color:#374151;padding:2px 0;">
+              <span style="color:#6b7280;font-size:11px;display:block;">Randevu</span>
+              <a href="https://cal.com/onursuay/15min" style="color:#2563eb;text-decoration:none;font-weight:700;">cal.com/onursuay/15min</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <p style="margin:22px 0 0;color:#374151;font-size:14px;">İyi çalışmalar dilerim.</p>
 
 </td>
 </tr>
 
 <!-- Footer -->
 <tr>
-<td style="background:#f8fafc;padding:20px 40px;border-top:1px solid #e5e7eb;">
+<td style="background:#0f172a;padding:22px 40px;">
   <table width="100%" cellpadding="0" cellspacing="0">
     <tr>
       <td>
-        <strong style="color:#111827;font-size:14px;">YO Dijital</strong><br>
-        <span style="color:#6b7280;font-size:12px;">Google &amp; Meta Türkiye Reklam Partneri | 360° Dijital Ajans</span>
+        <strong style="color:#ffffff;font-size:15px;">YO Dijital</strong><br>
+        <span style="color:#94a3b8;font-size:12px;">Google &amp; Meta Türkiye Reklam Partneri · 360° Dijital Ajans</span>
       </td>
-      <td align="right" style="color:#6b7280;font-size:12px;">
-        <a href="https://yodijital.com" style="color:#2563eb;text-decoration:none;">yodijital.com</a>
+      <td align="right">
+        <a href="https://yodijital.com" style="color:#2BB673;text-decoration:none;font-size:13px;font-weight:700;">yodijital.com →</a>
       </td>
     </tr>
   </table>
@@ -877,7 +976,7 @@ const DEFAULT_HTML_TEMPLATE = `<!DOCTYPE html>
 
 <!-- Unsubscribe -->
 <tr>
-<td style="padding:14px 40px 18px;text-align:center;">
+<td style="padding:14px 40px 18px;text-align:center;background:#ffffff;">
   <p style="margin:0;color:#9ca3af;font-size:11px;line-height:1.6;">
     Bu e-postayı almak istemiyorsanız
     <a href="{unsubscribe_url}" style="color:#9ca3af;text-decoration:underline;">abonelikten çıkabilirsiniz</a>.
@@ -896,29 +995,16 @@ function initStep3() {
     const src = document.getElementById('f-source').value || 'scanner';
     const lang = localStorage.getItem('lp_lang') || 'tr';
 
-    // Subject prefix chip
-    const prefix = src === 'scanner' ? '{firma_adi} ' : '{ad} {soyad} ';
-    const prefixEl = document.getElementById('subject-prefix');
-    prefixEl.textContent = prefix;
-
-    // Measure prefix width and apply padding
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.font = '600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    const prefixWidth = ctx.measureText(prefix).width + 20;
-    document.getElementById('f-subject').style.paddingLeft = prefixWidth + 'px';
-    document.getElementById('f-subject').style.setProperty('--subj-pl', prefixWidth + 'px');
-
-    // Subject hint
+    // Subject hint — tells user which variables they can use
     const hintEl = document.getElementById('subject-hint');
     if (src === 'scanner') {
         hintEl.innerHTML = lang === 'en'
-            ? 'Subject starts with <code>{firma_adi}</code> (company name) automatically'
-            : '<code>{firma_adi}</code> değişkeni konu başına otomatik eklenir';
+            ? 'You can use <code>{firma_adi}</code>, <code>{sehir}</code>, <code>{sektor}</code> in the subject.'
+            : 'Konuda <code>{firma_adi}</code>, <code>{sehir}</code>, <code>{sektor}</code> değişkenlerini kullanabilirsiniz.';
     } else {
         hintEl.innerHTML = lang === 'en'
-            ? 'Subject starts with <code>{ad} {soyad}</code> (first + last name) automatically'
-            : '<code>{ad} {soyad}</code> değişkeni konu başına otomatik eklenir';
+            ? 'You can use <code>{ad}</code>, <code>{soyad}</code>, <code>{sehir}</code> in the subject.'
+            : 'Konuda <code>{ad}</code>, <code>{soyad}</code>, <code>{sehir}</code> değişkenlerini kullanabilirsiniz.';
     }
 
     // Variable hints
@@ -934,7 +1020,7 @@ function initStep3() {
     // Subject: fill with default every time user enters step 3 if still empty
     const subjEl = document.getElementById('f-subject');
     if (!subjEl.value.trim() && src === 'scanner') {
-        subjEl.value = DEFAULT_SUBJECT_REST;
+        subjEl.value = DEFAULT_SUBJECT;
     }
 
     // Body: auto-fill on first enter only (don't overwrite if user already typed)
@@ -987,17 +1073,14 @@ function loadDefaultTemplate() {
         document.getElementById('f-body').value = DEFAULT_HTML_TEMPLATE;
         const src = document.getElementById('f-source').value || 'scanner';
         if (src === 'scanner') {
-            document.getElementById('f-subject').value = DEFAULT_SUBJECT_REST;
+            document.getElementById('f-subject').value = DEFAULT_SUBJECT;
         }
     }
 }
 
-// ── Collect subject with prefix ──
+// ── Collect full subject (user types variables directly) ──
 function getFullSubject() {
-    const src = document.getElementById('f-source').value || 'scanner';
-    const prefix = src === 'scanner' ? '{firma_adi} ' : '{ad} {soyad} ';
-    const rest = document.getElementById('f-subject').value.trim();
-    return prefix + rest;
+    return document.getElementById('f-subject').value.trim();
 }
 
 // ── Steps builder ──
