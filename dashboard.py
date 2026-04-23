@@ -1664,9 +1664,11 @@ def delete_leads():
 
 GOOGLE_CLIENT_ID     = os.getenv("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
+GOOGLE_API_KEY       = os.getenv("GOOGLE_API_KEY", "")   # public API key for Picker widget
+GOOGLE_APP_ID        = os.getenv("GOOGLE_APP_ID", "")    # GCP project number for Picker app context
 GOOGLE_SCOPES = " ".join([
     "https://www.googleapis.com/auth/spreadsheets.readonly",
-    "https://www.googleapis.com/auth/drive.metadata.readonly",
+    "https://www.googleapis.com/auth/drive.file",
 ])
 GOOGLE_TOKEN_COOKIE = "google_sheets_token"
 
@@ -1698,7 +1700,6 @@ def google_connect():
         "redirect_uri": _redirect_uri(),
         "response_type": "code",
         "scope": GOOGLE_SCOPES,
-        "access_type": "offline",
         "prompt": "consent select_account",
         "state": state,
     }
@@ -1754,6 +1755,25 @@ def google_disconnect():
     resp = make_response(jsonify({"success": True}))
     resp.set_cookie(GOOGLE_TOKEN_COOKIE, "", max_age=0)
     return resp
+
+
+@app.route("/api/google/picker-config")
+def google_picker_config():
+    """Returns non-secret Picker configuration for the frontend widget."""
+    return jsonify({
+        "api_key": GOOGLE_API_KEY,
+        "app_id":  GOOGLE_APP_ID,
+    })
+
+
+@app.route("/api/google/picker-token")
+def google_picker_token():
+    """Exposes the OAuth access token to the frontend for use in the Google Picker widget.
+    Required because the token is stored in an httpOnly cookie."""
+    token = _get_google_token()
+    if not token:
+        return jsonify({"error": "google_not_connected"}), 401
+    return jsonify({"access_token": token})
 
 
 @app.route("/api/google/sheets")

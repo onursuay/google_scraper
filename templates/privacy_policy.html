@@ -32,44 +32,78 @@
 
 <div class="container">
     <h1>Privacy Policy</h1>
-    <div class="updated">Last updated: April 10, 2025</div>
+    <div class="updated">Last updated: April 23, 2026</div>
 
-    <p>This Privacy Policy describes how Yo Scraper, operated by YO Dijital ("we", "us", or "our"), collects, uses, and shares information when you use our application at <a href="https://scraper.yodijital.com">scraper.yodijital.com</a>. Yo Scraper is a business lead collection and marketing workflow tool that scans Google Maps for business listings, extracts publicly available contact information, exports results to Google Sheets, and supports outreach campaigns.</p>
+    <p>This Privacy Policy describes how Yo Scraper, operated by YO Dijital ("we", "us", or "our"), collects, uses, and protects information when you use our application at <a href="https://scraper.yodijital.com">scraper.yodijital.com</a>. Yo Scraper is a business lead collection and marketing workflow tool that scans Google Maps for business listings, extracts publicly available contact information, exports results to Google Sheets, and supports outreach campaigns.</p>
 
     <h2>1. Information We Collect</h2>
     <p>When you use Yo Scraper, we may collect the following types of information:</p>
     <ul>
-        <li><strong>Google Account Data:</strong> When you connect your Google account via OAuth, we receive a temporary access token to read your Google Sheets files on your behalf. We do not store your Google credentials or refresh tokens.</li>
+        <li><strong>Google Account Data:</strong> When you connect your Google account via OAuth 2.0, we receive a short-lived access token to read the specific Google Sheets file you select. We do not store your Google credentials, passwords, or refresh tokens.</li>
         <li><strong>Usage Data:</strong> We may collect basic usage information such as pages visited and features used, solely for improving the application.</li>
         <li><strong>Imported Data:</strong> Any data you import (Excel, CSV, or Google Sheets) is processed in memory and written to the Google Sheet you have configured. We do not retain copies of your imported data on our servers.</li>
     </ul>
 
     <h2>2. How We Use Google User Data</h2>
-    <p>We use Google OAuth exclusively to allow you to browse and select your own Google Sheets files for import. Specifically:</p>
+    <p>We use Google OAuth 2.0 exclusively to allow you to select your own Google Sheets files for import via the Google Picker. Specifically:</p>
     <ul>
-        <li>We request <strong>read-only</strong> access to your Google Sheets and Drive metadata.</li>
-        <li>The access token is stored in a short-lived, httpOnly browser cookie and expires automatically.</li>
-        <li>We do not share, sell, or transfer your Google account data to any third party.</li>
-        <li>We do not use your Google data for advertising or any purpose beyond enabling the import feature.</li>
+        <li>We request the <strong>drive.file</strong> scope, which grants access only to files you explicitly select through the Google Picker widget — not your entire Drive.</li>
+        <li>We request <strong>spreadsheets.readonly</strong> access to read the contents of the spreadsheet you select.</li>
+        <li>Your Google user data is used solely for the Sheets import feature and for no other purpose.</li>
+        <li>We do <strong>not</strong> use your Google data for advertising, remarketing, profiling, resale, or AI/ML model training.</li>
+        <li>We do <strong>not</strong> share, sell, or transfer your Google account data to any third party.</li>
+        <li>We do <strong>not</strong> access any Google Drive files other than the single spreadsheet you explicitly choose via the Picker.</li>
     </ul>
 
-    <h2>3. Data Storage</h2>
-    <p>Yo Scraper maintains an internal database to store business leads collected through Google Maps scanning and data imported by the user. This database stores business contact information (company name, phone, email, city) as entered or collected by you. You may delete your data at any time from within the application. Collected data may also be exported to a Google Sheet you configure. Google OAuth access tokens are stored in short-lived, httpOnly browser cookies and are not persisted in the database.</p>
+    <h2>3. Data Protection and Security Mechanisms</h2>
+    <p>We take the following measures to protect your data in transit and at rest:</p>
+    <ul>
+        <li><strong>Transport Security:</strong> All communication between your browser and our application is encrypted using TLS/HTTPS. OAuth callbacks and API calls to Google are also made exclusively over HTTPS.</li>
+        <li><strong>Access Token Lifecycle:</strong> The Google OAuth access token is short-lived and expires within 1 hour (as specified by Google's token endpoint). It is never stored in our database.</li>
+        <li><strong>Token Storage:</strong> The access token is stored in an <code>httpOnly</code>, <code>SameSite=Lax</code> browser cookie. It is also transiently passed to the Google Picker widget (a first-party Google UI component running in your browser) via a server endpoint, solely to authenticate the file-selection dialog. The token is never written to localStorage, sessionStorage, or any third-party service. The cookie is marked <code>Secure</code> in production (HTTPS-only transmission).</li>
+        <li><strong>No Refresh Tokens:</strong> We request only an online-mode access token and do not request or store refresh tokens. When your session expires, you must re-authorize to reconnect.</li>
+        <li><strong>CSRF Protection:</strong> The OAuth authorization flow uses a cryptographically random <code>state</code> parameter (stored in the server-side session) that is validated on callback to prevent cross-site request forgery attacks.</li>
+        <li><strong>Minimal Scope:</strong> We request the narrowest possible Google API scopes — only <code>drive.file</code> (Picker-based selection) and <code>spreadsheets.readonly</code> (read-only Sheets access). No write access, no full Drive access.</li>
+        <li><strong>No Persistent Google Data:</strong> Google user data (file contents, file names, spreadsheet values) is processed in memory during import and is not persisted to our servers after the import completes.</li>
+        <li><strong>Unauthorized Access Prevention:</strong> Application credentials (Client ID, Client Secret, API Key) are stored as environment variables and are never exposed in source code or client-side responses.</li>
+    </ul>
 
-    <h2>4. Third-Party Services</h2>
+    <h2>4. Data Storage</h2>
+    <p>Yo Scraper maintains an internal database to store business leads collected through Google Maps scanning and data imported by the user. This database stores business contact information (company name, phone, email, city) as entered or collected by you. You may delete your data at any time from within the application. Google OAuth access tokens are stored only in short-lived, httpOnly browser cookies and are never persisted in the database.</p>
+
+    <h2>5. Data Retention and Deletion</h2>
+    <ul>
+        <li><strong>Google OAuth tokens</strong> expire within 1 hour and are automatically cleared when the cookie expires or when you disconnect your Google account from within the application.</li>
+        <li><strong>Imported business lead data</strong> is stored in the application database until you delete it. You can delete individual records or all records from the Database page at any time.</li>
+        <li>No personal data derived from Google APIs is retained on our servers after your import session ends.</li>
+        <li>To request deletion of all data associated with your account, contact us at <a href="mailto:info@yodijital.com">info@yodijital.com</a>.</li>
+    </ul>
+
+    <h2>6. Third-Party Services</h2>
     <p>We use the following third-party services:</p>
     <ul>
-        <li><strong>Google APIs</strong> – for Sheets and Drive access (OAuth 2.0)</li>
+        <li><strong>Google APIs</strong> – Google Sheets API (spreadsheets.readonly) and Google Drive API (drive.file scope via Picker) via OAuth 2.0</li>
         <li><strong>Railway</strong> – for application hosting</li>
     </ul>
+    <p>Google's use of data collected through Google APIs is governed by <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a> and the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
 
-    <h2>5. Data Retention</h2>
-    <p>Google OAuth tokens are stored in session cookies and expire within 1 hour. No personal data is retained on our servers after your session ends.</p>
+    <h2>7. Your Rights and Revoking Access</h2>
+    <ul>
+        <li>You may revoke Google account access at any time via <a href="https://myaccount.google.com/permissions" target="_blank">Google Account Permissions</a>. Revoking access immediately invalidates the access token our application holds.</li>
+        <li>You can disconnect your Google account directly from the application's External Import page at any time.</li>
+        <li>You may request deletion of all personal data we hold by contacting <a href="mailto:info@yodijital.com">info@yodijital.com</a>.</li>
+    </ul>
 
-    <h2>6. Your Rights</h2>
-    <p>You may revoke Google account access at any time via <a href="https://myaccount.google.com/permissions" target="_blank">Google Account Permissions</a>. You can also disconnect your Google account directly from the application's External page.</p>
+    <h2>8. Limited Use Disclosure</h2>
+    <p>Yo Scraper's use and transfer of information received from Google APIs to any other app will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank">Google API Services User Data Policy</a>, including the Limited Use requirements. Specifically:</p>
+    <ul>
+        <li>Google user data is used only to provide the Sheets import feature described above.</li>
+        <li>We do not transfer Google user data to third parties except as necessary to provide the feature (e.g., requests to Google's own APIs).</li>
+        <li>We do not use Google user data for serving advertisements.</li>
+        <li>We do not allow humans to read Google user data unless we have your affirmative agreement, doing so is necessary for security purposes, or it is required by law.</li>
+    </ul>
 
-    <h2>7. Contact</h2>
+    <h2>9. Contact</h2>
     <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:info@yodijital.com">info@yodijital.com</a>.</p>
 </div>
 

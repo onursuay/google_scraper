@@ -9,6 +9,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <!-- SheetJS (XLSX) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Google API (Picker) -->
+    <script src="https://apis.google.com/js/api.js" async defer></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #111827; min-height: 100vh; }
@@ -232,13 +234,27 @@
                         <button class="btn btn-outline" style="font-size:12px;padding:6px 12px;" onclick="gsDisconnect()" data-i18n="gs-disc-btn">Bağlantıyı Kes</button>
                     </div>
 
-                    <!-- Arama -->
-                    <div class="gs-input-row" style="margin-bottom:12px;">
-                        <input type="text" id="gsSearch" placeholder="Dosya ara..." data-i18n-ph="gs-search-ph" oninput="gsSearchFiles(this.value)">
+                    <!-- Google Picker ile dosya seç -->
+                    <button class="btn btn-outline" id="gsPickerBtn" onclick="gsOpenPicker()" style="display:flex;align-items:center;gap:8px;width:100%;justify-content:center;padding:12px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                        <span data-i18n="gs-pick-btn">Drive'dan Dosya Seç</span>
+                    </button>
+
+                    <!-- Seçilen dosya -->
+                    <div id="gsSelectedFile" class="hidden" style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:10px 14px;background:#f1f5f9;border-radius:8px;border:2px solid #10b981;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <span id="gsSelectedFileName" style="font-size:13px;font-weight:600;color:#111827;"></span>
+                        </div>
+                        <button onclick="gsOpenPicker()" style="background:none;border:none;font-size:12px;color:#6b7280;cursor:pointer;" data-i18n="gs-change-btn">Değiştir</button>
                     </div>
 
-                    <!-- Dosya listesi (inline sheet dropdown) -->
-                    <div id="gsFileList" style="max-height:300px;overflow-y:auto;"></div>
+                    <!-- Sekme seçimi -->
+                    <div id="gsTabRow" class="hidden" style="margin-top:10px;">
+                        <select id="gsTabSelect" class="map-select" style="width:100%;appearance:none;-webkit-appearance:none;" onchange="gsSelectTab(this.value)">
+                            <option value="">— <span data-i18n="gs-sel-tab">Sekme seçin</span> —</option>
+                        </select>
+                    </div>
 
                     <div id="gsStatusMsg"></div>
                 </div>
@@ -349,7 +365,6 @@ let sourceTotal = 0;
 let currentTab = 'file';
 let gsSpreadsheetId = '';
 let gsSelectedTab = null;
-let gsSearchTimer = null;
 
 // Sabit hedef alanlar — 6 müşteri bilgisi
 const DB_FIELDS = [
@@ -472,76 +487,61 @@ function showParseMsg(msg, type) {
     el.innerHTML = `<div class="status-msg ${type}" style="margin-top:10px;">${msg}</div>`;
 }
 
-// ─── GOOGLE SHEETS OAuth (step 1) ────────────────────────────────────────
+// ─── GOOGLE SHEETS OAuth + Picker (step 1) ───────────────────────────────
+let gsPickerReady = false;
+
 function gsCheckStatus() {
     fetch('/api/google/status').then(r=>r.json()).then(data => {
         document.getElementById('gsNotConnected').classList.toggle('hidden', data.connected);
         document.getElementById('gsConnected').classList.toggle('hidden', !data.connected);
-        if (data.connected) gsLoadFiles();
     });
 }
 
-function gsLoadFiles(q='') {
-    const url = '/api/google/sheets' + (q ? '?q=' + encodeURIComponent(q) : '');
-    fetch(url).then(r=>r.json()).then(data => {
-        if (data.error === 'google_not_connected' || data.error === 'google_token_expired') {
+function gsOpenPicker() {
+    Promise.all([
+        fetch('/api/google/picker-config').then(r=>r.json()),
+        fetch('/api/google/picker-token').then(r=>r.json()),
+    ]).then(([cfg, tok]) => {
+        if (tok.error) {
             document.getElementById('gsNotConnected').classList.remove('hidden');
             document.getElementById('gsConnected').classList.add('hidden');
             return;
         }
-        const files = data.files || [];
-        const el = document.getElementById('gsFileList');
-        if (!files.length) {
-            el.innerHTML = `<div style="font-size:13px;color: #9ca3af;padding:12px 0;">${t('ext-no-files','Dosya bulunamadı.')}</div>`;
-            return;
-        }
-        const dateLoc = window.APP_LANG === 'en' ? 'en-US' : 'tr-TR';
-        el.innerHTML = files.map(f => `
-            <div class="gs-file-row" id="row-${f.id}" style="border:2px solid #e5e7eb; border-radius:8px; margin-bottom:6px; overflow:hidden; transition:border-color 0.15s;">
-                <label style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;" onclick="gsSelectFile('${f.id}', this.closest('.gs-file-row'))">
-                    <div>
-                        <div class="si-name">${f.name}</div>
-                        <div class="si-meta">${new Date(f.modifiedTime).toLocaleDateString(dateLoc)}</div>
-                    </div>
-                    <input type="radio" name="gsfile" class="sheet-radio" value="${f.id}">
-                </label>
-                <div class="gs-sheet-drop hidden" style="padding:0 14px 12px;">
-                    <select class="map-select" style="width:100%;appearance:none;-webkit-appearance:none;" onchange="gsSelectTab(this.value)">
-                        <option value="">${t('gs-sel-tab','Sheet Seçin')}</option>
-                    </select>
-                </div>
-            </div>`).join('');
+        const launchPicker = () => {
+            const view = new google.picker.DocsView(google.picker.ViewId.SPREADSHEETS)
+                .setSelectFolderEnabled(false);
+            const builder = new google.picker.PickerBuilder()
+                .addView(view)
+                .setOAuthToken(tok.access_token)
+                .setCallback(gsPickerCallback);
+            if (cfg.api_key) builder.setDeveloperKey(cfg.api_key);
+            if (cfg.app_id)  builder.setAppId(cfg.app_id);
+            builder.build().setVisible(true);
+        };
+        if (gsPickerReady) { launchPicker(); return; }
+        gapi.load('picker', () => { gsPickerReady = true; launchPicker(); });
+    }).catch(() => {
+        document.getElementById('gsStatusMsg').innerHTML =
+            `<div class="status-msg error" style="margin-top:10px;">${t('gs-picker-err','Picker açılamadı. Lütfen tekrar deneyin.')}</div>`;
     });
 }
 
-function gsSearchFiles(val) {
-    clearTimeout(gsSearchTimer);
-    gsSearchTimer = setTimeout(() => gsLoadFiles(val), 400);
-}
-
-function gsSelectFile(id, rowEl) {
-    gsSpreadsheetId = id;
+function gsPickerCallback(data) {
+    if (data.action !== google.picker.Action.PICKED) return;
+    const doc = data.docs[0];
+    gsSpreadsheetId = doc.id;
     gsSelectedTab = null;
+    document.getElementById('gsSelectedFileName').textContent = doc.name;
+    document.getElementById('gsSelectedFile').classList.remove('hidden');
+    document.getElementById('gsStatusMsg').innerHTML = '';
     updateStep1Btn();
 
-    // Tüm satırları sıfırla
-    document.querySelectorAll('.gs-file-row').forEach(r => {
-        r.style.borderColor = '#e5e7eb';
-        r.querySelector('.gs-sheet-drop').classList.add('hidden');
-        r.querySelector('input[type=radio]').checked = false;
-    });
-
-    // Bu satırı seç
-    rowEl.style.borderColor = '#10b981';
-    rowEl.querySelector('input[type=radio]').checked = true;
-    const drop = rowEl.querySelector('.gs-sheet-drop');
-
     // Sekmeleri yükle
-    const sel = drop.querySelector('select');
+    const sel = document.getElementById('gsTabSelect');
     sel.innerHTML = `<option value="">${t('ext-loading','Yükleniyor...')}</option>`;
-    drop.classList.remove('hidden');
+    document.getElementById('gsTabRow').classList.remove('hidden');
 
-    fetch(`/api/google/sheets/${id}`).then(r=>r.json()).then(data => {
+    fetch(`/api/google/sheets/${doc.id}`).then(r=>r.json()).then(data => {
         const tabs = data.tabs || [];
         if (tabs.length === 1) {
             gsSelectedTab = tabs[0].title;
@@ -550,7 +550,9 @@ function gsSelectFile(id, rowEl) {
             return;
         }
         sel.innerHTML = `<option value="">— ${t('gs-sel-tab','Sekme seçin')} —</option>` +
-            tabs.map(t => `<option value="${t.title}">${t.title}</option>`).join('');
+            tabs.map(tb => `<option value="${tb.title}">${tb.title}</option>`).join('');
+    }).catch(() => {
+        sel.innerHTML = `<option value="">${t('gs-tab-err','Sekmeler yüklenemedi')}</option>`;
     });
 }
 
@@ -564,7 +566,9 @@ function gsDisconnect() {
         gsSpreadsheetId=''; gsSelectedTab=null;
         document.getElementById('gsNotConnected').classList.remove('hidden');
         document.getElementById('gsConnected').classList.add('hidden');
-        document.getElementById('gsFileList').innerHTML='';
+        document.getElementById('gsSelectedFile').classList.add('hidden');
+        document.getElementById('gsTabRow').classList.add('hidden');
+        document.getElementById('gsSelectedFileName').textContent = '';
         updateStep1Btn();
     });
 }
